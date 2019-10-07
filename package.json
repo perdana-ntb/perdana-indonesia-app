@@ -1,0 +1,10 @@
+{
+  "name": "perdana_indonesia_app",
+  "version": "1.0.0",
+  "description": "Perdana Indonesia Web Application",
+  "main": "index.js",
+  "repository": "https://github.com/perdana-ntb/perdana-indonesia-app.git",
+  "author": "Eby Sofyan Fadly <eby.sofyan@gmail.com>",
+  "license": "MIT",
+  "private": null
+}
