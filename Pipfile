@@ -1,0 +1,33 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+celery = "==4.3"
+redis = "*"
+djangorestframework = "==3.9.2"
+django-filter = "==2.1.0"
+djangorestframework-jwt = "==1.11.0"
+django-oauth-toolkit = "==1.2.0"
+rest-social-auth = "==2.2.0"
+social-auth-core = "*"
+social-auth-app-django = "*"
+drf-nested-routers = "==0.91"
+mysqlclient = "==1.4.1"
+django-extensions = "==2.1.6"
+fcm-django = "==0.2.21"
+gunicorn = "==19.9.0"
+pylint = "*"
+pylint-django = "*"
+autopep8 = "*"
+timeago = "*"
+Django = "==2.2.1"
+Markdown = "==3.0.1"
+Pillow = "==6.0.0"
+psycopg2 = "*"
+
+[requires]
+python_version = "3.6"
