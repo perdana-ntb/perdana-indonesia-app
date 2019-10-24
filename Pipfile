@@ -24,9 +24,9 @@ pylint = "*"
 pylint-django = "*"
 autopep8 = "*"
 timeago = "*"
-Django = "==2.2.1"
+Django = "*"
 Markdown = "==3.0.1"
-Pillow = "==6.0.0"
+Pillow = "*"
 psycopg2 = "*"
 
 [requires]
