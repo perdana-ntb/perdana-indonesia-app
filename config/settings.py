@@ -38,6 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+    'rest_framework.authtoken',  # if you use the same token auth system as the example
+
+    'django_filters',
+    'django_extensions',
+    'braces',
+
+    'core',
     'orm',
 ]
 

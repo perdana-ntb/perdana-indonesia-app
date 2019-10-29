@@ -28,6 +28,7 @@ Django = "*"
 Markdown = "==3.0.1"
 Pillow = "*"
 psycopg2 = "*"
+django-braces = "*"
 
 [requires]
 python_version = "3.6"
