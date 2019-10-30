@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'rest_framework',
     'rest_framework.authtoken',  # if you use the same token auth system as the example
@@ -47,6 +48,9 @@ INSTALLED_APPS = [
 
     'core',
     'orm',
+    'apps.dashboard',
+    'apps.member',
+    'apps.club',
 ]
 
 MIDDLEWARE = [
