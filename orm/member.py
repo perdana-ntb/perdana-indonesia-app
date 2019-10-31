@@ -18,7 +18,7 @@ class Member(TimeStampedModel):
     body_weight = models.CharField(max_length=25, null=True, blank=True, default="0")
     draw_length = models.CharField(max_length=25, null=True, blank=True, default="0")
     club = models.ForeignKey(club_models.Club, on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
-    born_register = models.DateField(null=True, blank=True)
+    date_register = models.DateField(null=True, blank=True)
     photo = models.ImageField(upload_to='photo/%Y/%m/%d', null=True, blank=True)
 
     def __str__(self):

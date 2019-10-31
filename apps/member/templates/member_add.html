@@ -1,0 +1,138 @@
+{% extends "base/index.html" %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="{% url 'member:list' %}">Anggota</a>
+    </li>
+    <li class="breadcrumb-item active">Add</li>
+</ol>
+{% endblock breadcrumb %}
+{% block page_title %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
+        <div class="container-header">
+            <h3>Tambah Anggota Baru</h3>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock page_title %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+            {{message}}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form enctype="multipart/form-data" action="{% url 'member:add' %}" method="POST">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="company">ID Anggota</label>
+                        <input class="form-control" name="username" type="text" placeholder="PD123xxxx . . ." required>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label for="city">Nama Depan</label>
+                            <input class="form-control" name="first_name" type="text" placeholder="Sa'ad bin" required>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="postal-code">Nama Belakang</label>
+                            <input class="form-control" name="last_name" type="text" placeholder="Abi Waqqash" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Password</label>
+                        <input class="form-control" name="password" type="password" placeholder="*****" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vat">No. HP</label>
+                        <input class="form-control" name="phone" type="text" placeholder="087xxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vat">Email</label>
+                        <input class="form-control" name="email" type="email" placeholder="it@perdana.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="street">Gender</label>
+                        <div style="display: flex; flex-direction: row">
+                            <div class="form-check mr-1">
+                                <input class="form-check-input" type="radio" value="pria" name="gender"> Pria
+                            </div> &nbsp;&nbsp;&nbsp;
+                            <div class="form-check mr-1">
+                                <input class="form-check-input" type="radio" value="wanita" name="gender"> Wanita
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label for="city">Tempat Lahir</label>
+                            <input class="form-control" name="born_place" type="text" placeholder="Mataram . . .">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="postal-code">Tanggal Lahir</label>
+                            <input class="form-control" name="born_date" type="date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vat">Alamat</label>
+                        <textarea class="form-control" name="address" placeholder="Jalan . . ." rows="2"></textarea>
+                    </div>
+                    <!-- <div class="form-group">
+                        <label for="vat">Apakah member ini ketua klub?</label><br>
+                        <input name="lead" type="checkbox" value="1" /> Ya
+                    </div> -->
+                    <div class="form-group">
+                        <label for="vat">Klub asal</label>
+                        <select name="club_id" class="form-control" required>
+                            <option value="">===== Pilih =====</option>
+                            {% for club in clubs %}
+                            <option value="{{club.pk}}">{{club.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="vat">Foto Anggota</label><br>
+                        <input name="photo" type="file">
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <strong>Identitas Fisik</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label for="city">Tinggi Badan (cm)</label>
+                            <input class="form-control" name="body_height" type="number" placeholder="0">
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="postal-code">Berat Badan (kg)</label>
+                            <input class="form-control" name="body_weight" type="number" placeholder="0">
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="postal-code">Draw Length (inch)</label>
+                            <input class="form-control" name="draw_length" type="number" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <button class="btn btn-primary btn-block" type="submit">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+{% block js %}
+<script>
+    console.log("Dashboard test")
+</script>
+{% endblock js %}

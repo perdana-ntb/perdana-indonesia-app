@@ -1,0 +1,91 @@
+{% extends "base/index.html" %}
+{% load humanize %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="{% url 'club:list' %}">Klub</a>
+    </li>
+    <li class="breadcrumb-item active">List</li>
+</ol>
+{% endblock breadcrumb %}
+{% block page_title %}
+<div class="container-header">
+    <h3>Semua Klub</h3>
+    <div>
+        <a href="{% url 'club:add' %}" class="btn btn-primary">
+            Tambah &nbsp; <i class="fa fa-plus-circle"></i>
+        </a>
+    </div>
+</div>
+{% endblock page_title %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <table class="table table-responsive-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>No.</th>
+                    <th>Nama</th>
+                    <th>Alamat</th>
+                    <th>Tanggal Bergabung</th>
+                    <th>Jumlah Anggota</th>
+                    <th style="text-align: center;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for club in clubs %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{club.name}}</td>
+                    <td>{{club.address}}</td>
+                    <td>{{club.date_register|date:"d M Y"}}</td>
+                    <td>
+                        {% if club.members %}
+                        {{ club.members.count }}
+                        {% else %}
+                        0
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="{% url 'club:detail' club.pk %}" class="btn btn-primary btn-sm">Lihat</a>
+                        <a href="{% url 'club:edit' club.pk %}" class="btn btn-success btn-sm">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="{% url 'club:delete' club.pk %}" onclick="return confirm('Lanjutkan hapus klub?')"
+                            class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <ul class="pagination" style="float: right">
+            <li class="page-item">
+                <a class="page-link" href="#">Prev</a>
+            </li>
+            <li class="page-item active">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">4</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock content %}
+{% block js %}
+<script>
+    console.log("Dashboard test")
+</script>
+{% endblock js %}
