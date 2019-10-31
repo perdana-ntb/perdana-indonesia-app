@@ -1,0 +1,82 @@
+{% extends "base/index.html" %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="{% url 'unit:list' %}">Wilayah</a>
+    </li>
+    <li class="breadcrumb-item active">Add</li>
+</ol>
+{% endblock breadcrumb %}
+{% block page_title %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
+        <div class="container-header">
+            <h3>Tambah Wilayah</h3>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock page_title %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-info" role="alert">
+            {{message}}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form enctype="multipart/form-data"
+            action="{% url 'region:view' %}{% if 'region' in request.GET %}?region={{object.pk}}{% endif %}"
+            method="POST">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="company">Nama Wilayah</label>
+                        <input class="form-control" name="name" type="text" value="{{object.name}}" required>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-pill pull-right" type="submit">
+                            {% if 'region' in request.GET %}
+                            Update
+                            {% else %}
+                            Simpan
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h4>Semua Wilayah</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for region in regions %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <h4><a style="color: black;" href="{% url 'region:view' %}?region={{region.pk}}">{{region.name}}</a></h4>
+                        <span class="badge"><a class="btn btn-pill btn-sm btn-danger" href="">
+                                <fa class="fa fa-close"></fa>
+                            </a></span>
+                    </li>
+                    {% empty %}
+                    <center>Tidak ada wilayah</center>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block js %}
+<script>
+    console.log("Dashboard test")
+</script>
+{% endblock js %}
