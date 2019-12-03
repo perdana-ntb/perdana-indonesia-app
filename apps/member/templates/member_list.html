@@ -20,7 +20,7 @@
 {% block content %}
 <div class="card">
     <div class="card-body">
-        <table class="table table-responsive-sm">
+        <table id="member-table" class="table table-striped">
             <thead class="table-light">
                 <tr>
                     <th>No.</th>
@@ -33,58 +33,69 @@
                     <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody>
-
-                {% for member in members %}
-                <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{member.user.username}}</td>
-                    <td>{{member.user.first_name}} {{member.user.last_name}}</td>
-                    <td>{{member.phone}}</td>
-                    <td>{{member.gender}}</td>
-                    <td>{{member.address}}</td>
-                    <td>{{member.club.name}}</td>
-                    <td>
-                        <a href="{% url 'organization:member_detail' member.pk %}" class="btn btn-primary btn-sm">
-                            Lihat
-                        </a>
-                        <a href="{% url 'organization:member_edit' member.pk %}" class="btn btn-success btn-sm">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a href="{% url 'organization:member_delete' member.pk %}"
-                            onclick="return confirm('Lanjutkan hapus anggota?')" class="btn btn-danger btn-sm">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
         </table>
-        <ul class="pagination" style="float: right">
-            <li class="page-item">
-                <a class="page-link" href="#">Prev</a>
-            </li>
-            <li class="page-item active">
-                <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">4</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
     </div>
 </div>
 {% endblock content %}
 {% block js %}
 <script>
-    console.log("Dashboard test")
+    $(document).ready(function () {
+        let dataTables = $('#member-table').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            "ajax": {
+                "url": "{% url 'member:ajax-load' %}",
+                "type": "POST",
+                "data": {
+                    "csrfmiddlewaretoken": "{{ csrf_token }}"
+                }
+            },
+            "columns": [
+                {
+                    "data": "counter",
+                    orderable: false,
+                },
+                { "data": "username" },
+                { "data": "full_name" },
+                { "data": "phone" },
+                { "data": "gender" },
+                { "data": "address" },
+                { "data": "club" },
+                {
+                    data: null,
+                    orderable: false,
+                    className: "center",
+                    defaultContent: `<button id="btn-view" class="btn btn-primary btn-sm">Lihat</button>
+                        <button id="btn-edit" class="btn btn-success btn-sm">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button id="btn-delete" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash"></i>
+                        </a>`
+                }
+            ]
+        });
+
+        $('#member-table tbody').on('click', 'button', function () {
+            var elemId = this.id;
+            var data = dataTables.row($(this).parents('tr')).data();
+
+            if (elemId == 'btn-view') {
+                // window.location = "{% url 'member:list' %}"
+                window.location = Urls['member:detail'](data.pk)
+            }
+            else if (elemId == 'btn-edit') {
+                // window.location = "{% url 'member:list' %}"
+                window.location = Urls['member:edit'](data.pk)
+            }
+            else if (elemId == 'btn-delete') {
+                if (confirm("Lanjutkan hapus member?")) {
+                    // window.location = "{% url 'member:list' %}"
+                    window.location = Urls['member:delete'](data.pk)
+                }
+            }
+        });
+    });
 </script>
 {% endblock js %}

@@ -5,7 +5,7 @@
 <ol class="breadcrumb">
     <li class="breadcrumb-item">Organisasi</li>
     <li class="breadcrumb-item">
-        <a href="{% url 'organization:members' %}">Anggota</a>
+        <a href="{% url 'member:list' %}">Anggota</a>
     </li>
     <li class="breadcrumb-item">Detail</li>
     <li class="breadcrumb-item active">{{object.user.first_name}} {{object.user.last_name}}</li>
@@ -87,9 +87,9 @@
                 </table>
             </div>
             <div class="card-footer">
-                <a href="{% url 'organization:member_edit' object.pk %}" class="btn btn-success">Ubah data anggota</a>
-                <a href="{% url 'organization:member_delete' object.pk %}"
-                    onclick="return confirm('Lanjutkan hapus anggota?')" class="btn btn-danger">Hapus anggota</a>
+                <a href="{% url 'member:edit' object.pk %}" class="btn btn-success">Ubah data anggota</a>
+                <a href="{% url 'member:delete' object.pk %}" onclick="return confirm('Lanjutkan hapus anggota?')"
+                    class="btn btn-danger">Hapus anggota</a>
             </div>
         </div>
     </div>

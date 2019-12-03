@@ -1,3 +1,4 @@
+{% load app_tags %}
 <div class="sidebar">
     <nav class="sidebar-nav ps ps--active-y">
         <ul class="nav">
@@ -7,11 +8,41 @@
                     <!-- <span class="badge badge-info">NEW</span> -->
                 </a>
             </li>
-            <li class="nav-title">Organisasi</li>
+            <!-- <li class="nav-item">
+                        <a class="nav-link" href="{% url 'region:view' %}">
+                            <i class="nav-icon icon-drawer"></i> Wilayah</a>
+                    </li> -->
+            {% if 'regional' in request.user.groups|qs_to_list:'name' %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'club:list' %}">
-                    <i class="nav-icon icon-drawer"></i> Klub</a>
+                    <i class="nav-icon icon-map"></i> Provinsi</a>
             </li>
+            {% endif %}
+            {% if 'pengprov' in request.user.groups|qs_to_list:'name' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'club:list' %}">
+                    <i class="nav-icon icon-arrow-right"></i> Cabang</a>
+            </li>
+            {% endif %}
+            {% if 'pengcab' in request.user.groups|qs_to_list:'name' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'club:list' %}">
+                    <i class="nav-icon icon-arrow-right"></i> Pengurus Klub</a>
+            </li>
+            {% endif %}
+            {% if 'club-manager' in request.user.groups|qs_to_list:'name' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'club:list' %}">
+                    <i class="nav-icon icon-arrow-right"></i> Klub</a>
+            </li>
+            {% endif %}
+            {% if 'unit-manager' in request.user.groups|qs_to_list:'name' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'unit:list' %}">
+                    <i class="nav-icon icon-arrow-right"></i> Satuan</a>
+            </li>
+            {% endif %}
+
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'member:list' %}">
                     <i class="nav-icon icon-people"></i> Anggota</a>

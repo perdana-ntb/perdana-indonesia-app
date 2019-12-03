@@ -13,7 +13,7 @@
 
 <body>
 
-    <body class="app flex-row align-items-center  pace-done" style="">
+    <body class="app flex-row align-items-center  pace-done">
         <div class="pace  pace-inactive">
             <div class="pace-progress" data-progress-text="100%" data-progress="99"
                 style="transform: translate3d(100%, 0px, 0px);">
@@ -22,23 +22,24 @@
             <div class="pace-activity"></div>
         </div>
         <div class="container">
-            <div style="display: table; margin: 0 auto;">
+            <div style="display: table; margin: 0 auto; margin-top: -155px;">
                 <img src="{% static 'images/perdanantb.png' %}" alt="" width="250px">
             </div>
             <div class="row justify-content-center" style="margin-top: 32px">
                 <div class="col-md-6 col-sm-10">
                     <div class="card-group">
                         <div class="card p-4">
-                            <div class="card-body">
-                                <h1>Login</h1>
-                                <p class="text-muted">Sign In to your account</p>
+                            <form method="POST" accept="{% url 'login' %}" class="card-body">
+                                {% include "base/message.html" %}
+                                {% csrf_token %}
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
                                             <i class="icon-user"></i>
                                         </span>
                                     </div>
-                                    <input class="form-control" type="text" placeholder="Username">
+                                    <input class="form-control" name="username" type="text" placeholder="Username"
+                                        required>
                                 </div>
                                 <div class="input-group mb-4">
                                     <div class="input-group-prepend">
@@ -46,17 +47,15 @@
                                             <i class="icon-lock"></i>
                                         </span>
                                     </div>
-                                    <input class="form-control" type="password" placeholder="Password">
+                                    <input class="form-control" name="password" type="password" placeholder="Password"
+                                        required>
                                 </div>
-                                <div class="row">
+                                <div class="row" style="float: right;">
                                     <div class="col-6">
-                                        <a href="/dashboard" class="btn btn-primary px-4">Login</a>
-                                    </div>
-                                    <div class="col-6 text-right">
-                                        <button class="btn btn-link px-0" type="button">Forgot password?</button>
+                                        <button type="submit" class="btn btn-primary px-4">Login</button>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                         <!-- <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
                             <div class="card-body text-center">

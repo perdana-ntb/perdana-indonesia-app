@@ -3,7 +3,7 @@ from . import member
 from . import club
 from . import equipment
 from . import region
-from . import presence
+from . import precense
 from . import workout
 
 # Create your models here.

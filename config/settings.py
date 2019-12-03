@@ -45,12 +45,17 @@ INSTALLED_APPS = [
     'django_filters',
     'django_extensions',
     'braces',
+    'django_js_reverse',
 
     'core',
     'orm',
     'apps.dashboard',
     'apps.member',
+    'apps.region',
+    'apps.unit',
     'apps.club',
+    'apps.precense',
+    'apps.authentication',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +84,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'app_tags': 'core.templatetags.app_tags',
+            }
         },
     },
 ]
@@ -142,6 +150,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/root')
 MEDIA_URL = '/m/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
 
 try:
     from .local_settings import *

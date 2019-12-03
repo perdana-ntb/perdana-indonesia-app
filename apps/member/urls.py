@@ -3,7 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.MemberListView.as_view(), name='list'),
+    path('', views.MemberTemplateView.as_view(), name='list'),
+    path('ajax-load', views.MemberLoadView.as_view(), name='ajax-load'),
     path('add', views.MemberAddFormView.as_view(), name='add'),
     path('<int:pk>/detail', views.MemberDetailView.as_view(), name='detail'),
     path('<int:pk>/edit', views.MemberEditFormView.as_view(), name='edit'),

@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
 
-from apps.member.views import LoginView
+from apps.authentication.views import LoginView
 from core.views import IndexView
 
 urlpatterns = [
@@ -28,6 +28,8 @@ urlpatterns = [
     path('dashboard/', include(('apps.dashboard.urls', 'dashboard'), namespace='dashboard')),
     path('members/', include(('apps.member.urls', 'member'), namespace='member')),
     path('clubs/', include(('apps.club.urls', 'club'), namespace='club')),
+    path('units/', include(('apps.unit.urls', 'unit'), namespace='unit')),
+    path('regions/', include(('apps.region.urls', 'region'), namespace='region')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

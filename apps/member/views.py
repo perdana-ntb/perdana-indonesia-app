@@ -1,27 +1,40 @@
 # Create your views here.
+from core.utils.generator import generate_qrcode_from_text
+from io import BytesIO
+
+import qrcode
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.base import ContentFile
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 # Create your views here.
 from django.views.generic import (DetailView, FormView, ListView, TemplateView,
                                   UpdateView, View)
+from PIL import Image
 
+from core.views import ServerSideDataTableView
 from orm.club import Club
 from orm.member import Member
 
 from .forms import MemberForm
 
-
-class LoginView(TemplateView):
-    template_name = 'login.html'
-
-
-class MemberListView(ListView):
-    model = Member
-    queryset = Member.objects.all()
-    context_object_name = 'members'
+class MemberTemplateView(TemplateView):
     template_name = 'member_list.html'
+
+
+class MemberLoadView(ServerSideDataTableView):
+    queryset = Member.objects.all()
+    columns = ['pk', 'username', 'full_name', 'phone', 'gender', 'address', 'club']
+    foreign_columns = {
+        'username': 'user__username',
+        'club': 'club__name'
+    }
+    computed_columns = {
+        'full_name': ['user__first_name', 'user__last_name']
+    }
+    filter_columns = ['username', 'phone', 'gender', 'club']
 
 
 class MemberDetailView(DetailView):
@@ -32,13 +45,14 @@ class MemberDetailView(DetailView):
 class MemberAddFormView(FormView):
     form_class = MemberForm
     template_name = 'member_add.html'
-    success_url = 'organization:members'
+    success_url = 'member:list'
 
     def get_context_data(self, **kwargs):
-        context = super(MemberAddFormView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['clubs'] = Club.objects.all()
         return context
 
+    @transaction.atomic
     def form_valid(self, form):
         try:
             form.cleaned_data.pop('photo')
@@ -54,14 +68,11 @@ class MemberAddFormView(FormView):
         }
         user = User.objects.create_user(**user_data)
 
-        # try:
-        #     lead = form.cleaned_data.pop('lead') == '1'
-        # except KeyError:
-        #     form.cleaned_data['lead'] = False
-
         club_id = form.cleaned_data.pop('club_id')
         club = get_object_or_404(Club, pk=club_id)
         member = Member.objects.create(user=user, club=club, **form.cleaned_data)
+        member.qrcode = generate_qrcode_from_text(user_data['username'])
+        member.save()
 
         try:
             photo = self.request.FILES['photo']
@@ -80,13 +91,13 @@ class MemberAddFormView(FormView):
 class MemberEditFormView(FormView):
     form_class = MemberForm
     template_name = 'member_edit.html'
-    success_url = 'organization:members'
+    success_url = 'member:list'
 
     def get_object(self, **kwargs):
         return get_object_or_404(Member, **self.kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(MemberEditFormView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['object'] = self.get_object()
         context['clubs'] = Club.objects.all()
         return context
@@ -104,7 +115,13 @@ class MemberEditFormView(FormView):
             'last_name': form.cleaned_data.pop('last_name'),
             'email': form.cleaned_data.pop('email')
         }
+        #check username has changed or not
+        is_username_changed = object.user.username != user_data['username']
+
         user = User.objects.filter(pk=object.user.pk).update(**user_data)
+        if is_username_changed:
+            object.qrcode = generate_qrcode_from_text(user_data['username'])
+            object.save()
 
         club_id = form.cleaned_data.pop('club_id')
         club = get_object_or_404(Club, pk=club_id)
@@ -121,7 +138,7 @@ class MemberEditFormView(FormView):
 
     def form_invalid(self, form, **kwargs):
         messages.info(self.request, form.errors)
-        return redirect('organization:member_edit', pk=self.kwargs.get('pk'))
+        return redirect('member:edit', pk=self.kwargs.get('pk'))
 
 
 class MemberDeleteView(View):
@@ -130,4 +147,4 @@ class MemberDeleteView(View):
         if member.delete():
             member.user.delete()
 
-        return redirect('organization:members')
+        return redirect('member:list')

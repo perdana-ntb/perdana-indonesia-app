@@ -20,6 +20,7 @@ class Member(TimeStampedModel):
     club = models.ForeignKey(club_models.Club, on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
     date_register = models.DateField(null=True, blank=True)
     photo = models.ImageField(upload_to='photo/%Y/%m/%d', null=True, blank=True)
+    qrcode = models.ImageField(upload_to='qr_code/%Y/%m/%d', null=True, blank=True)
 
     def __str__(self):
         return self.user.username

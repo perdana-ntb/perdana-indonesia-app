@@ -4,7 +4,7 @@
 <ol class="breadcrumb">
     <li class="breadcrumb-item">Organisasi</li>
     <li class="breadcrumb-item">
-        <a href="{% url 'organization:members' %}">Anggota</a>
+        <a href="{% url 'member:list' %}">Anggota</a>
     </li>
     <li class="breadcrumb-item">Edit</li>
     <li class="breadcrumb-item active">{{object.user.first_name}} {{object.user.last_name}}</li>
@@ -14,7 +14,7 @@
 <div class="row">
     <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
         {% include "base/message.html" %}
-        <form enctype="multipart/form-data" action="{% url 'organization:member_edit' object.pk %}" method="POST">
+        <form enctype="multipart/form-data" action="{% url 'member:edit' object.pk %}" method="POST">
             {% csrf_token %}
             <div class="card">
                 <div class="card-header">
@@ -70,7 +70,8 @@
                         </div>
                         <div class="form-group col-sm-6">
                             <label for="postal-code">Tanggal Lahir</label>
-                            <input class="form-control" name="born_date" type="date" value="{{object.born_date}}">
+                            <input class="form-control" name="born_date" type="date"
+                                value="{{object.born_date|date:"Y-m-d"}}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -97,7 +98,8 @@
                         <label for="vat">Foto Anggota</label><br>
                         <div style="display: flex; flex-direction: column">
                             {% if object.photo %}
-                            <a style="margin-bottom: 8px;" target="_blank" href="{{object.photo.url}}">{{object.photo.url}}</a>
+                            <a style="margin-bottom: 8px;" target="_blank"
+                                href="{{object.photo.url}}">{{object.photo.url}}</a>
                             {% endif %}
                             <input name="photo" type="file">
                         </div>
