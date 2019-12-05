@@ -17,19 +17,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
+from rest_framework_swagger.views import get_swagger_view
 
-from apps.authentication.views import LoginView
-from core.views import IndexView
+schema_view = get_swagger_view(title='Perdana App API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', IndexView.as_view(), name='index'),
-    path('login', LoginView.as_view(), name='login'),
-    path('dashboard/', include(('apps.dashboard.urls', 'dashboard'), namespace='dashboard')),
-    path('members/', include(('apps.member.urls', 'member'), namespace='member')),
-    path('clubs/', include(('apps.club.urls', 'club'), namespace='club')),
-    path('units/', include(('apps.unit.urls', 'unit'), namespace='unit')),
-    path('regions/', include(('apps.region.urls', 'region'), namespace='region')),
+    path('docs', schema_view),
+    path('api/v1/', include(('apps.api.urls', 'root_api'), namespace='root_api'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

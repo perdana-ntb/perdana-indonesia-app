@@ -46,16 +46,15 @@ INSTALLED_APPS = [
     'django_extensions',
     'braces',
     'django_js_reverse',
+    'rest_framework_swagger',
 
     'core',
     'orm',
-    'apps.dashboard',
     'apps.member',
     'apps.region',
     'apps.unit',
     'apps.club',
     'apps.precense',
-    'apps.authentication',
 ]
 
 MIDDLEWARE = [
@@ -157,8 +156,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'core.pagination.CustomPageNumberPagination',
     'PAGE_SIZE': 100
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        }
+    },
 }
 
 try:

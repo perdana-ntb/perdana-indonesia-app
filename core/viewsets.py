@@ -13,11 +13,6 @@ from django.views.generic import View
 # Create your views here.
 
 
-class IndexView(View):
-    def get(self, request):
-        return redirect('/login')
-
-
 def list_to_dict(keys, values):
     if len(keys) != len(values):
         raise Exception("Keys and Values length not match")
@@ -129,3 +124,19 @@ class ServerSideDataTableView(ColumnTranslator, View):
             'recordsFiltered': records_filtered,
             'data': data,
         }
+
+
+# ServerSideDataTableView Usage
+"""
+class MemberLoadView(ServerSideDataTableView):
+    queryset = Member.objects.all()
+    columns = ['pk', 'username', 'full_name', 'phone', 'gender', 'address', 'club']
+    foreign_columns = {
+        'username': 'user__username',
+        'club': 'club__name'
+    }
+    computed_columns = {
+        'full_name': ['user__first_name', 'user__last_name']
+    }
+    filter_columns = ['username', 'phone', 'gender', 'club']
+"""

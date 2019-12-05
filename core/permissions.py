@@ -1,13 +1,11 @@
 from django.contrib.auth.models import Group
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from django.
 
 PERDANA_USER_ROLE = [
     'regional',
     'pengprov',
     'pengcab',
-    'club-manager',
-    'satuan-manager'
+    'club-satuan-manager'
 ]
 
 
@@ -28,7 +26,7 @@ class IsPengcabUser(IsAdminUser):
 
 class IsClubOrSatuanManagerUser(IsAdminUser):
     def has_permission(self, request, view):
-        return request.user.groups.filter(name=PERDANA_USER_ROLE[2]).count() > 0
+        return request.user.groups.filter(name=PERDANA_USER_ROLE[3]).count() > 0
 
 
 class IsMemberUser(IsAuthenticated):

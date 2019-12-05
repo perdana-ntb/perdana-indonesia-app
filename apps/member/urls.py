@@ -1,12 +1,13 @@
 from django.urls import path
+from apps.member import viewsets
+from rest_framework.routers import DefaultRouter
 
-from . import views
+router = DefaultRouter(trailing_slash=True)
+router.register('list', viewsets.ArcherMemberViewset)
 
 urlpatterns = [
-    path('', views.MemberTemplateView.as_view(), name='list'),
-    path('ajax-load', views.MemberLoadView.as_view(), name='ajax-load'),
-    path('add', views.MemberAddFormView.as_view(), name='add'),
-    path('<int:pk>/detail', views.MemberDetailView.as_view(), name='detail'),
-    path('<int:pk>/edit', views.MemberEditFormView.as_view(), name='edit'),
-    path('<int:pk>/delete', views.MemberDeleteView.as_view(), name='delete'),
+    path('login', viewsets.LoginViewset.as_view(), name='login'),
+    path('register', viewsets.RegisterViewset.as_view({'post': 'create'}), name='register'),
 ]
+
+urlpatterns += router.urls
