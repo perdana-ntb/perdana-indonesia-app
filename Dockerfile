@@ -1,33 +1,22 @@
-# Python support can be specified down to the minor or micro version
-# (e.g. 3.6 or 3.6.3).
-# OS Support also exists for jessie & stretch (slim and full).
-# See https://hub.docker.com/r/library/python/ for all supported Python
-# tags from Docker Hub.
-FROM python:3.6
+# pull official base image
+FROM python:3.7
 
-# If you prefer miniconda:
-#FROM continuumio/miniconda3
+# set work directory
+WORKDIR /app
 
-LABEL Name=perdana_indonesia_app Version=1.0.0
-
-WORKDIR /web
-ADD . /web
-
-# Using pip:
-# RUN python3 -m pip install -r requirements.txt
-# CMD ["python3", "-m", "perdana_indonesia_app"]
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 # Using pipenv:
-COPY Pipfile /web
-COPY Pipfile.lock /web
+COPY . .
+COPY Pipfile .
+COPY Pipfile.lock .
 
-RUN python -m pip install pipenv
-RUN pipenv install --system --dev
+RUN pip install --upgrade pip && python -m pip install pipenv  
+RUN pipenv install --system
 
-EXPOSE 8088
+RUN python manage.py collectstatic --noinput
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8088"]
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
 
-# Using miniconda (make sure to replace 'myenv' w/ your environment name):
-#RUN conda env create -f environment.yml
-#CMD /bin/bash -c "source activate myenv && python3 -m perdana_indonesia_app"

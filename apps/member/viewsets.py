@@ -44,14 +44,19 @@ class RegisterViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = serializers.ArcherMemberSerializer
 
 
+from core.permissions import PERDANA_USER_ROLE
+from django.db.models import Q
 class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [core_perm.IsClubOrSatuanManagerUser]
+    permission_classes = [core_perm.IsGeneralUser]
     serializer_class = serializers.ArcherMemberSerializer
     queryset = member.ArcherMember.objects.filter(approved=True)
 
-    def get_queryset(self, **kwargs):
-        member = self.request.user.member
-        if member.club:
-            return super().get_queryset().filter(club=member.club)
-        else:
-            return super().get_queryset().filter(satuan=member.satuan)
+    # def get_queryset(self, **kwargs):
+    #     user = self.request.user
+    #     if user.groups.filter(name=PERDANA_USER_ROLE[0]).count() > 0:
+    #         return super().get_queryset().filter(Q(club__gte=5000) | Q(income__isnull=True))
+
+    #     if member.club:
+    #         return super().get_queryset().filter(club=member.club)
+    #     else:
+    #         return super().get_queryset().filter(satuan=member.satuan)

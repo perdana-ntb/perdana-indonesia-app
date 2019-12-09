@@ -1,0 +1,17 @@
+.vscode/
+.vscode/*
+media/
+media/*
+static/root/
+static/root/*
+static/vendors/
+static/vendors/*
+
+node_modules/
+node_modules/*
+
+*.log
+config/local_settings.py
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
