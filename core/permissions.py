@@ -5,7 +5,8 @@ PERDANA_USER_ROLE = [
     'regional',
     'pengprov',
     'pengcab',
-    'club-satuan-manager'
+    'club-satuan-manager',
+    'archer'
 ]
 
 
@@ -31,7 +32,7 @@ class IsClubOrSatuanManagerUser(IsAdminUser):
 
 class IsMemberUser(IsAuthenticated):
     def has_permission(self, request, view):
-        return request.user.groups.filter(name=PERDANA_USER_ROLE[3]).count() > 0
+        return request.user.groups.filter(name=PERDANA_USER_ROLE[4]).count() > 0
 
 
 class IsGeneralUser(IsAuthenticated):

@@ -1,6 +1,7 @@
+from core.permissions import PERDANA_USER_ROLE
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import transaction
 from django.db.utils import IntegrityError
 from rest_framework import serializers
@@ -56,7 +57,12 @@ class ArcherMemberSerializer(BaseArcherMemberSerializer):
         user_data = validated_data.pop('user')
         try:
             user = User.objects.create_user(**user_data)
+            group = Group.objects.get(name=PERDANA_USER_ROLE[4])
+
+            user.groups.add(group)
             Token.objects.create(user=user)
+        except Group.DoesNotExist:
+            raise PerdanaError(message="Member group %s tidak ditemukan" % PERDANA_USER_ROLE[4])
         except IntegrityError:
             raise PerdanaError(message="User %s sudah digunakan" % user_data['username'])
 

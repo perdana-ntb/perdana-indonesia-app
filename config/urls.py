@@ -24,7 +24,7 @@ schema_view = get_swagger_view(title='Perdana App API')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('docs', schema_view),
-    path('api/v1/', include(('apps.api.urls', 'root_api'), namespace='root_api'))
+    path('api/v1/', include('apps.api.urls'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

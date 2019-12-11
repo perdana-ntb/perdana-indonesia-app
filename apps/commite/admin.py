@@ -32,11 +32,11 @@ class PengcabCommiteMemberModelAdmin(BaseCommiteModelAdmin):
         return display
 
 
-@admin.register(commite.ClubCommiteMember)
-class ClubCommiteMemberModelAdmin(BaseCommiteModelAdmin):
+@admin.register(commite.ClubUnitCommiteMember)
+class ClubUnitCommiteMemberModelAdmin(BaseCommiteModelAdmin):
     pass
 
 
-@admin.register(commite.UnitCommiteMember)
-class UnitCommiteMemberModelAdmin(BaseCommiteModelAdmin):
-    pass
+# @admin.register(commite.UnitCommiteMember)
+# class UnitCommiteMemberModelAdmin(BaseCommiteModelAdmin):
+#     pass

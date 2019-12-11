@@ -37,6 +37,8 @@ django-jet = "*"
 django-rest-swagger = "*"
 python-dotenv = "*"
 dj-database-url = "==0.5.0"
+django-cors-headers = "==3.2.0"
+model-mommy = "*"
 
 [requires]
 python_version = "3.6"

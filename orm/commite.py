@@ -14,9 +14,5 @@ class PengcabCommiteMember(member.BaseCommiteMember):
     branch = models.ForeignKey(club_models.Branch, on_delete=models.SET_NULL, null=True, blank=True)
 
 
-class ClubCommiteMember(member.BaseCommiteMember):
-    pass
-
-
-class UnitCommiteMember(member.BaseCommiteMember):
+class ClubUnitCommiteMember(member.BaseCommiteMember):
     pass
