@@ -10,7 +10,6 @@ from orm.models import commite as commite_models
 from orm.models import member as member_models
 from orm.models import region as region_models
 
-# Create your tests here.
 USER = get_user_model()
 
 
