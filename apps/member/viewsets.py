@@ -3,6 +3,7 @@ from django.db.models import Q
 from core.permissions import PERDANA_USER_ROLE
 from orm.models import member as member_models
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
@@ -13,6 +14,7 @@ from apps.member import serializers
 from rest_framework.response import Response
 from core.exceptions import PerdanaError
 from core import permissions as core_perm
+from rest_framework.decorators import action
 
 from django.contrib.auth import authenticate
 from core.utils.permission_checker import get_user_group
@@ -78,3 +80,16 @@ class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
                 return super().get_queryset().filter(satuan=member.satuan)
         else:
             return super().get_queryset().filter(pk=user.member.archermember.pk)
+
+    @action(detail=True, methods=['get'], permission_classes=[core_perm.IsClubOrSatuanManagerUser])
+    def approve(self, request, pk=None):
+        obj = get_object_or_404(member_models.ArcherMember, pk=self.kwargs.get('pk'))
+        obj.approved = True
+        obj.approved_by = self.request.user
+        obj.save()
+        return Response(self.serializer_class(obj).data)
+
+    @action(detail=False, methods=['get'], permission_classes=[core_perm.IsClubOrSatuanManagerUser])
+    def applicants(self, request):
+        qs = member_models.ArcherMember.objects.filter(approved=False)
+        return Response(self.serializer_class(qs, many=True).data)

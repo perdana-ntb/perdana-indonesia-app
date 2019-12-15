@@ -14,7 +14,7 @@ USER = get_user_model()
 
 
 class ArcherMemberListTestCase(TestMixins, APITestCase):
-    url = reverse('member_api:member-list')
+    url = reverse('user_api:member-list')
 
     def setUp(self):
         self.create_user_gruops()
