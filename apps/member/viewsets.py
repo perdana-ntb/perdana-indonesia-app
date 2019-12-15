@@ -1,23 +1,21 @@
 # Create your views here.
-from django.db.models import Q
-from core.permissions import PERDANA_USER_ROLE
-from orm.models import member as member_models
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
-
-from core.utils.generator import generate_qrcode_from_text
-from rest_framework import viewsets, views
-from rest_framework import mixins, status
-from apps.member import serializers
-from rest_framework.response import Response
-from core.exceptions import PerdanaError
-from core import permissions as core_perm
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from rest_framework import mixins, status, views, viewsets
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from django.contrib.auth import authenticate
+from apps.member import serializers
+from core import permissions as core_perm
+from core.exceptions import PerdanaError
+from core.permissions import PERDANA_USER_ROLE
+from core.utils.generator import generate_qrcode_from_text
 from core.utils.permission_checker import get_user_group
+from orm.models import member as member_models
 
 
 class LoginViewset(views.APIView):
@@ -91,5 +89,14 @@ class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[core_perm.IsClubOrSatuanManagerUser])
     def applicants(self, request):
-        qs = member_models.ArcherMember.objects.filter(approved=False)
-        return Response(self.serializer_class(qs, many=True).data)
+        try:
+            member = self.request.user.member.clubunitcommitemember
+            qs = member_models.ArcherMember.objects.filter(approved=False)
+            if member.club:
+                qs = qs.filter(club=member.club)
+            elif member.satuan:
+                qs = qs.filter(satuan=member.satuan)
+
+            return Response(self.serializer_class(qs, many=True).data)
+        except AttributeError:
+            raise PerdanaError(message='User belum memiliki klub atau satuan')
