@@ -63,8 +63,10 @@ INSTALLED_APPS = [
     'apps.region',
     'apps.unit',
     'apps.club',
-    'apps.precense',
+    'apps.presence',
     'apps.commite',
+    'apps.dashboard',
+    'apps.practice',
 ]
 
 MIDDLEWARE = [

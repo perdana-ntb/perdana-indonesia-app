@@ -1,5 +1,5 @@
 from django.db import models
-from .models import member, region, club as club_models
+from orm import member, region, club as club_models
 
 
 class RegionalCommiteMember(member.BaseCommiteMember):
