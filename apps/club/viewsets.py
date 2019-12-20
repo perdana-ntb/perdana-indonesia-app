@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from apps.club import serializers
 from core import permissions
 from core.exceptions import PerdanaError
+from core.pagination import CustomPageNumberPagination
 from orm.models import club as club_models
 
 
@@ -16,6 +17,7 @@ class ClubViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsGeneralUser]
     serializer_class = serializers.ClubSerializer
     queryset = club_models.Club.objects.all()
+    pagination_class = CustomPageNumberPagination
 
     def get_queryset(self, **kwargs):
         user = self.request.user
@@ -44,6 +46,7 @@ class UnitViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsGeneralUser]
     serializer_class = serializers.UnitSerializer
     queryset = club_models.Unit.objects.all()
+    pagination_class = CustomPageNumberPagination
 
     def get_queryset(self, **kwargs):
         user = self.request.user

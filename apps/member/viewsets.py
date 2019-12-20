@@ -12,10 +12,13 @@ from rest_framework.response import Response
 from apps.member import serializers
 from core import permissions as core_perm
 from core.exceptions import PerdanaError
+from core.pagination import CustomPageNumberPagination
 from core.permissions import PERDANA_USER_ROLE
 from core.utils.generator import generate_qrcode_from_text
 from core.utils.permission_checker import get_user_group
+from orm.models import club as club_models
 from orm.models import member as member_models
+from orm.models import region as region_models
 
 
 class LoginViewset(views.APIView):
@@ -52,6 +55,7 @@ class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
     permission_classes = [core_perm.IsGeneralUser]
     serializer_class = serializers.ArcherMemberSerializer
     queryset = member_models.ArcherMember.objects.filter(approved=True)
+    pagination_class = CustomPageNumberPagination
 
     def get_queryset(self, **kwargs):
         user = self.request.user
@@ -100,3 +104,49 @@ class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
             return Response(self.serializer_class(qs, many=True).data)
         except AttributeError:
             raise PerdanaError(message='User belum memiliki klub atau satuan')
+
+
+class RegionalViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = []
+    serializer_class = serializers.RegionalSerializer
+    queryset = region_models.Region.objects.all()
+
+
+class ProvinceViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = []
+    serializer_class = serializers.ProvinceSerializer
+    queryset = region_models.Province.objects.all()
+
+    def get_queryset(self):
+        regional = self.request.query_params.get('regional')
+        return super().get_queryset().filter(regional__pk=regional)
+
+
+class BranchViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = []
+    serializer_class = serializers.BranchSerializer
+    queryset = club_models.Branch.objects.all()
+
+    def get_queryset(self):
+        province = self.request.query_params.get('province')
+        return super().get_queryset().filter(province__pk=province)
+
+
+class ClubViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = []
+    serializer_class = serializers.ClubSerializer
+    queryset = club_models.Club.objects.all()
+
+    def get_queryset(self):
+        branch = self.request.query_params.get('branch')
+        return super().get_queryset().filter(branch__pk=branch)
+
+
+class UnitViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = []
+    serializer_class = serializers.UnitSerializer
+    queryset = club_models.Unit.objects.all()
+
+    def get_queryset(self):
+        branch = self.request.query_params.get('branch')
+        return super().get_queryset().filter(branch__pk=branch)

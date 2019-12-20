@@ -170,8 +170,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'core.pagination.CustomPageNumberPagination',
-    'PAGE_SIZE': 100
 }
 
 SWAGGER_SETTINGS = {
