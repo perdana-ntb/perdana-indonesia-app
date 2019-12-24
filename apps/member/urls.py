@@ -13,6 +13,7 @@ router.register('units', viewsets.UnitViewSet, base_name='unit')
 urlpatterns = [
     path('login', viewsets.LoginViewset.as_view(), name='login'),
     path('register', viewsets.RegisterViewset.as_view({'post': 'create'}), name='register'),
+    path('profile', viewsets.UserProfileViewSet.as_view({'get': 'retrieve'}), name='profile'),
 ]
 
 urlpatterns += router.urls

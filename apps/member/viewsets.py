@@ -51,6 +51,19 @@ class RegisterViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = serializers.ArcherMemberSerializer
 
 
+class UserProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    permission_classes = [core_perm.IsGeneralUser]
+
+    def retrieve(self, request, pk=None):
+        member = self.request.user.member
+        if hasattr(member, 'archermember'):
+            return Response(serializers.ArcherMemberSerializer(member.archermember).data)
+        elif hasattr(member, 'clubunitcommitemember'):
+            return Response(serializers.ClubUnitCommiteMemberSerializer(member.clubunitcommitemember).data)
+        else:
+            raise PerdanaError(message="Jenis user tidak dapat melakukan aksi ini")
+
+
 class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
     permission_classes = [core_perm.IsGeneralUser]
     serializer_class = serializers.ArcherMemberSerializer

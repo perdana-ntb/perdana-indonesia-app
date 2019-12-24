@@ -10,6 +10,7 @@ class BaseMember(TimeStampedModel):
     BLOOD_TYPE_CHOICES = (('A', 'A'), ('B', 'B'), ('AB', 'AB'), ('O', 'O'))
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='member')
+    full_name = models.CharField(max_length=100, null=True, blank=True, default=None)
     phone = models.CharField(max_length=15)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     born_place = models.CharField(max_length=45, null=True, blank=True)

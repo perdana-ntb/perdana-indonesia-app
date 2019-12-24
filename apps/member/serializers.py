@@ -1,3 +1,4 @@
+from orm import commite
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group, User
 from django.db import transaction
@@ -23,7 +24,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'email', 'first_name', 'last_name']
+        fields = ['username', 'password']
+        validators = []
+
+
+class ClubUnitCommiteMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = commite.ClubUnitCommiteMember
+        fields = '__all__'
 
 
 class BaseArcherMemberSerializer(serializers.ModelSerializer):
@@ -48,7 +56,9 @@ class BaseArcherMemberSerializer(serializers.ModelSerializer):
 
 
 class ArcherMemberSerializer(BaseArcherMemberSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
+    username = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = member.ArcherMember
@@ -56,9 +66,10 @@ class ArcherMemberSerializer(BaseArcherMemberSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        user_data = validated_data.pop('user')
+        username = validated_data.pop('username')
+        password = validated_data.pop('password')
         try:
-            user = User.objects.create_user(**user_data)
+            user = User.objects.create_user(username=username, password=password)
             group = Group.objects.get(name=PERDANA_USER_ROLE[4])
 
             user.groups.add(group)
@@ -66,7 +77,7 @@ class ArcherMemberSerializer(BaseArcherMemberSerializer):
         except Group.DoesNotExist:
             raise PerdanaError(message="Member group %s tidak ditemukan" % PERDANA_USER_ROLE[4])
         except IntegrityError:
-            raise PerdanaError(message="User %s sudah digunakan" % user_data['username'])
+            raise PerdanaError(message="User %s sudah digunakan" % username)
 
         return member.ArcherMember.objects.create(user=user, **validated_data)
 
