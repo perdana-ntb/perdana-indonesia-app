@@ -10,15 +10,15 @@ class TargetTypeModelAdmin(admin.ModelAdmin):
     list_display = ['name', 'description']
 
 
-@admin.register(practice.Practice)
+@admin.register(practice.PracticeContainer)
 class PracticeModelAdmin(admin.ModelAdmin):
     list_display = ['member', 'target_type', 'distance', 'series', 'arrow', 'status', 'signed']
-    search_fields = ['member', 'target_type', 'distance']
+    search_fields = ['member', 'distance']
 
 
 @admin.register(practice.PracticeSeries)
 class PracticeSeriesModelAdmin(admin.ModelAdmin):
-    list_display = ['practice', 'photo', 'closed']
+    list_display = ['practice_container', 'photo', 'closed']
 
 
 @admin.register(practice.PracticeScore)

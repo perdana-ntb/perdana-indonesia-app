@@ -5,6 +5,8 @@ from django_extensions.db.models import TimeStampedModel
 from core.models import DescriptableModel
 from orm.club import ArcheryRange
 from orm.member import ArcherMember
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 PRACTICE_STATUS_CHOICES = (
     ('0', 'Waiting'),
@@ -18,10 +20,13 @@ class TargetType(DescriptableModel):
         return self.name
 
 
-class Practice(TimeStampedModel):
+class PracticeContainer(TimeStampedModel):
     member = models.ForeignKey(ArcherMember, on_delete=models.SET_NULL, related_name="practices", null=True)
-    archery_range = models.ForeignKey(ArcheryRange, on_delete=models.SET_NULL, related_name="practices", null=True)
-    target_type = models.ForeignKey(TargetType, on_delete=models.SET_NULL, related_name='practices', null=True)
+    # archery_range = models.ForeignKey(ArcheryRange, on_delete=models.SET_NULL, related_name="practices", null=True)
+    # target_type = models.ForeignKey(TargetType, on_delete=models.SET_NULL, related_name='practices', null=True)
+    target_type = models.CharField(max_length=100, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    note = models.TextField(null=True, blank=True)
 
     distance = models.FloatField(default=1)
     series = models.IntegerField(default=1)
@@ -34,19 +39,19 @@ class Practice(TimeStampedModel):
     signed_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="practices", null=True, blank=True)
 
     completed = models.BooleanField(default=False, null=True, blank=True)
-    note = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.member.user.username
 
 
 class PracticeSeries(TimeStampedModel):
-    practice = models.ForeignKey(Practice, on_delete=models.CASCADE, related_name='practice_series')
+    serie = models.IntegerField(default=0)
+    practice_container = models.ForeignKey(PracticeContainer, on_delete=models.CASCADE, related_name='practice_series')
     photo = models.ImageField(upload_to='practice/sk/%Y/%m/%d', null=True, blank=True)
     closed = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
-        return self.practice
+        return self.practice_container
 
 
 class PracticeScore(models.Model):
@@ -55,3 +60,10 @@ class PracticeScore(models.Model):
 
     def __str__(self):
         return self.score
+
+
+@receiver(post_save, sender=PracticeContainer)
+def create_practice_series(sender, instance, created, **kwargs):
+    if created:
+        for i in range(0, instance.series):
+            PracticeSeries.objects.create(practice_container=instance, serie=i+1)

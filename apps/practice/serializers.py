@@ -27,11 +27,9 @@ class PracticeSeriesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PracticeSerializer(serializers.ModelSerializer):
-    practice_series = PracticeSeriesSerializer(many=True, read_only=True)
-
+class BasePracticeContainerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = practice.Practice
+        model = practice.PracticeContainer
         exclude = ['status', 'signed', 'signed_by']
 
     @property
@@ -44,15 +42,19 @@ class PracticeSerializer(serializers.ModelSerializer):
             raise PerdanaError(message='Pilih arhcer terlebih dahulu', status_code=400)
 
         try:
-            instance = practice.Practice.objects.get(completed=False, member__pk=archer_id)
+            instance = practice.PracticeContainer.objects.get(completed=False, member__pk=archer_id)
         except IntegrityError:
-            instances = practice.Practice.objects.filter(completed=False, member__pk=archer_id).order_by('-pk')
+            instances = practice.PracticeContainer.objects.filter(completed=False, member__pk=archer_id).order_by('-pk')
             instance = instances.first()
 
             # Make multiple incompleted practice to be completed
             instances.exlcldue(pk=instance.pk).uppdate(completed=True)
-        except practice.Practice.DoesNotExist:
+        except practice.PracticeContainer.DoesNotExist:
             validated_data['member'] = get_object_or_404(ArcherMember, pk=archer_id)
-            instance = practice.Practice.objects.create(**validated_data)
+            instance = practice.PracticeContainer.objects.create(**validated_data)
 
         return instance
+
+
+class PracticeContainerSerializer(BasePracticeContainerSerializer):
+    practice_series = PracticeSeriesSerializer(many=True, read_only=True)

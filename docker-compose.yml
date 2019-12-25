@@ -5,9 +5,10 @@ services:
     image: perdana_indonesia_app
     build:
       context: .
-      dockerfile: Dockerfile
-    ports:
-      - 8088:8088
+      dockerfile: Dockerfile.prod
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8088
+    expose: :
+      - 8088
     depends_on: 
       - db
     volumes:
@@ -25,7 +26,7 @@ services:
     ports: 
       - "5433:5432"
     env_file: 
-      - ./.env
+      - ./.env.prod.db
 
 volumes:
   db_data:
