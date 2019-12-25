@@ -34,10 +34,10 @@ class PresenceContainerViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['GET', ], url_name='change-status', url_path='change-status')
     def change_status(self, request, pk=None):
         obj = self.get_object()
-        item = self.request.query_params.get('item')
+        user = self.request.query_params.get('user')
         status = self.request.query_params.get('status')
         try:
-            item_obj = obj.presence_items.get(pk=item)
+            item_obj = obj.presence_items.get(member__user__username=user)
             item_obj.status = status
             item_obj.save()
             return Response(serializers.PresenceItemSerializer(item_obj).data)
