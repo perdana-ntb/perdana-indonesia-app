@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'django_js_reverse',
     'rest_framework_swagger',
     'corsheaders',
-    'rest_framework_docs',
     'drf_yasg',
 
     'core',

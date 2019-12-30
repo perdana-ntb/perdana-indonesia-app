@@ -1,6 +1,8 @@
 language: python
 python:
     - '3.7'
+git:
+    depth: false
 services:
     - postgresql
 env:
@@ -11,4 +13,4 @@ install:
     - pipenv install --system
 before_script:
     - psql -c 'create database perdana_db' -U postgres
-script: python manage.py test
+script: python manage.py --settings=config.prod_settings test

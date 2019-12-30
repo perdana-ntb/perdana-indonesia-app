@@ -1,5 +1,6 @@
 import os
 
+import dj_database_url
 import dotenv
 
 from .settings import *
