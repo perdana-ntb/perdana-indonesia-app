@@ -100,13 +100,13 @@ class BranchSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class ClubSerializer(serializers.ModelSerializer):
+class OpenClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = club_models.Club
         fields = ['id', 'name']
 
 
-class UnitSerializer(serializers.ModelSerializer):
+class OpenUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = club_models.Unit
         fields = ['id', 'name']

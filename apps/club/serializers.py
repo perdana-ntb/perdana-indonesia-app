@@ -8,6 +8,7 @@ class OpenClubSerializer(serializers.ModelSerializer):
         model = club_models.Club
         fields = '__all__'
 
+
 class ClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = club_models.Club

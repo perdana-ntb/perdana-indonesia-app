@@ -147,7 +147,7 @@ class BranchViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ClubViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = []
-    serializer_class = serializers.ClubSerializer
+    serializer_class = serializers.OpenClubSerializer
     queryset = club_models.Club.objects.all()
 
     def get_queryset(self):
@@ -157,7 +157,7 @@ class ClubViewSet(viewsets.ReadOnlyModelViewSet):
 
 class UnitViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = []
-    serializer_class = serializers.UnitSerializer
+    serializer_class = serializers.OpenUnitSerializer
     queryset = club_models.Unit.objects.all()
 
     def get_queryset(self):
