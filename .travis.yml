@@ -14,12 +14,12 @@ install:
 before_script:
     - psql -c 'create database perdana_db' -U postgres
 script: python manage.py test --settings=config.prod_settings
-deploy:
-    skip_cleanup: true
-    provider: heroku
-    api_key:
-        secure: "e4OzKeXxFO0x3Y/QIszvGDIF5+9dqwh04r3J/QqSuCBMtEeSjahb3DYAtixm24ElqECUdwbGmgx7majejjsr8I/WVHY7jSQ4wX0XVvYPVqicfospbB2Bk1sIU+ZyGFviJAwc+mcmR0monm2acnXjlyLiszxPDTWfxGlKARraF2nNLutRga2h7KSovR8V6YnYDHAlJ73f3NrQmp3uSIWRX7CbaHUv0VqX0W5M48j8Bety2I3TmIbHG/ri0nRUXEM83nUqiTGnCYJU1hxGYrbu+iPfqu6lsgN3qOyw82iXKPdaXS4Pp26oVWjS+CXQ6PyUP1k+EPsoM3A0doX4OouoHoWAn0tnJVTwVNhc8f8G5UopG9WbUy+7Ut9EFpWvTK0gDw54hZg5LRK6KK9dQrm6wPpc9RkAD0Hm9/daTDp4mt7bHl/YBgf2oW7dS8pHRysF0i+wGgRyn6OkI2I6w4xaTvkjWcs2ZHt1EfEK0MirvK/njdHvM312mAY3SAI2LB/gAHiBcN/vUX31T3xSPx8/chVCEiWafYg2xRgJvwUve8LRZdW/mCp3ytptRsHgFC0IcZHoHkNDt+BqOu0ORhRdG9Fib7PBzLr6h2L5eGkx1MrEKvH+UE1dE1a12H3UnqWxaTrqQ/wfRUZUKrMRk5smpWpEP37rD7vS86Yo+mP0PlI="
-    app: perdana-indonesia-app
-    on:
-        repo: perdana-ntb/perdana-indonesia-app
-        branch: staging
+# deploy:
+#     skip_cleanup: true
+#     provider: heroku
+#     api_key:
+#         secure: "ADD SECURE API_KEY HERE BY RUN travis encrypt $(heroku auth:token) --pro"
+#     app: perdana-indonesia-app
+#     on:
+#         repo: perdana-ntb/perdana-indonesia-app
+#         branch: staging
