@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "cb7abfc1290ff0e6ed1225cdbc0276f5f8b60122a4ddd6fa3953edcc7501e8db"
+            "sha256": "09df0ef0aec51a1e6c4a29bbb40bfc76b19ceab3ea8022a1363125c5c59bd99f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -251,9 +251,6 @@
             ],
             "index": "pypi",
             "version": "==1.17.0"
-        },
-        "drfdocs": {
-            "path": "./libs/drfdocs-0.0.12b0.tar.gz"
         },
         "entrypoints": {
             "hashes": [

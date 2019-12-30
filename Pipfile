@@ -39,7 +39,6 @@ python-dotenv = "==0.10.3"
 dj-database-url = "==0.5.0"
 django-cors-headers = "==3.2.0"
 model-mommy = "==2.0.0"
-drfdocs = {path = "./libs/drfdocs-0.0.12b0.tar.gz"}
 drf-yasg = "==1.17.0"
 psycopg2-binary = "*"
 amqp = "==2.5.2"
