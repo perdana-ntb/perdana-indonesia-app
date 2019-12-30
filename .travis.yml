@@ -1,9 +1,9 @@
 language: python
 python:
-    - '3.7'
+- '3.7'
 git:
-    depth: false
-services:
+  depth: false
+services:   
     - postgresql
 env:
     - DATABASE_URL=postgres://postgres@localhost:5432/perdana_db
@@ -18,7 +18,7 @@ deploy:
     skip_cleanup: true
     provider: heroku
     api_key:
-        secure: O20QhWvJpyVMs8pEWvgUtk8Z4HzGtXcoO05ogRTejvGGyQV8FDyq/eBQDBdhSOpWAyj8KVvx5o36SVkblt+YHs9pkfIvruUZOucfj6Qq8FrT8z4KqfaTjG8moM0Vqo0ar3Mlc68IbbT4htE8kAYCkBlLEnjiK5aD8MzjwK8NTUQC7vs1jxDYGOp/P5pNyeXzEJrETyjr0MbRT4018Kz8h+gq12FoDCbJKziUOmindjYMUn7yspV3Hp3TzwCSGfEhuJ/Xy34gKiXrWAmuULB9GN+STt3b4je3e4OVvPEqYtY7Nxu7dAYfzQrSAV+jxveAd5UvF/H5M5oCWrH6HkfzY0w3JVEHhLsB6hKkB941LBgSOM5IKykk7eilqVqyFRNFeWZN1Fta8Eh1Uwy4KaLTdaj0D8ze87gycEpwxwrijQtaZqyZnAjGQ+FBO7xrkFk9lkDgku79IQkHQkC1rShpgByomHQov6aXOF54IIWSlh1OmBnUJMzcM1rFgZon59OWoBra3Cm9H6Ve4R1dguaqJJFJ6FEnEuf6idy31Kao+eCP2QDR5gZEfkV0D/uILp0z9NSk5gKXyBYAMAh7Kk2xLdx2f5v/O1dmmIZLYVzLoyNIwUNKBzesiMJpvi6j6c1jyi50xv1SF8bPYZ8CHyHIJVHuGBqu+DSpXEkmGqThBn8=
+        secure: "e4OzKeXxFO0x3Y/QIszvGDIF5+9dqwh04r3J/QqSuCBMtEeSjahb3DYAtixm24ElqECUdwbGmgx7majejjsr8I/WVHY7jSQ4wX0XVvYPVqicfospbB2Bk1sIU+ZyGFviJAwc+mcmR0monm2acnXjlyLiszxPDTWfxGlKARraF2nNLutRga2h7KSovR8V6YnYDHAlJ73f3NrQmp3uSIWRX7CbaHUv0VqX0W5M48j8Bety2I3TmIbHG/ri0nRUXEM83nUqiTGnCYJU1hxGYrbu+iPfqu6lsgN3qOyw82iXKPdaXS4Pp26oVWjS+CXQ6PyUP1k+EPsoM3A0doX4OouoHoWAn0tnJVTwVNhc8f8G5UopG9WbUy+7Ut9EFpWvTK0gDw54hZg5LRK6KK9dQrm6wPpc9RkAD0Hm9/daTDp4mt7bHl/YBgf2oW7dS8pHRysF0i+wGgRyn6OkI2I6w4xaTvkjWcs2ZHt1EfEK0MirvK/njdHvM312mAY3SAI2LB/gAHiBcN/vUX31T3xSPx8/chVCEiWafYg2xRgJvwUve8LRZdW/mCp3ytptRsHgFC0IcZHoHkNDt+BqOu0ORhRdG9Fib7PBzLr6h2L5eGkx1MrEKvH+UE1dE1a12H3UnqWxaTrqQ/wfRUZUKrMRk5smpWpEP37rD7vS86Yo+mP0PlI="
     app: perdana-indonesia-app
     on:
         repo: perdana-ntb/perdana-indonesia-app
