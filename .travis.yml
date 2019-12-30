@@ -7,6 +7,7 @@ services:
     - postgresql
 env:
     - DATABASE_URL=postgres://postgres@localhost:5432/perdana_db
+    - PIPENV_IGNORE_VIRTUALENVS=1
 before_install:
     - pip install --upgrade pip && python -m pip install pipenv
 install:
@@ -19,7 +20,7 @@ deploy:
     provider: heroku
     api_key:
         secure: "xqhd3mOM/rZmw7g3tdCgynW2wxVuFmV7xuQK/3tfnSj0fxR0tInScnnEKHH7KK7/JFrfq1yHObG0Q/0nI1oHgrlSawZeFEtLrW60SywXHFzkw7dBLf1yX9/omvhu8A0BK/pkNL2JeiyY5jIFRFVWv3yRHvknWvXyuofB8GgqHEOJDtpmV3RcLZZpcPLKP53Qv2Unrt9XZxIC7WDNyqWHE/wijUWLWcebhijqCcURtzlZS2RhdmwdoVqqla1C0TESaunXMLCveS5KaiJkj1Wn19AUsEnFw+VEDqOapuwEblY0SyZk9HldS+J1BkjidYmiw68jKKLHz0OQ2ZdKXCl7gS/P/cB/64Mtp+VAAIpY6PbE/PsEqZ/Tra1DtPlOd6NacVxhJak+5xKSEYBNxFOl1y3tlkGyznYZ+tyjT6le+BJPCWKYnZC5X8R76hW7iEJGAPr/dmWxjGy18rnA7gzh87O6P4X9yHtU2rJym+5yITAY/oJC2bnNKLdGnYtEJnPlciTNFZaPXjjiJOuzBXSQEwrkZhxG/fb++aHgd8J9d1grBFnHssvxYTOxZZKcIrGP0xPqlG1mgH2vYolvgjRcpgrDcxx4A+sbW1Un2oY8Hy8K9pwY86te5NtxGy55d/74ii5mZA7snFuOEcvQxMLmyi7Cz8Ypf7e9BlN0AXisuqI="
-    app: perdana-indonesia-app
+    app: perdana-indonesia
     on:
         repo: perdana-ntb/perdana-indonesia-app
         branch: staging
