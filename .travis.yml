@@ -15,6 +15,7 @@ before_script:
     - psql -c 'create database perdana_db' -U postgres
 script: python manage.py test --settings=config.prod_settings
 deploy:
+    skip_cleanup: true
     provider: heroku
     api_key:
         secure: O20QhWvJpyVMs8pEWvgUtk8Z4HzGtXcoO05ogRTejvGGyQV8FDyq/eBQDBdhSOpWAyj8KVvx5o36SVkblt+YHs9pkfIvruUZOucfj6Qq8FrT8z4KqfaTjG8moM0Vqo0ar3Mlc68IbbT4htE8kAYCkBlLEnjiK5aD8MzjwK8NTUQC7vs1jxDYGOp/P5pNyeXzEJrETyjr0MbRT4018Kz8h+gq12FoDCbJKziUOmindjYMUn7yspV3Hp3TzwCSGfEhuJ/Xy34gKiXrWAmuULB9GN+STt3b4je3e4OVvPEqYtY7Nxu7dAYfzQrSAV+jxveAd5UvF/H5M5oCWrH6HkfzY0w3JVEHhLsB6hKkB941LBgSOM5IKykk7eilqVqyFRNFeWZN1Fta8Eh1Uwy4KaLTdaj0D8ze87gycEpwxwrijQtaZqyZnAjGQ+FBO7xrkFk9lkDgku79IQkHQkC1rShpgByomHQov6aXOF54IIWSlh1OmBnUJMzcM1rFgZon59OWoBra3Cm9H6Ve4R1dguaqJJFJ6FEnEuf6idy31Kao+eCP2QDR5gZEfkV0D/uILp0z9NSk5gKXyBYAMAh7Kk2xLdx2f5v/O1dmmIZLYVzLoyNIwUNKBzesiMJpvi6j6c1jyi50xv1SF8bPYZ8CHyHIJVHuGBqu+DSpXEkmGqThBn8=
