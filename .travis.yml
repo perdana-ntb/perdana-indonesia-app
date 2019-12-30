@@ -14,3 +14,11 @@ install:
 before_script:
     - psql -c 'create database perdana_db' -U postgres
 script: python manage.py test --settings=config.prod_settings
+deploy:
+    provider: heroku
+    api_key:
+        secure: TtH+K8pFnoz2NraN3Dt410BWael41pno4G3ZRLh1tlYQ8cV/z9dqENGkCWZmoKvfHFDGWkO//M6RY0LCx1jDMrly9aH/U9Djqx6bZ2TLlqEzoqhMfITK23tWsk8R2zDKNGdgddsEEs6V+M/QXFhKeTh/0h+HCvYF+B9U9CdV5jKiQ9Ow0XZTDegFj6f1rIHmcQdNNR2bUpMloc/CDaczWYNmaqQFrBR7aheRLBZ4NGb9DHtKi97SbNY8V59fh80pMNOYFx5VnRKf5kGg38cTPRF6JEkfC97MqglwONC9k72RCbyIRDf3pxcLbhknS0y4iWLD8SLA7K58ernxUDx+YVHir/zmr9gCu4dClBS0vVpe5HAbI7cAcBTKyr/TQHr4cxvEsMfZrZta+7v83k5sJJEcjYg+27LAyhY4Wq3EAcf3g3R58bhkJE0oJB6pPjLAZ8kr481pYc/Q9uXlfdRm/M2sxCHAG6FbZkl4UqAiAypDleRCWJGl6alFsokeg6lyvybd55/yBYgiR/bGFoCudqHoS5cG+XChS5Z/WIJoeE/yLe92Bf9mCddJf0LCm/xNvImbmh2E0lljXPtY+7yApdHkwDN3FxvVVwCeJKXqP8hGAOdHoV0WX84XhzWGE09pRQmFTJnFbrW/lWcH4vCM+QA+ofwWdQkeSqEN3MOCR9w=
+    run:
+        - python manage.py makemigrations --settings=config.prod_settings
+        - python manage.py migrate --settings=config.prod_settings
+    on: staging
