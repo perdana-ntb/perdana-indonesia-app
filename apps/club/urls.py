@@ -1,11 +1,11 @@
 from django.urls import path
+from rest_framework import routers
 
-from . import views
+from apps.club import viewsets
 
-urlpatterns = [
-    path('', views.ClubListView.as_view(), name='list'),
-    path('add', views.ClubAddFormView.as_view(), name='add'),
-    path('<int:pk>/edit', views.ClubEditFormView.as_view(), name='edit'),
-    path('<int:pk>/delete/', views.CLubDeleteView.as_view(), name='delete'),
-    path('<int:pk>/detail/', views.ClubDetailView.as_view(), name='detail'),
-]
+router = routers.DefaultRouter(trailing_slash=False)
+router.register('clubs', viewsets.ClubViewSet)
+router.register('units', viewsets.UnitViewSet)
+
+urlpatterns = []
+urlpatterns += router.urls

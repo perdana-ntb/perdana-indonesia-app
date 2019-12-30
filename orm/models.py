@@ -1,9 +1,6 @@
 from django.db import models
-from . import member
-from . import club
-from . import equipment
-from . import region
-from . import precense
-from . import workout
+
+from . import (club, commite, equipment, member, practice, presence, region,
+               workout)
 
 # Create your models here.

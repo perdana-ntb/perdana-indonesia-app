@@ -6,7 +6,7 @@
   "repository": "https://github.com/perdana-ntb/perdana-indonesia-app.git",
   "author": "Eby Sofyan Fadly <eby.sofyan@gmail.com>",
   "license": "MIT",
-  "private": null,
+  "private": false,
   "dependencies": {
     "@coreui/coreui": "2.1.12",
     "font-awesome": "^4.7.0",

@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -25,7 +24,7 @@ SECRET_KEY = '^lfm1j58u@$mx)(ex-wpctt2)9lc0(c+7_&hptq^nrbeq#349&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -46,27 +45,38 @@ INSTALLED_APPS = [
     'django_extensions',
     'braces',
     'django_js_reverse',
+    'rest_framework_swagger',
+    'corsheaders',
+    'drf_yasg',
 
     'core',
     'orm',
-    'apps.dashboard',
     'apps.member',
     'apps.region',
     'apps.unit',
     'apps.club',
-    'apps.precense',
-    'apps.authentication',
+    'apps.presence',
+    'apps.commite',
+    'apps.dashboard',
+    'apps.practice',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#     'http://perdana-indonesia.herokuapp.com',
+#     'https://perdana-indonesia.herokuapp.com'
+# ]
 
 ROOT_URLCONF = 'config.urls'
 
@@ -90,19 +100,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'config.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 
 # Password validation
@@ -157,11 +154,17 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
 }
 
-try:
-    from .local_settings import *
-except ImportError:
-    pass
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        }
+    },
+}
+
+WSGI_APPLICATION = ''
+CORS_ORIGIN_ALLOW_ALL = True
+
+DATABASES = {}

@@ -1,31 +1,31 @@
-version: '2.1'
+version: '3'
 
 services:
   web:
-    image: perdana_indonesia_app
+    image: perdana-indonesia
     build:
       context: .
-      dockerfile: Dockerfile
-    ports:
-      - 8088:8088
+      dockerfile: Dockerfile.prod
+    expose: :
+      - 8088
     depends_on: 
       - db
     volumes:
       - .:/web
     env_file:
-      - ./.env
+      - ./.env.prod
     environment:
       PYTHONUNBUFFERED: 1
 
   db:
-    container_name: perdana_indonesia_db
+    container_name: perdana-indonesia-db
     image: "postgres:9.6"
     volumes: 
-      - "db_data:/var/lib/postgresql/data"
+      - "postgre_data:/var/lib/postgresql/data"
     ports: 
       - "5433:5432"
     env_file: 
-      - ./.env
+      - ./.env.prod
 
 volumes:
-  db_data:
+  postgre_data:
