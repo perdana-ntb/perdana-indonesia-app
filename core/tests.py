@@ -40,7 +40,7 @@ class TestMixins:
         self.archer_member2 = mommy.make(member_models.ArcherMember, user=self.user2, approved=True)
 
     def auth(self, username, password='123'):
-        auth_url = reverse('member_api:login')
+        auth_url = reverse('user_api:login')
         data = {
             'username': username, 'password': password
         }

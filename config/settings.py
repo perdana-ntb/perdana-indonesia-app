@@ -15,21 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-'''Heroku configuration section'''
-import dj_database_url
-import dotenv
-
-from .settings import BASE_DIR
-
-dotenv_file = os.path.join(BASE_DIR, ".env")
-if os.path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file)
-
-CORS_ORIGIN_ALLOW_ALL = True
-
-DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -117,22 +102,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
-#         "NAME": os.environ.get("DB_NAME", os.path.join(BASE_DIR, "db.sqlite3")),
-#         "USER": os.environ.get("DB_USER", "user"),
-#         "PASSWORD": os.environ.get("DB_PASSWORD", "password"),
-#         "HOST": os.environ.get("DB_HOST", "localhost"),
-#         "PORT": os.environ.get("DB_PORT", "5432"),
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -196,12 +165,7 @@ SWAGGER_SETTINGS = {
     },
 }
 
-try:
-    from config.local_settings import *
-except ImportError:
-    pass
+WSGI_APPLICATION = ''
+CORS_ORIGIN_ALLOW_ALL = True
 
-# try:
-#     from config.heroku_settings import *
-# except ImportError:
-#     pass
+DATABASES = {}

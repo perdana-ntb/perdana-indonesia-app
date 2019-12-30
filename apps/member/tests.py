@@ -52,4 +52,4 @@ class ArcherMemberListTestCase(TestMixins, APITestCase):
 
         r = self.client.get(self.url)
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(len(r.json()['results']), 13)
+        self.assertEqual(len(r.json()), 13)
