@@ -1,8 +1,8 @@
 from orm import club as club_models
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
-from .member import ArcherMember, BaseMember
-from .club import ArcheryRange
+from orm.member import ArcherMember, BaseMember
+from orm.club import ArcheryRange
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -18,6 +18,8 @@ class PresenceContainer(TimeStampedModel):
     creator = models.ForeignKey(BaseMember, on_delete=models.SET_NULL, related_name="creator_presence", null=True, blank=True)
     club = models.ForeignKey(club_models.Club, on_delete=models.SET_NULL, related_name="club_presence", null=True, blank=True)
     satuan = models.ForeignKey(club_models.Unit, on_delete=models.SET_NULL, related_name="satuan_presence", null=True, blank=True)
+    latitude = models.CharField(max_length=25, null=True, blank=True)
+    longitude = models.CharField(max_length=25, null=True, blank=True)
     closed = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
@@ -34,7 +36,7 @@ class PresenceContainer(TimeStampedModel):
 
 class PresenceItem(TimeStampedModel):
     container = models.ForeignKey(PresenceContainer, related_name='presence_items', null=True, blank=True, on_delete=models.SET_NULL)
-    member = models.ForeignKey(ArcherMember, on_delete=models.SET_NULL, related_name="member_presence", null=True)
+    member = models.ForeignKey(BaseMember, on_delete=models.SET_NULL, related_name="member_presence", null=True)
     supervisor = models.ForeignKey(BaseMember, on_delete=models.SET_NULL, related_name="supervisor_presence", null=True)
     note = models.TextField(null=True, blank=True)
 
@@ -49,9 +51,9 @@ class PresenceItem(TimeStampedModel):
 def create_presence_items(sender, instance, created, **kwargs):
     if created:
         if instance.club:
-            for member in ArcherMember.objects.filter(club=instance.club, approved=True):
+            for member in BaseMember.objects.filter(club=instance.club, approved=True):
                 PresenceItem.objects.create(container=instance, member=member)
 
         elif instance.satuan:
-            for member in ArcherMember.objects.filter(satuan=instance.satuan, approved=True):
+            for member in BaseMember.objects.filter(satuan=instance.satuan, approved=True):
                 PresenceItem.objects.create(container=instance, member=member)

@@ -4,7 +4,7 @@ from django_extensions.db.models import TimeStampedModel
 
 from core.models import DescriptableModel
 from orm.club import ArcheryRange
-from orm.member import ArcherMember
+from orm.member import ArcherMember, BaseMember
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -21,11 +21,13 @@ class TargetType(DescriptableModel):
 
 
 class PracticeContainer(TimeStampedModel):
-    member = models.ForeignKey(ArcherMember, on_delete=models.SET_NULL, related_name="practices", null=True)
-    # archery_range = models.ForeignKey(ArcheryRange, on_delete=models.SET_NULL, related_name="practices", null=True)
+    member = models.ForeignKey(BaseMember, on_delete=models.SET_NULL, related_name="practices", null=True)
+    archery_range = models.ForeignKey(ArcheryRange, on_delete=models.SET_NULL, related_name="practices", null=True)
     # target_type = models.ForeignKey(TargetType, on_delete=models.SET_NULL, related_name='practices', null=True)
     target_type = models.CharField(max_length=100, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
+    latitude = models.CharField(max_length=25, null=True, blank=True)
+    longitude = models.CharField(max_length=25, null=True, blank=True)
     note = models.TextField(null=True, blank=True)
 
     distance = models.FloatField(default=1)
@@ -43,6 +45,12 @@ class PracticeContainer(TimeStampedModel):
     def __str__(self):
         return self.member.user.username
 
+    def save(self, **kwargs):
+        if self.archery_range:
+            self.address = self.archery_range.address
+            self.latitude = self.archery_range.latitude
+            self.longitude = self.archery_range.longitude
+        return super().save(**kwargs)
 
 class PracticeSeries(TimeStampedModel):
     serie = models.IntegerField(default=0)

@@ -29,10 +29,23 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ClubUnitCommiteMemberSerializer(serializers.ModelSerializer):
+    username =  serializers.CharField(write_only=True, allow_blank=True)
     class Meta:
         model = commite.ClubUnitCommiteMember
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        username = validated_data.pop('username')
+        try:
+            user = instance.user
+            user.username = username
+            user.save()
+        except User.DoesNotExist:
+            raise PerdanaError(message="Member %s tidak ditemukan" % username)
+        except IntegrityError:
+            raise PerdanaError(message="User %s sudah digunakan" % username)
+        
+        return super().update(instance, validated_data)
 
 class BaseArcherMemberSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,7 +71,7 @@ class BaseArcherMemberSerializer(serializers.ModelSerializer):
 class ArcherMemberSerializer(BaseArcherMemberSerializer):
     user = UserSerializer(read_only=True)
     username = serializers.CharField(write_only=True)
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, allow_blank=True)
 
     class Meta:
         model = member.ArcherMember
@@ -81,6 +94,18 @@ class ArcherMemberSerializer(BaseArcherMemberSerializer):
 
         return member.ArcherMember.objects.create(user=user, **validated_data)
 
+    def update(self, instance, validated_data):
+        username = validated_data.pop('username')
+        try:
+            user = instance.user
+            user.username = username
+            user.save()
+        except User.DoesNotExist:
+            raise PerdanaError(message="Member %s tidak ditemukan" % username)
+        except IntegrityError:
+            raise PerdanaError(message="User %s sudah digunakan" % username)
+
+        return super().update(instance, validated_data)
 
 class RegionalSerializer(serializers.ModelSerializer):
     class Meta:

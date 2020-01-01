@@ -51,10 +51,10 @@ class RegisterViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = serializers.ArcherMemberSerializer
 
 
-class UserProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class UserProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [core_perm.IsGeneralUser]
 
-    def retrieve(self, request, pk=None):
+    def list(self, request):
         member = self.request.user.member
         if hasattr(member, 'archermember'):
             return Response(serializers.ArcherMemberSerializer(member.archermember).data)
@@ -63,6 +63,21 @@ class UserProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         else:
             raise PerdanaError(message="Jenis user tidak dapat melakukan aksi ini")
 
+    @action(detail=False, methods=['post'], permission_classes=[core_perm.IsGeneralUser])
+    def change(self, request, pk=None):
+        member = self.request.user.member
+        if hasattr(member, 'archermember'):
+            serializer = serializers.ArcherMemberSerializer(instance=member.archermember, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializers.ArcherMemberSerializer(member.archermember).data)
+        elif hasattr(member, 'clubunitcommitemember'):
+            serializer = serializers.ClubUnitCommiteMemberSerializer(instance=member.clubunitcommitemember, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializers.ClubUnitCommiteMemberSerializer(member.clubunitcommitemember).data)
+        else:
+            raise PerdanaError(message="Jenis user tidak dapat melakukan aksi ini")
 
 class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
     permission_classes = [core_perm.IsGeneralUser]
@@ -96,11 +111,21 @@ class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
         else:
             return super().get_queryset().filter(pk=user.member.archermember.pk)
 
+    @action(detail=True, methods=['put'], permission_classes=[core_perm.IsClubOrSatuanManagerUser])
+    def change(self, request, pk=None):
+        instance = get_object_or_404(member_models.ArcherMember, pk=self.kwargs.get('pk'))
+        serializer = self.serializer_class(instance=instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(self.serializer_class(instance).data)
+
     @action(detail=True, methods=['get'], permission_classes=[core_perm.IsClubOrSatuanManagerUser])
     def approve(self, request, pk=None):
         obj = get_object_or_404(member_models.ArcherMember, pk=self.kwargs.get('pk'))
         obj.approved = True
         obj.approved_by = self.request.user
+
+        obj.qrcode = generate_qrcode_from_text(obj.user.Username)
         obj.save()
         return Response(self.serializer_class(obj).data)
 
