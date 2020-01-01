@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "09df0ef0aec51a1e6c4a29bbb40bfc76b19ceab3ea8022a1363125c5c59bd99f"
+            "sha256": "f280a25d3cdd1348b084e203d203b53651a65227001b292d89c5a030a327087e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -102,6 +102,13 @@
             ],
             "index": "pypi",
             "version": "==3.0.4"
+        },
+        "cloudinary": {
+            "hashes": [
+                "sha256:c936c9315ca898ad7f9a62fbc0efb537380573e3e7c0fb04c62abf5ac3b0a931"
+            ],
+            "index": "pypi",
+            "version": "==1.19.1"
         },
         "coreapi": {
             "hashes": [
@@ -469,6 +476,13 @@
             ],
             "index": "pypi",
             "version": "==0.8.4"
+        },
+        "mock": {
+            "hashes": [
+                "sha256:83657d894c90d5681d62155c82bda9c1187827525880eda8ff5df4ec813437c3",
+                "sha256:d157e52d4e5b938c550f39eb2fd15610db062441a9c2747d3dbfa9298211d0f8"
+            ],
+            "version": "==3.0.5"
         },
         "model-mommy": {
             "hashes": [

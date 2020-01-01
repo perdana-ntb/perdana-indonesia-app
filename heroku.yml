@@ -1,11 +1,5 @@
 build:
     docker:
       web: Dockerfile
-release:
-    image: web
-    command:
-        - python manage.py collectstatic --settings=config.heroku_settings --noinput 
-        - python manage.py makemigrations --settings=config.heroku_settings
-        - python manage.py migrate --settings=config.heroku_settings
 run:
     web: gunicorn config.wsgi_heroku:application --bind 0.0.0.0:$PORT
