@@ -33,7 +33,6 @@
 
 **/*.log
 **/config/local_settings.py
-**/config/heroku_settings.py
 **/*.sqlite3
 **/db.sqlite3
 **/db.sqlite3-journal
