@@ -2,7 +2,7 @@ build:
     docker:
       web: Dockerfile
 release:
-    image: web
+    image: worker
     command:
         - python manage.py collectstatic --settings=config.heroku_settings --noinput 
         - python manage.py makemigrations --settings=config.heroku_settings
