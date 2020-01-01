@@ -3,6 +3,8 @@ python:
 - '3.7'
 dist: bionic
 sudo: false
+addons:
+  ssh_known_hosts: 128.199.200.47
 git:
   depth: false
 services:
