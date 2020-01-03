@@ -74,7 +74,7 @@ class RegisterSerializer(BaseArcherMemberSerializer):
 
     class Meta:
         model = member.ArcherMember
-        exclude = ['approve', 'approved_by']
+        exclude = ['approved', 'approved_by', 'region']
 
     @transaction.atomic
     def create(self, validated_data):
