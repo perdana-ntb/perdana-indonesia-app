@@ -5,6 +5,8 @@ import dotenv
 
 from .settings import *
 
+WSGI_APPLICATION = 'config.wsgi_prod.application'
+
 dotenv_file = ".env.prod"
 if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)

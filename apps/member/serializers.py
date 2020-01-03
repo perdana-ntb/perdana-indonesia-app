@@ -67,11 +67,35 @@ class BaseArcherMemberSerializer(serializers.ModelSerializer):
             }
         return reps
 
+class RegisterSerializer(BaseArcherMemberSerializer):
+    username = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, allow_blank=True)
+    qrcode = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = member.ArcherMember
+        exclude = ['approve', 'approved_by']
+
+    @transaction.atomic
+    def create(self, validated_data):
+        username = validated_data.pop('username')
+        password = validated_data.pop('password')
+        try:
+            user = User.objects.create_user(username=username, password=password)
+            group = Group.objects.get(name=PERDANA_USER_ROLE[4])
+
+            user.groups.add(group)
+            Token.objects.create(user=user)
+        except Group.DoesNotExist:
+            raise PerdanaError(message="Member group %s tidak ditemukan" % PERDANA_USER_ROLE[4])
+        except IntegrityError:
+            raise PerdanaError(message="User %s sudah digunakan" % username)
+
+        return member.ArcherMember.objects.create(user=user, **validated_data)
+
 
 class ArcherMemberSerializer(BaseArcherMemberSerializer):
     user = UserSerializer(read_only=True)
-    username = serializers.CharField(write_only=True)
-    password = serializers.CharField(write_only=True, allow_blank=True)
 
     class Meta:
         model = member.ArcherMember

@@ -48,7 +48,7 @@ class LoginViewset(views.APIView):
 
 class RegisterViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = []
-    serializer_class = serializers.ArcherMemberSerializer
+    serializer_class = serializers.RegisterSerializer
 
 
 class UserProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
