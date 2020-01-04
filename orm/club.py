@@ -42,8 +42,8 @@ class ArcheryRange (models.Model):
     address = models.TextField(null=True)
     latitude = models.CharField(max_length=25)
     longitude = models.CharField(max_length=25)
-    club = models.ForeignKey(Club, on_delete=models.DO_NOTHING, related_name='archery_ranges')
-    unit = models.ForeignKey(Unit, on_delete=models.DO_NOTHING, related_name='archery_ranges')
+    club = models.ForeignKey(Club, on_delete=models.SET_NULL, related_name='archery_ranges', null=True, blank=True)
+    unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, related_name='archery_ranges', null=True, blank=True)
 
     def __str__(self):
         return self.name

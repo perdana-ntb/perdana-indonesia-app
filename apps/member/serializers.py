@@ -159,3 +159,8 @@ class OpenUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = club_models.Unit
         fields = ['id', 'name']
+
+class OpenArcheryRangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = club_models.ArcheryRange
+        fields = '__all__'

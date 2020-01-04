@@ -188,3 +188,15 @@ class UnitViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         branch = self.request.query_params.get('branch')
         return super().get_queryset().filter(branch__pk=branch)
+
+class ArcheryRangeViewSet(viewsets.ModelViewSet):
+    permission_classes = [core_perm.IsGeneralUser]
+    serializer_class = serializers.OpenArcheryRangeSerializer
+    queryset = club_models.ArcheryRange.objects.all()
+
+    def get_queryset(self):
+        member = self.request.user.member
+        if member.club:
+            return super().get_queryset().filter(club=member.club)
+        elif member.satuan:
+            return super().get_queryset().filter(satuan=member.satuan)

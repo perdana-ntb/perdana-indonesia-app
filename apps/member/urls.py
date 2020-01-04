@@ -9,6 +9,7 @@ router.register('provinces', viewsets.ProvinceViewSet, basename='province')
 router.register('branchs', viewsets.BranchViewSet, basename='branch')
 router.register('clubs', viewsets.ClubViewSet, basename='club')
 router.register('units', viewsets.UnitViewSet, basename='unit')
+router.register('archery-ranges', viewsets.ArcheryRangeViewSet, basename='archery-range')
 router.register('profile', viewsets.UserProfileViewSet, basename='profile')
 
 urlpatterns = [
