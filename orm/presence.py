@@ -51,9 +51,9 @@ class PresenceItem(TimeStampedModel):
 def create_presence_items(sender, instance, created, **kwargs):
     if created:
         if instance.club:
-            for member in BaseMember.objects.filter(club=instance.club, approved=True):
+            for member in BaseMember.objects.filter(club=instance.club, archermember__isnull=False, archermember__approved=True):
                 PresenceItem.objects.create(container=instance, member=member)
 
         elif instance.satuan:
-            for member in BaseMember.objects.filter(satuan=instance.satuan, approved=True):
+            for member in BaseMember.objects.filter(satuan=instance.satuan, archermember__isnull=False, archermember__approved=True):
                 PresenceItem.objects.create(container=instance, member=member)
