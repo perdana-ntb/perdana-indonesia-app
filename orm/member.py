@@ -80,10 +80,11 @@ class BaseMember(TimeStampedModel):
     def save(self, *args, **kwargs):
         if not self.pk:
             # Make sure only one changes as active request
-            self.user.members.all().update(closed=True)
+            if self.user:
+                self.user.members.all().update(closed=True)
 
-            if self.user.members.count() == 1:
-                self.user.members.all().update(closed=True, status=CHANGE_STATUS_CHOICES[1][0])
+                if self.user.members.count() == 1:
+                    self.user.members.all().update(closed=True, status=CHANGE_STATUS_CHOICES[1][0])
 
         if self.gender == GENDER_CHOICES[0][0]:
             self.public_photo = self.photo
