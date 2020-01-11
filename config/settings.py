@@ -30,6 +30,9 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jet.dashboard',
+    'jet',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,7 +60,7 @@ INSTALLED_APPS = [
     'apps.club',
     'apps.presence',
     'apps.commite',
-    'apps.dashboard',
+    'apps.home',
     'apps.practice',
 ]
 
@@ -168,3 +171,5 @@ WSGI_APPLICATION = ''
 CORS_ORIGIN_ALLOW_ALL = True
 
 DATABASES = {}
+
+AUTH_USER_MODEL = 'core.PerdanaUser'

@@ -1,12 +1,12 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django_extensions.db.models import TimeStampedModel
 
 from core.models import DescriptableModel
 from orm.club import ArcheryRange
 from orm.member import ArcherMember, BaseMember
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 PRACTICE_STATUS_CHOICES = (
     ('0', 'Waiting'),
@@ -38,7 +38,7 @@ class PracticeContainer(TimeStampedModel):
                               default=PRACTICE_STATUS_CHOICES[0][0], null=True, blank=True)
 
     signed = models.BooleanField(default=False, null=True, blank=True)
-    signed_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="practices", null=True, blank=True)
+    signed_by = models.ForeignKey(BaseMember, on_delete=models.SET_NULL, related_name="signed_practices", null=True, blank=True)
 
     completed = models.BooleanField(default=False, null=True, blank=True)
 
@@ -52,6 +52,7 @@ class PracticeContainer(TimeStampedModel):
             self.longitude = self.archery_range.longitude
         return super().save(**kwargs)
 
+
 class PracticeSeries(TimeStampedModel):
     serie = models.IntegerField(default=0)
     practice_container = models.ForeignKey(PracticeContainer, on_delete=models.CASCADE, related_name='practice_series')
@@ -59,19 +60,23 @@ class PracticeSeries(TimeStampedModel):
     closed = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
-        return self.practice_container
+        return self.practice_container.note
 
 
 class PracticeScore(models.Model):
     score = models.IntegerField(default=0)
     serie = models.ForeignKey(PracticeSeries, on_delete=models.CASCADE, related_name='scores')
+    filled = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.score
+        return '%s' % self.score
+    
 
 
 @receiver(post_save, sender=PracticeContainer)
 def create_practice_series(sender, instance, created, **kwargs):
     if created:
         for i in range(0, instance.series):
-            PracticeSeries.objects.create(practice_container=instance, serie=i+1)
+            serie = PracticeSeries.objects.create(practice_container=instance, serie=i+1)
+            for i in range(0, instance.arrow):
+                PracticeScore.objects.create(serie=serie)

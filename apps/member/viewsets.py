@@ -30,16 +30,16 @@ class LoginViewset(views.APIView):
         if serializer.is_valid():
             user = authenticate(**serializer.validated_data)
             if user:
-                if hasattr(user, 'member'):
-                    if hasattr(user.member, 'archermember'):
-                        if not user.member.archermember.approved:
+                if hasattr(user, 'members'):
+                    if hasattr(user.get_active_profile(), 'archermember'):
+                        if not user.get_active_profile().archermember.approved:
                             raise PerdanaError(message="User sedang dalam proses review oleh admin", status_code=status.HTTP_403_FORBIDDEN)
 
                     group = get_user_group(user)
                     return Response({
                         'token': user.auth_token.key,
                         'role': group if group else None,
-                        'member': serializers.BaseArcherMemberSerializer(user.member).to_representation(user.member)
+                        'member': serializers.BaseArcherMemberSerializer(user.get_active_profile()).to_representation(user.get_active_profile())
                     })
                 raise PerdanaError(message="Jenis user tidak dapat melakukan aksi ini", status_code=status.HTTP_403_FORBIDDEN)
             raise PerdanaError(message="Username dan atau password salah", status_code=status.HTTP_400_BAD_REQUEST)
@@ -55,7 +55,7 @@ class UserProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [core_perm.IsGeneralUser]
 
     def list(self, request):
-        member = self.request.user.member
+        member = self.request.user.get_active_profile()
         if hasattr(member, 'archermember'):
             return Response(serializers.ArcherMemberSerializer(member.archermember).data)
         elif hasattr(member, 'clubunitcommitemember'):
@@ -65,9 +65,9 @@ class UserProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'], permission_classes=[core_perm.IsGeneralUser])
     def change(self, request, pk=None):
-        member = self.request.user.member
+        member = self.request.user.get_active_profile()
         if hasattr(member, 'archermember'):
-            serializer = serializers.ArcherMemberSerializer(instance=member.archermember, data=request.data)
+            serializer = serializers.ArcherMemberProfileUpdateSerializer(instance=member.archermember, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializers.ArcherMemberSerializer(member.archermember).data)
@@ -79,6 +79,7 @@ class UserProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         else:
             raise PerdanaError(message="Jenis user tidak dapat melakukan aksi ini")
 
+
 class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
     permission_classes = [core_perm.IsGeneralUser]
     serializer_class = serializers.ArcherMemberSerializer
@@ -88,28 +89,28 @@ class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self, **kwargs):
         user = self.request.user
         if user.groups.filter(name=PERDANA_USER_ROLE[0]).count() > 0:
-            member = user.member.regionalcommitemember
+            member = user.get_active_profile().regionalcommitemember
             return super().get_queryset().filter(
                 Q(club__branch__province__regional=member.regional) |
                 Q(satuan__branch__province__regional=member.regional))
         elif user.groups.filter(name=PERDANA_USER_ROLE[1]).count() > 0:
-            member = user.member.pengprovcommitemember
+            member = user.get_active_profile().pengprovcommitemember
             return super().get_queryset().filter(
                 Q(club__branch__province=member.province) |
                 Q(satuan__branch__province=member.province))
         elif user.groups.filter(name=PERDANA_USER_ROLE[2]).count() > 0:
-            member = user.member.pengcabcommitemember
+            member = user.get_active_profile().pengcabcommitemember
             return super().get_queryset().filter(
                 Q(club__branch=member.branch) |
                 Q(satuan__branch=member.branch))
         elif user.groups.filter(name=PERDANA_USER_ROLE[3]).count() > 0:
-            member = user.member.clubunitcommitemember
+            member = user.get_active_profile().clubunitcommitemember
             if member.club:
                 return super().get_queryset().filter(club=member.club)
             elif member.satuan:
                 return super().get_queryset().filter(satuan=member.satuan)
         else:
-            return super().get_queryset().filter(pk=user.member.archermember.pk)
+            return super().get_queryset().filter(pk=user.get_active_profile().archermember.pk)
 
     @action(detail=True, methods=['put'], permission_classes=[core_perm.IsClubOrSatuanManagerUser])
     def change(self, request, pk=None):
@@ -125,14 +126,14 @@ class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
         obj.approved = True
         obj.approved_by = self.request.user
 
-        obj.qrcode = generate_qrcode_from_text(obj.user.Username)
+        obj.qrcode = generate_qrcode_from_text(obj.user.username)
         obj.save()
         return Response(self.serializer_class(obj).data)
 
     @action(detail=False, methods=['get'], permission_classes=[core_perm.IsClubOrSatuanManagerUser])
     def applicants(self, request):
         try:
-            member = self.request.user.member.clubunitcommitemember
+            member = self.request.user.get_active_profile().clubunitcommitemember
             qs = member_models.ArcherMember.objects.filter(approved=False)
             if member.club:
                 qs = qs.filter(club=member.club)
@@ -189,13 +190,14 @@ class UnitViewSet(viewsets.ReadOnlyModelViewSet):
         branch = self.request.query_params.get('branch')
         return super().get_queryset().filter(branch__pk=branch)
 
+
 class ArcheryRangeViewSet(viewsets.ModelViewSet):
     permission_classes = [core_perm.IsGeneralUser]
     serializer_class = serializers.OpenArcheryRangeSerializer
     queryset = club_models.ArcheryRange.objects.all()
 
     def get_queryset(self):
-        member = self.request.user.member
+        member = self.request.user.get_active_profile()
         if member.club:
             return super().get_queryset().filter(club=member.club)
         elif member.satuan:

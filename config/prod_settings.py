@@ -11,7 +11,7 @@ dotenv_file = ".env.prod"
 if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
 
-DATABASE_URL_SCHEMA = os.environ.get('DATABASE_URL', 'postgres://perdana@localhost:5432/perdana_db')
+DATABASE_URL_SCHEMA = os.environ.get('DATABASE_URL', 'postgres://perdana@localhost:5432/perdana_db_latest')
 DATABASES['default'] = dj_database_url.parse(url=DATABASE_URL_SCHEMA, conn_max_age=600)
 
 # STATIC_URL = '/static/'

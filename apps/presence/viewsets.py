@@ -8,10 +8,10 @@ from core.exceptions import PerdanaError
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
-
+from django.utils import timezone
 class PresenceContainerViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.BasePresenceContainerSerializer
-    permission_classes = [IsClubOrSatuanManagerUser]
+    permission_classes = (IsClubOrSatuanManagerUser, )
     queryset = presence_models.PresenceContainer.objects.all()
 
     def get_serializer_context(self, **kwargs):
@@ -20,7 +20,10 @@ class PresenceContainerViewSet(viewsets.ModelViewSet):
         return ctx
 
     def get_queryset(self):
-        member = self.request.user.member
+        # Make all presence closed except created==today
+        super().get_queryset().filter(closed=False).exclude(created__date=timezone.now()).update(closed=True)
+
+        member = self.request.user.get_active_profile()
         if member.club:
             return super().get_queryset().filter(club=member.club)
         elif member.satuan:
@@ -37,7 +40,7 @@ class PresenceContainerViewSet(viewsets.ModelViewSet):
         user = self.request.query_params.get('user')
         status = self.request.query_params.get('status')
         try:
-            item_obj = obj.presence_items.get(member__user__username=user)
+            item_obj = obj.presence_items.get(user__username=user)
             item_obj.status = status
             item_obj.save()
             return Response(serializers.PresenceItemSerializer(item_obj).data)

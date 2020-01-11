@@ -43,12 +43,14 @@ class BasePracticeContainerSerializer(serializers.ModelSerializer):
 
         try:
             instance = practice.PracticeContainer.objects.get(completed=False, member__pk=archer_id)
+            raise PerdanaError(message="Selesaikan skoring yang telah berjalan terlebih dahulu")
         except IntegrityError:
             instances = practice.PracticeContainer.objects.filter(completed=False, member__pk=archer_id).order_by('-pk')
             instance = instances.first()
 
             # Make multiple incompleted practice to be completed
-            instances.exlcldue(pk=instance.pk).uppdate(completed=True)
+            instances.exlcldue(pk=instance.pk).update(completed=True)
+            raise PerdanaError(message="Selesaikan skoring yang telah berjalan terlebih dahulu")
         except practice.PracticeContainer.DoesNotExist:
             validated_data['member'] = get_object_or_404(ArcherMember, pk=archer_id)
             instance = practice.PracticeContainer.objects.create(**validated_data)
@@ -58,3 +60,9 @@ class BasePracticeContainerSerializer(serializers.ModelSerializer):
 
 class PracticeContainerSerializer(BasePracticeContainerSerializer):
     practice_series = PracticeSeriesSerializer(many=True, read_only=True)
+
+    def to_representation(self, instance):
+        reps = super().to_representation(instance)
+        practice_series = instance.practice_series.order_by('serie')
+        reps['practice_series'] = PracticeSeriesSerializer(practice_series, many=True).data
+        return reps

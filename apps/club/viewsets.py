@@ -21,22 +21,22 @@ class ClubViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self, **kwargs):
         user = self.request.user
-        if user.groups.filter(name=PERDANA_USER_ROLE[0]).count() > 0:
-            member = user.member.regionalcommitemember
+        if user.groups.filter(name=permissions.PERDANA_USER_ROLE[0]).count() > 0:
+            member = user.get_active_profile().regionalcommitemember
             return super().get_queryset().filter(branch__province__regional=member.regional)
-        elif user.groups.filter(name=PERDANA_USER_ROLE[1]).count() > 0:
-            member = user.member.pengprovcommitemember
+        elif user.groups.filter(name=permissions.PERDANA_USER_ROLE[1]).count() > 0:
+            member = user.get_active_profile().pengprovcommitemember
             return super().get_queryset().filter(club__branch__province=member.province)
-        elif user.groups.filter(name=PERDANA_USER_ROLE[2]).count() > 0:
-            member = user.member.pengcabcommitemember
+        elif user.groups.filter(name=permissions.PERDANA_USER_ROLE[2]).count() > 0:
+            member = user.get_active_profile().pengcabcommitemember
             return super().get_queryset().filter(club__branch=member.branch)
-        elif user.groups.filter(name=PERDANA_USER_ROLE[3]).count() > 0:
-            member = user.member.clubunitcommitemember
+        elif user.groups.filter(name=permissions.PERDANA_USER_ROLE[3]).count() > 0:
+            member = user.get_active_profile().clubunitcommitemember
             if member.club:
                 return super().get_queryset().filter(pk=member.club.pk)
             raise PerdanaError(message="User belum memiliki klub")
         else:
-            member = user.member.archermember
+            member = user.get_active_profile().archermember
             if member.club:
                 return super().get_queryset().filter(pk=member.club.pk)
             raise PerdanaError(message="User belum memiliki klub")
@@ -50,22 +50,22 @@ class UnitViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self, **kwargs):
         user = self.request.user
-        if user.groups.filter(name=PERDANA_USER_ROLE[0]).count() > 0:
-            member = user.member.regionalcommitemember
+        if user.groups.filter(name=permissions.PERDANA_USER_ROLE[0]).count() > 0:
+            member = user.get_active_profile().regionalcommitemember
             return super().get_queryset().filter(branch__province__regional=member.regional)
-        elif user.groups.filter(name=PERDANA_USER_ROLE[1]).count() > 0:
-            member = user.member.pengprovcommitemember
+        elif user.groups.filter(name=permissions.PERDANA_USER_ROLE[1]).count() > 0:
+            member = user.get_active_profile().pengprovcommitemember
             return super().get_queryset().filter(club__branch__province=member.province)
-        elif user.groups.filter(name=PERDANA_USER_ROLE[2]).count() > 0:
-            member = user.member.pengcabcommitemember
+        elif user.groups.filter(name=permissions.PERDANA_USER_ROLE[2]).count() > 0:
+            member = user.get_active_profile().pengcabcommitemember
             return super().get_queryset().filter(club__branch=member.branch)
-        elif user.groups.filter(name=PERDANA_USER_ROLE[3]).count() > 0:
-            member = user.member.clubunitcommitemember
+        elif user.groups.filter(name=permissions.PERDANA_USER_ROLE[3]).count() > 0:
+            member = user.get_active_profile().clubunitcommitemember
             if member.satuan:
                 return super().get_queryset().filter(pk=member.satuan.pk)
             raise PerdanaError(message="User belum memiliki satuan")
         else:
-            member = user.member.archermember
+            member = user.get_active_profile().archermember
             if member.satuan:
                 return super().get_queryset().filter(pk=member.satuan.pk)
             raise PerdanaError(message="User belum memiliki satuan")

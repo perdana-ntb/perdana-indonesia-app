@@ -14,7 +14,7 @@ class BasePresenceContainerSerializer(serializers.ModelSerializer):
         return self.context.get('request')
 
     def create(self, validated_data):
-        return presence_models.PresenceContainer.objects.create(**validated_data, creator=self.request.user.member)
+        return presence_models.PresenceContainer.objects.create(**validated_data, creator=self.request.user)
 
 
 class PresenceContainerSerializer(BasePresenceContainerSerializer):
@@ -26,19 +26,21 @@ class PresenceContainerSerializer(BasePresenceContainerSerializer):
 
 class PresenceItemMemberSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    full_name = serializers.CharField()
 
     def to_representation(self, instance):
         reps = super().to_representation(instance)
-        reps['member_id'] = instance.user.username
-        reps['photo'] = instance.photo.url if instance.photo else ''
-        reps['public_photo'] = instance.public_photo.url if instance.public_photo else ''
+        basemember = instance.get_active_profile()
+        reps['member_id'] = instance.username
+        reps['full_name'] = basemember.full_name
+        reps['photo'] = basemember.photo.url if basemember.photo else ''
+        reps['public_photo'] = basemember.public_photo.url if basemember.public_photo else ''
         return reps
 
 
 class PresenceItemSerializer(serializers.ModelSerializer):
-    member = PresenceItemMemberSerializer()
+    user = PresenceItemMemberSerializer()
 
     class Meta:
         model = presence_models.PresenceItem
         fields = '__all__'
+    

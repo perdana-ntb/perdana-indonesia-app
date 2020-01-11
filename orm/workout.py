@@ -14,7 +14,7 @@ class WorkOutItem(DescriptableModel):
 
 class WorkOutTarget(TimeStampedModel):
     item = models.ForeignKey(WorkOutItem, related_name='wo_targets', on_delete=models.SET_NULL, null=True)
-    member = models.ForeignKey(member_models.ArcherMember, related_name='wo_targets', on_delete=models.SET_NULL, null=True)
+    member = models.ForeignKey(member_models.BaseMember, related_name='wo_targets', on_delete=models.SET_NULL, null=True)
     target = models.IntegerField(default=0)
     unit = models.CharField(max_length=100)
     is_active = models.BooleanField(default=False)
@@ -25,7 +25,7 @@ class WorkOutTarget(TimeStampedModel):
 
 class WorkOut(TimeStampedModel):
     item = models.ForeignKey(WorkOutItem, related_name='workouts', on_delete=models.SET_NULL, null=True)
-    member = models.ForeignKey(member_models.ArcherMember, related_name='workouts', on_delete=models.SET_NULL, null=True)
+    member = models.ForeignKey(member_models.BaseMember, related_name='workouts', on_delete=models.SET_NULL, null=True)
     target = models.ForeignKey(WorkOutTarget, related_name='workouts', on_delete=models.SET_NULL, null=True)
     achievement = models.CharField(max_length=100)
 

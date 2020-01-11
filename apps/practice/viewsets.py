@@ -6,6 +6,7 @@ from rest_framework.response import Response
 # Create your views here.
 from apps.practice import serializers
 from core import permissions
+from core.exceptions import PerdanaError
 from orm import practice
 
 
@@ -15,7 +16,7 @@ class TargetTypeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = practice.TargetType.objects.all()
     pagination_class = None
 
-from core.exceptions import PerdanaError
+
 class PracticeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsClubOrSatuanManagerUser]
     serializer_class = serializers.BasePracticeContainerSerializer
