@@ -70,7 +70,6 @@ class PracticeScore(models.Model):
 
     def __str__(self):
         return '%s' % self.score
-    
 
 
 @receiver(post_save, sender=PracticeContainer)

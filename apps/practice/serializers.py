@@ -16,7 +16,7 @@ class TargetTypeSerializer(serializers.ModelSerializer):
 class PracticeScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = practice.PracticeScore
-        fields = '__all__'
+        exclude = ['serie', ]
 
 
 class PracticeSeriesSerializer(serializers.ModelSerializer):

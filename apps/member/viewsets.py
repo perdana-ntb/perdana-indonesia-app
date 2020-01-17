@@ -145,6 +145,24 @@ class ArcherMemberViewset(viewsets.ReadOnlyModelViewSet):
             raise PerdanaError(message='User belum memiliki klub atau satuan')
 
 
+class ArcherMemberApplicantViewset(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [core_perm.IsGeneralUser]
+    serializer_class = serializers.ArcherMemberSerializer
+    queryset = member_models.ArcherMember.objects.filter(approved=False)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        try:
+            member = self.request.user.get_active_profile().clubunitcommitemember
+            if member.club:
+                qs = queryset.filter(club=member.club)
+            elif member.satuan:
+                qs = queryset.filter(satuan=member.satuan)
+            return qs
+        except AttributeError:
+            raise PerdanaError(message='User belum memiliki klub atau satuan')
+
+
 class RegionalViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = []
     serializer_class = serializers.RegionalSerializer

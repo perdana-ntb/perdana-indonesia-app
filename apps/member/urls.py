@@ -1,9 +1,11 @@
 from django.urls import path
-from apps.member import viewsets
 from rest_framework.routers import DefaultRouter
+
+from apps.member import viewsets
 
 router = DefaultRouter(trailing_slash=True)
 router.register('members', viewsets.ArcherMemberViewset, basename='member')
+router.register('applicants', viewsets.ArcherMemberApplicantViewset, basename='applicant')
 router.register('regionals', viewsets.RegionalViewSet, basename='regional')
 router.register('provinces', viewsets.ProvinceViewSet, basename='province')
 router.register('branchs', viewsets.BranchViewSet, basename='branch')
