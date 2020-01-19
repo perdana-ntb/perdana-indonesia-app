@@ -162,6 +162,33 @@ class ArcherMemberApplicantViewset(viewsets.ReadOnlyModelViewSet):
         except AttributeError:
             raise PerdanaError(message='User belum memiliki klub atau satuan')
 
+    @action(methods=['POST'], detail=True, serializer_class=serializers.ApproveArcherMemberSerializer)
+    def approve(self, request, pk=None):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        instance = self.get_object()
+        instance.user.username = serializer.validated_data.get('register_number')
+        instance.user.save()
+
+        instance.approved = True
+        instance.approved_by = request.user
+        instance.qrcode = generate_qrcode_from_text(instance.user.username)
+        instance.save()
+        return Response(
+            serializers.ArcherMemberSerializer(instance).data
+        )
+
+    @action(methods=['DELETE'], detail=True)
+    def reject(self, request, pk=None):
+        instance = self.get_object()
+        if instance.delete():
+            instance.user.delete()
+
+        return Response(
+            self.serializer_class(instance).data
+        )
+
 
 class RegionalViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = []

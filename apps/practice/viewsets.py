@@ -18,7 +18,7 @@ class TargetTypeViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class PracticeViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsClubOrSatuanManagerUser]
+    permission_classes = [permissions.IsGeneralUser]
     serializer_class = serializers.BasePracticeContainerSerializer
     queryset = practice.PracticeContainer.objects.all()
     http_method_names = ['get', 'post', ]

@@ -54,7 +54,7 @@ class ClubUnitCommiteMemberSerializer(serializers.ModelSerializer):
 class BaseArcherMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = member.ArcherMember
-        fields = ['phone', 'gender', 'address', 'photo', 'qrcode']
+        fields = ['id', 'phone', 'gender', 'address', 'photo', 'qrcode']
 
     def to_representation(self, instance):
         reps = super().to_representation(instance)
@@ -136,6 +136,8 @@ class ArcherMemberProfileUpdateSerializer(serializers.Serializer):
 
         return instance
 
+class ApproveArcherMemberSerializer(serializers.Serializer):
+    register_number = serializers.CharField()
 
 class ArcherMemberSerializer(BaseArcherMemberSerializer):
     user = UserSerializer(read_only=True)
