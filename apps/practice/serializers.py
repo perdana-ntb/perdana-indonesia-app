@@ -1,4 +1,6 @@
+from django.db.models import Sum
 from django.db.utils import IntegrityError
+from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
@@ -14,9 +16,37 @@ class TargetTypeSerializer(serializers.ModelSerializer):
 
 
 class PracticeScoreSerializer(serializers.ModelSerializer):
+    id = serializers.CharField()
+
     class Meta:
         model = practice.PracticeScore
         exclude = ['serie', ]
+
+
+class PracticeSeriesScoreSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    total = serializers.IntegerField(read_only=True)
+    serie = serializers.IntegerField(read_only=True)
+    closed = serializers.BooleanField(read_only=True)
+    scores = PracticeScoreSerializer(many=True)
+
+    def update(self, instance, validated_data):
+        scores = validated_data.get('scores')
+        for score in scores:
+            score_obj = instance.scores.get(pk=score['id'])
+            score_obj.score = score['score']
+            score_obj.filled = score['filled']
+            score_obj.save()
+
+        # trigger save method
+        instance.closed = True
+        instance.save()
+
+        if instance.practice_container.practice_series.filter(closed=False).count() == 0:
+            instance.practice_container.completed = True
+            instance.practice_container.save()
+
+        return instance
 
 
 class PracticeSeriesSerializer(serializers.ModelSerializer):
@@ -31,6 +61,12 @@ class BasePracticeContainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = practice.PracticeContainer
         exclude = ['status', 'signed', 'signed_by']
+
+    def to_representation(self, instance):
+        reps = super().to_representation(instance)
+        practice_series = instance.practice_series.order_by('serie')
+        reps['total'] = practice_series.aggregate(socre_total=Sum('total'))['socre_total']
+        return reps
 
     @property
     def request(self):

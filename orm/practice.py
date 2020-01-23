@@ -57,11 +57,17 @@ class PracticeSeries(TimeStampedModel):
     serie = models.IntegerField(default=0)
     practice_container = models.ForeignKey(PracticeContainer, on_delete=models.CASCADE, related_name='practice_series')
     photo = models.ImageField(upload_to='practice/sk/%Y/%m/%d', null=True, blank=True)
+    total = models.IntegerField(default=0, null=True, blank=True)
     closed = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
         return self.practice_container.note
 
+    def save(self, **kwargs):
+        self.total = 0
+        for score in self.scores.all():
+            self.total += score.score
+        return super().save(**kwargs)
 
 class PracticeScore(models.Model):
     score = models.IntegerField(default=0)

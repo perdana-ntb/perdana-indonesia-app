@@ -32,14 +32,21 @@ class PracticeViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         return Response(serializers.PracticeContainerSerializer(self.get_object()).data)
 
-    @action(detail=True, methods=['PUT', ], url_name='change-score', url_path='change-score', serializer_class=serializers.PracticeScoreSerializer)
-    def change_score(self, request, pk=None):
-        instance = practice.PracticeScore.objects.get(pk=pk)
-        serializer = self.serializer_class(instance=instance, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+    # @action(detail=True, methods=['PUT', ], url_name='change-score', url_path='change-score', serializer_class=serializers.PracticeSeriesScoreSerializer)
+    # def change_score(self, request, pk=None):
+    #     instance = practice.PracticeScore.objects.get(pk=pk)
+    #     serializer = self.serializer_class(instance=instance, data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
 
-        return Response(self.serializer_class(instance).data)
+        # return Response(self.serializer_class(instance).data)
+
+class UpdateScoreViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [permissions.IsGeneralUser]
+    serializer_class = serializers.PracticeSeriesScoreSerializer
+
+    def get_object(self):
+        return practice.PracticeSeries.objects.get(pk=self.kwargs.get('pk'))
 
 class ActivePracticeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsClubOrSatuanManagerUser]
