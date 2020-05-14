@@ -2,8 +2,8 @@ version: "3.7"
 
 services:
   web:
-    container_name: perdana-indonesia-web
-    image: perdana-indonesia-web
+    container_name: perdana-lobar-web
+    image: perdana-lobar-web
     build:
       context: .
       dockerfile: Dockerfile
@@ -15,25 +15,21 @@ services:
       - 4.4.4.4
     ports:
       - "8000:8000"
-      - "8001:8001"
-      - "8002:8002"
     expose:
       - 8000
-      - 8001
-      - 8002
     depends_on:
-      - perdana-db
+      - db
     env_file:
       - .env
     volumes:
       - .:/app
-      - /var/assets/perdana-indonesia/mediafiles:/app/media
-      - /var/assets/perdana-indonesia/staticfiles:/app/static/root
+      - /var/assets/perdana-lobar/mediafiles:/app/media
+      - /var/assets/perdana-lobar/staticfiles:/app/static/root
     environment:
       PYTHONUNBUFFERED: 1
 
-  perdana-db:
-    container_name: perdana-indonesia-db
+  db:
+    container_name: perdana-lobar-db
     image: "mysql:5.7"
     volumes:
       - mysql_data:/var/lib/mysql
@@ -46,14 +42,14 @@ services:
       - "3308:3306"
     environment:
       MYSQL_ROOT_PASSWORD: masuk123
-      MYSQL_DATABASE: perdana_indonesia_db
+      MYSQL_DATABASE: perdana_lobar_db
 
   phpmyadmin:
-    container_name: perdana-indonesia-phpmyadmin
+    container_name: perdana-lobar-phpmyadmin
     image: phpmyadmin/phpmyadmin:4.9.4
     environment:
       - PMA_ARBITRARY=1
-      # - PMA_ABSOLUTE_URI=https://presensi.lombokbaratkab.go.id/phpmyadmin/
+      - PMA_ABSOLUTE_URI=https://presensi.lombokbaratkab.go.id/phpmyadmin/
     restart: always
     networks:
       - perdana_network

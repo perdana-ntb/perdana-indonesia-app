@@ -6,6 +6,9 @@ static/root/
 static/root/*
 static/vendors/
 static/vendors/*
+src/config/local_settings.py
+.env
+
 
 node_modules/
 node_modules/*

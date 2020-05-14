@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 rope = "*"
+flake8 = "*"
 
 [packages]
 celery = "==4.3.0"
@@ -29,7 +30,6 @@ Django = "==2.2.9"
 Markdown = "==3.0.1"
 Pillow = "==6.2.1"
 qrcode = "==6.1"
-psycopg2 = "*"
 django-braces = "==1.13.0"
 notebook = "==6.0.2"
 django-js-reverse = "==0.9.1"
@@ -40,7 +40,6 @@ dj-database-url = "==0.5.0"
 django-cors-headers = "==3.2.0"
 model-mommy = "==2.0.0"
 drf-yasg = "==1.17.0"
-psycopg2-binary = "*"
 amqp = "==2.5.2"
 appnope = "==0.1.0"
 astroid = "==2.3.3"
@@ -115,6 +114,9 @@ webencodings = "==0.5.1"
 wrapt = "==1.11.2"
 zipp = "==0.6.0"
 Pygments = "==2.5.2"
+cloudinary = "*"
+flake8 = "*"
+mysqlclient = "==1.4.6"
 
 [requires]
 python_version = "3.7"
