@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'home',
     'practice',
     'workout',
+    'menu',
 ]
 
 MIDDLEWARE = [
@@ -161,7 +162,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'src.config.wsgi.application'
 
 DATABASES = {}
 

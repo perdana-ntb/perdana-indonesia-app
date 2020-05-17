@@ -2,7 +2,7 @@
 from django.contrib.auth import authenticate
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, views, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -18,11 +18,11 @@ from member.models import ArcherMember
 from region.models import Province, Region
 
 
-class LoginViewset(views.APIView):
-    permission_classes = []
+class LoginViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = ()
     serializer_class = serializers.LoginSerializer
 
-    def post(self, request):
+    def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = authenticate(**serializer.validated_data)
@@ -52,11 +52,12 @@ class RegisterViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
 class UserProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [core_perm.IsGeneralUser]
+    serializer_class = serializers.ArcherMemberSerializer
 
     def list(self, request):
         member = self.request.user.basemember
         if hasattr(member, 'archermember'):
-            return Response(serializers.ArcherMemberSerializer(member.archermember).data)
+            return Response(self.serializer_class(member.archermember).data)
         elif hasattr(member, 'clubunitcommitemember'):
             return Response(serializers.ClubUnitCommiteMemberSerializer(
                 member.clubunitcommitemember).data
@@ -68,12 +69,12 @@ class UserProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     def change(self, request, pk=None):
         member = self.request.user.basemember
         if hasattr(member, 'archermember'):
-            serializer = serializers.ArcherMemberSerializer(
+            serializer = self.serializer_class(
                 instance=member.archermember, data=request.data
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializers.ArcherMemberSerializer(member.archermember).data)
+            return Response(self.serializer_class(member.archermember).data)
         elif hasattr(member, 'clubunitcommitemember'):
             serializer = serializers.ClubUnitCommiteMemberSerializer(
                 instance=member.clubunitcommitemember, data=request.data

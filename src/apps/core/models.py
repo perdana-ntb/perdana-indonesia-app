@@ -6,7 +6,7 @@ from django_extensions.db.models import TimeStampedModel
 
 class DescriptableModel(TimeStampedModel):
     name = models.CharField(max_length=150)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
 
     class Meta:
         abstract = True
