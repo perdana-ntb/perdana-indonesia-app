@@ -76,7 +76,6 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = []
 
 ROOT_URLCONF = 'perdana_indonesia.urls'
 
@@ -127,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'id'
 
 TIME_ZONE = 'UTC'
 
@@ -135,7 +134,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -161,7 +160,28 @@ REST_FRAMEWORK = {
 
 WSGI_APPLICATION = 'perdana_indonesia.wsgi.application'
 
-DATABASES = {}
+if os.getenv('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'github-actions',
+            'USER': 'developer',
+            'PASSWORD': os.environ.get('MYSQL_DATABASE_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '3306'
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME', 'perdana_indonesia_db'),
+            'USER': os.environ.get("DB_USER", 'root'),
+            'PASSWORD': os.environ.get("DB_PASSWORD", 'masuk123'),
+            'HOST': os.environ.get("DB_HOST", 'localhost'),
+            'PORT': os.environ.get("DB_PORT", '3306'),
+        }
+    }
 
 try:
     from .local_settings import *
