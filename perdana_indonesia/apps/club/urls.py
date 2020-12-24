@@ -1,5 +1,7 @@
-from rest_framework import routers
+from django.urls import path
 
-router = routers.DefaultRouter(trailing_slash=False)
-urlpatterns = []
-urlpatterns += router.urls
+from .views import RegionalClubJsonView
+
+urlpatterns = [
+    path('regional-clubs/<str:region_id>', RegionalClubJsonView.as_view(), name='regional-club')
+]

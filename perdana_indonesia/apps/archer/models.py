@@ -26,7 +26,7 @@ class Archer(TimeStampedModel):
     blood_type = models.CharField(max_length=45, choices=BLOOD_TYPE_CHOICES, null=True, blank=True)
     disease_history = models.TextField(default=None, null=True, blank=True)
 
-    identity_card_number = models.CharField(max_length=45, null=True, blank=True)
+    identity_card_number = models.CharField(max_length=45, null=True, blank=True, unique=True)
     identity_card_photo = models.ImageField(upload_to='id_card/%Y/%m/%d', null=True, blank=True)
     photo = models.ImageField(upload_to='photo/%Y/%m/%d', null=True, blank=True)
     public_photo = models.ImageField(upload_to='public_photo/%Y/%m/%d', null=True, blank=True)
@@ -34,8 +34,8 @@ class Archer(TimeStampedModel):
     skck = models.ImageField(upload_to='skck/%Y/%m/%d', null=True, blank=True)
 
     # Body section
-    body_height = models.CharField(max_length=25, null=True, blank=True, default="0")
     body_weight = models.CharField(max_length=25, null=True, blank=True, default="0")
+    body_height = models.CharField(max_length=25, null=True, blank=True, default="0")
     draw_length = models.CharField(max_length=25, null=True, blank=True, default="0")
 
     # Approval section
@@ -44,14 +44,14 @@ class Archer(TimeStampedModel):
     approved_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, related_name='archers_approval', null=True, blank=True
     )
-    kecamatan = models.ForeignKey(
-        'region.Kecamatan', on_delete=models.SET_NULL,  null=True, blank=True
+    kelurahan = models.ForeignKey(
+        'region.Kelurahan', on_delete=models.SET_NULL,  null=True, blank=True
     )
     region_code_name = models.CharField(max_length=100, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.kecamatan:
-            self.region_code_name = self.kecamatan.kabupaten.provinsi.code_name
+        if self.kelurahan:
+            self.region_code_name = self.kelurahan.kecamatan.kabupaten.provinsi.code_name
         return super().save(*args, **kwargs)
 
     def is_profile_complete(self):

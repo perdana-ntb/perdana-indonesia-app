@@ -1,0 +1,260 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Perdana Indonesia App | Archer Registration</title>
+    {% include "_assets/css.html" %}
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+        integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
+        crossorigin="anonymous" />
+    <style>
+        body {
+            /* background: url("{% static 'images/perdana-indonesia.png' %}"); */
+            background-color: black;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+    </style>
+</head>
+
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show   pace-done pace-done">
+    <div class="pace pace-inactive pace-inactive">
+        <div class="pace-progress" data-progress-text="100%" data-progress="99"
+            style="transform: translate3d(100%, 0px, 0px);">
+            <div class="pace-progress-inner"></div>
+        </div>
+        <div class="pace-activity"></div>
+    </div>
+    <div id="app-body" class="app-body">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-sm-12">
+                    {% include "_base/message.html" %}
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="text-align: center;">
+                                <img src="{% static 'images/perdana-indonesia.png' %}" alt="" width="89px">
+                                <h3 style="text-align: center;">Daftar sebagai anggota Perdana Indonesia</h3>
+                            </div>
+                            <hr class="mb-3">
+                            <div class="row justify-content-center">
+                                <form role="form" method="POST" action="{% url 'archer:registration' 'indonesia' %}"
+                                    class="col-md-10 col-sm-12" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="">NIK</label>
+                                        <input type="text" class="form-control" name="identity_card_number" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Foto KTP</label> <br>
+                                        <input type="file" name="identity_card_photo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Nama Lengkap</label>
+                                        <input type="text" class="form-control" name="full_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">No. Telepon</label>
+                                        <input type="text" class="form-control" name="phone" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Jenis Kelamin</label>
+                                        <select name="gender" class="form-control" required>
+                                            <option value="pria">Pria</option>
+                                            <option value="wanita">Wanita</option>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="">Tempat Lahir</label>
+                                                <input type="text" class="form-control" name="born_place" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="">Tanngal Lahir</label>
+                                                <input type="text" class="form-control" name="born_date" id="born_date"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Alamat</label>
+                                        <input type="text" class="form-control" name="address">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Provinsi</label>
+                                        <select id="province" @change="onChangeSelection($event, getCities)"
+                                            class="form-control" required>
+                                            {% for province in provinces %}
+                                            <option value="{{province.code}}">{{province.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Kabupaten</label>
+                                        <select id="city" class="form-control"
+                                            @change="onChangeSelection($event, getDistricts)" required>
+                                            <option v-for="city in cities" :key="city.code" :value="city.code">
+                                                ${city.name}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Kecamatan</label>
+                                        <select id="district" class="form-control"
+                                            @change="onChangeSelection($event, getVillages)" required>
+                                            <option v-for="district in districts" :key="district.code"
+                                                :value="district.code">
+                                                ${district.name}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Kelurahan</label>
+                                        <select id="village" class="form-control" name="kelurahan"
+                                            @change="onChangeSelection($event, getRegionalClubs)" required>
+                                            <option v-for="village in villages" :key="village.code" :value="village.id">
+                                                ${village.name}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Klub / Satuan</label>
+                                        <select id="club" name="club" class="form-control" required>
+                                            <option v-for="club in regionalClubs" :key="club.id" :value="club.id">
+                                                ${club.name}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Golongan Darah</label>
+                                                <select name="blood_type" id="" class="form-control">
+                                                    <option value="A">A</option>
+                                                    <option value="B">B</option>
+                                                    <option value="AB">AB</option>
+                                                    <option value="O">O</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="form-group">
+                                                <label for="">Riwayat Penyakit</label>
+                                                <input type="text" class="form-control" name="disease_history"
+                                                    placeholder="Sakit 1, Sakit 2, Sakit 3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Berat Badan</label>
+                                                <input type="number" class="form-control" name="body_weight"
+                                                    placeholder="0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Tinggi Badan</label>
+                                                <input type="number" class="form-control" name="body_height"
+                                                    placeholder="0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Panjang Lengan</label>
+                                                <input type="number" class="form-control" name="draw_length"
+                                                    placeholder="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <a href="{% url 'archer:login' 'indonesia' %}"
+                                                    class="btn btn-light btn-block">Login</a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <button type="submit" class="btn btn-primary btn-block">Daftar</button>
+                                            </div>
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include "_assets/js.html" %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+        integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        window.onload = () => {
+            $("#born_date").datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+        }
+        const vm = new Vue({
+            el: '#app-body',
+            delimiters: ['${', '}'],
+            data: {
+                cities: [],
+                districts: [],
+                villages: [],
+                regionalClubs: [],
+            },
+            methods: {
+                onChangeSelection: function (e, actionTrigger) {
+                    actionTrigger(e.target.value)
+                },
+                getCities: function (provinceCode) {
+                    const self = this
+                    fetch(`/app/perdana/indonesia/region/cities/${provinceCode}`)
+                        .then(res => res.json())
+                        .then(res => {
+                            self.cities = res
+                        })
+                },
+                getDistricts: function (cityCode) {
+                    const self = this
+                    fetch(`/app/perdana/indonesia/region/districts/${cityCode}`)
+                        .then(res => res.json())
+                        .then(res => {
+                            self.districts = res
+                        })
+                },
+                getVillages: function (districtCode) {
+                    const self = this
+                    fetch(`/app/perdana/indonesia/region/villages/${districtCode}`)
+                        .then(res => res.json())
+                        .then(res => {
+                            self.villages = res
+                        })
+                },
+                getRegionalClubs: function (villageId) {
+                    const self = this
+                    fetch(`/app/perdana/indonesia/organisation/regional-clubs/${villageId}`)
+                        .then(res => res.json())
+                        .then(res => {
+                            self.regionalClubs = res
+                        })
+                        .catch(e => {
+                            console.log(e)
+                        })
+                },
+            }
+        })
+    </script>
+</body>
+
+</html>

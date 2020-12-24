@@ -1,5 +1,4 @@
 from archer.models import Archer
-from club.serializers import ArcheryRangeSerializer
 from core.exceptions import PerdanaError
 from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
@@ -104,7 +103,6 @@ class NearestPracticeScheduleSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         reps = super().to_representation(instance)
-        reps['archery_range'] = ArcheryRangeSerializer(instance.archery_range).data
         reps['day_display'] = instance.get_day_display()
         reps['distance'] = instance.distance
         return reps

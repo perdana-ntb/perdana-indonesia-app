@@ -1,3 +1,9 @@
+from core.admin import DefaultAdminMixin
 from django.contrib import admin
 
-# Register your models here.
+from .models import Archer
+
+
+@admin.register(Archer)
+class ArcherModelAdmin(DefaultAdminMixin, admin.ModelAdmin):
+    pass

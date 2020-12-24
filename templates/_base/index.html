@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Perdana Indonesia App | {% block subtitle %}{% endblock subtitle %}</title>
+    {% include "_assets/css.html" %}
+    {% block inline_css %}{% endblock inline_css %}
+</head>
+
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show   pace-done pace-done">
+    <div class="pace  pace-inactive pace-inactive">
+        <div class="pace-progress" data-progress-text="100%" data-progress="99"
+            style="transform: translate3d(100%, 0px, 0px);">
+            <div class="pace-progress-inner"></div>
+        </div>
+        <div class="pace-activity"></div>
+    </div>
+    {% include "_base/navbar.html" %}
+    <div class="app-body">
+        {% include "_base/sidebar.html" %}
+        <main class="main">
+            {% block breadcrumb %}{% endblock breadcrumb %}
+            <div class="container-fluid">
+                <div id="ui-view">
+                    <div>
+                        <div class="animated fadeIn">
+                            {% block content %}
+
+                            {% endblock content %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        {% include "base/aside.html" %}
+    </div>
+    <footer class="app-footer">
+        <div>
+            <a href="http://perdanaindonesia.or.id/" target="_blank">Perdana Indonesia</a>
+            <span>© 2020 Perdana NTB IT Division</span>
+        </div>
+        <div class="ml-auto">
+            <span>Powered by</span>
+            <a href="https://coreui.io/pro/">CoreUI Pro</a>
+        </div>
+    </footer>
+
+    {% include "_assets/js.html" %}
+    {% block inline_js %}{% endblock inline_js %}
+</body>
+
+</html>

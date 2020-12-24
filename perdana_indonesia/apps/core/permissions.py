@@ -4,10 +4,12 @@ PERDANA_USER_ROLE = [
     'regional',
     'pengprov',
     'pengcab',
-    'club-manager',
-    'satuan-manager',
+    'club-satuan-manager',
     'archer'
 ]
+
+PERDANA_ARCHER_USER_ROLE = PERDANA_USER_ROLE[4:]
+PERDANA_MANAGEMENT_USER_ROLE = PERDANA_USER_ROLE[:3]
 
 
 class IsRegionalUser(IsAdminUser):
