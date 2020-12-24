@@ -27,5 +27,9 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Run migrations
         run: python manage.py migrate
+        env:
+          GITHUB_WORKFLOW: 1
       - name: Run tests
-        run: python manage.py test
+        run: python manage.py test -v 2 --keepdb
+        env:
+          GITHUB_WORKFLOW: 1
