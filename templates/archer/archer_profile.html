@@ -59,19 +59,19 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="text-muted"">Berat Badan</label>
-                            <p class=" form-control">{{archer.body_weight}}</p>
+                            <p class=" form-control">{{archer.body_weight|default_if_none:'0'}}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="text-muted"">Tinggi Badan</label>
-                            <p class=" form-control">{{archer.body_height}}</p>
+                            <p class=" form-control">{{archer.body_height|default_if_none:'0'}}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="text-muted"">Panjang Tarikan</label>
-                            <p class=" form-control">{{archer.draw_length}}</p>
+                            <p class=" form-control">{{archer.draw_length|default_if_none:'0'}}</p>
                         </div>
                     </div>
                 </div>

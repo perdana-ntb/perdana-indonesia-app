@@ -90,12 +90,10 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-header text-center">
-                    Login as, <strong>Admin</strong>
+                    Login as, <strong>{{request.user.username}}</strong>
                 </div>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{% url 'archer:profile' request.user.archer.region_code_name %}">
                     <i class="fa fa-user"></i> Profile</a>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-wrench"></i> Settings</a>
                 <a class="dropdown-item" href="{% url 'archer:logout' request.user.archer.region_code_name %}">
                     <i class="fa fa-lock"></i> Logout</a>
             </div>

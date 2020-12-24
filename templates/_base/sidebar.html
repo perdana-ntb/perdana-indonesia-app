@@ -2,23 +2,40 @@
     <nav class="sidebar-nav ps ps--active-y">
         <ul class="nav">
             {% with request.user as user %}
-            {% ifnotequal 'archer' user.groups.all.0.name %}
-            <li class="nav-item">
-                <a class="nav-link active" href="main.html">
-                    <i class="nav-icon icon-speedometer"></i> Dashboard
-                    <!-- <span class="badge badge-info">NEW</span> -->
-                </a>
-            </li>
-            {% endifnotequal %}
-            {% endwith %}
-            <li class="nav-divider"></li>
+            {% if 'archer' == user.groups.all.0.name %}
             <li class="nav-title">Archer</li>
             <li class="nav-item">
-                <a class="nav-link active" href="main.html">
+                <a class="nav-link active" href="{% url 'archer:profile' request.user.archer.region_code_name %}">
                     <i class="nav-icon icon-user"></i> Profile
                     <!-- <span class="badge badge-info">NEW</span> -->
                 </a>
             </li>
+            {% else %}
+            <li class="nav-title">Dashboard</li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboardd:main' request.user.archer.region_code_name %}">
+                    <i class="nav-icon icon-speedometer"></i> Dashboard
+                    <!-- <span class="badge badge-info">NEW</span> -->
+                </a>
+            </li>
+            <li class="nav-title">Archer</li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'archer:club-members' request.user.archer.region_code_name %}">
+                    <i class="nav-icon icon-user"></i> Anggota
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'archer:club-applicants' request.user.archer.region_code_name %}">
+                    <i class="nav-icon icon-user"></i> Pendaftar
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'archer:profile' request.user.archer.region_code_name %}">
+                    <i class="nav-icon icon-user"></i> Profile
+                </a>
+            </li>
+            {% endif %}
+            {% endwith %}
         </ul>
         <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
             <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>

@@ -29,7 +29,6 @@ class BaseRoleAccessMixin(UserPassesTestMixin):
 
     def test_func(self):
         user = self.request.user
-        print()
         try:
             return bool(
                 user.is_authenticated
@@ -41,7 +40,7 @@ class BaseRoleAccessMixin(UserPassesTestMixin):
             print(str(e))
             return False
 
-    def get_archer(self):
+    def getArcher(self):
         return self.request.user.archer
 
 

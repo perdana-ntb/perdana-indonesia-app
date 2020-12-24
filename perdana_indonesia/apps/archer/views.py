@@ -1,13 +1,17 @@
-from core.permissions import PERDANA_ARCHER_USER_ROLE, PERDANA_USER_ROLE
-from core.views import RoleBasesAccessTemplateView
+from typing import Any, Dict
+
+from core.permissions import (PERDANA_ARCHER_USER_ROLE,
+                              PERDANA_MANAGEMENT_USER_ROLE, PERDANA_USER_ROLE)
+from core.views import RoleBasesAccessListView, RoleBasesAccessTemplateView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.views.generic.base import View
-from region.models import Provinsi
+from region.models import Kabupaten, Provinsi
 
 from .forms import ArcherLoginForm, ArcherRegistrationForm
 from .models import Archer
@@ -47,7 +51,7 @@ class ArcherLoginFormView(FormView):
         if user:
             archer: Archer = user.archer
             if archer.approved:
-                # if archer.is_profile_complete():
+                # if archer.isProfileComplete():
                 login(self.request, user)
                 if list(user.groups.values_list('name', flat=True))[0] in PERDANA_ARCHER_USER_ROLE:
                     self.success_url = 'archer:profile'
@@ -76,5 +80,83 @@ class ArcherLogoutView(View):
 
 
 class ArcherUserProfileTemplateView(RoleBasesAccessTemplateView):
-    template_name = 'archer/archer_profile.html'
     allowed_groups = PERDANA_USER_ROLE
+    template_name = 'archer/archer_profile.html'
+
+
+class ArcherClubMemberListView(RoleBasesAccessListView):
+    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE
+    template_name = 'archer/archer_member_list.html'
+    queryset = Archer.objects.filter(user__isnull=False)
+    context_object_name = 'archers'
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.archer = None
+        self.userGroup = None
+
+    def mappedUserGoupQueryset(self, queryset: QuerySet):
+        city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
+        return {
+            PERDANA_USER_ROLE[0]: queryset,
+            PERDANA_USER_ROLE[1]: queryset.filter(region_code_name=self.archer.region_code_name),
+            PERDANA_USER_ROLE[2]: queryset.filter(club__city_code=city.code),
+            PERDANA_USER_ROLE[3]: queryset.filter(club=self.archer.club)
+        }
+
+    def mappedUserGoupTableTitleDisplayed(self):
+        return {
+            PERDANA_USER_ROLE[0]: 'Semua anggota dalam Regional',
+            PERDANA_USER_ROLE[1]: 'Semua anggota dalam Provinsi',
+            PERDANA_USER_ROLE[2]: 'Semua anggota dalam Cabang (Kabupaten)',
+            PERDANA_USER_ROLE[3]: 'Semua anggota %s' % self.archer.club.name
+        }
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['tableTitle'] = self.mappedUserGoupTableTitleDisplayed()[self.userGroup.name]
+        return context
+
+    def get_queryset(self) -> QuerySet:
+        self.archer = self.request.user.archer
+        self.userGroup = self.archer.getUserGroup()
+        return self.mappedUserGoupQueryset(super().get_queryset())[self.userGroup.name]
+
+
+class ArcherClubApplicantListView(RoleBasesAccessListView):
+    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE
+    template_name = 'archer/archer_applicant_list.html'
+    queryset = Archer.objects.filter(user__isnull=True)
+    context_object_name = 'archers'
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.archer = None
+        self.userGroup = None
+
+    def mappedUserGoupQueryset(self, queryset: QuerySet):
+        city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
+        return {
+            PERDANA_USER_ROLE[0]: queryset,
+            PERDANA_USER_ROLE[1]: queryset.filter(region_code_name=self.archer.region_code_name),
+            PERDANA_USER_ROLE[2]: queryset.filter(club__city_code=city.code),
+            PERDANA_USER_ROLE[3]: queryset.filter(club=self.archer.club)
+        }
+
+    def mappedUserGoupTableTitleDisplayed(self):
+        return {
+            PERDANA_USER_ROLE[0]: 'Semua pendaftar dalam Regional',
+            PERDANA_USER_ROLE[1]: 'Semua pendaftar dalam Provinsi',
+            PERDANA_USER_ROLE[2]: 'Semua pendaftar dalam Cabang (Kabupaten)',
+            PERDANA_USER_ROLE[3]: 'Semua pendaftar %s' % self.archer.club.name
+        }
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['tableTitle'] = self.mappedUserGoupTableTitleDisplayed()[self.userGroup.name]
+        return context
+
+    def get_queryset(self) -> QuerySet:
+        self.archer = self.request.user.archer
+        self.userGroup = self.archer.getUserGroup()
+        return self.mappedUserGoupQueryset(super().get_queryset())[self.userGroup.name]
