@@ -5,8 +5,8 @@ CHANGE_STATUS_CHOICES = (
 )
 
 GENDER_CHOICES = (
-    ('pria', 'Pria'),
-    ('wanita', 'Wanita')
+    ('Pria', 'Pria'),
+    ('Wanita', 'Wanita')
 )
 
 BLOOD_TYPE_CHOICES = (

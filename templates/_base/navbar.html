@@ -6,23 +6,12 @@
     <a class="navbar-brand" href="#">
         <img class="navbar-brand-full" src="{% static 'images/perdanantb.png' %}" width="auto" height="40"
             alt="CoreUI Logo">
-        <img class="navbar-brand-minimized" src="{% static 'images/perdanantb.png' %}" width="30" height="30"
+        <img class="navbar-brand-minimized" src="{% static 'images/perdana-indonesia.png' %}" width="30" height="30"
             alt="CoreUI Logo">
     </a>
     <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <ul class="nav navbar-nav d-md-down-none">
-        <li class="nav-item px-3">
-            <a class="nav-link" href="#">Dashboard</a>
-        </li>
-        <li class="nav-item px-3">
-            <a class="nav-link" href="#">Users</a>
-        </li>
-        <li class="nav-item px-3">
-            <a class="nav-link" href="#">Settings</a>
-        </li>
-    </ul>
     <ul class="nav navbar-nav ml-auto">
         <li class="nav-item dropdown d-md-down-none">
             <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
@@ -107,15 +96,9 @@
                     <i class="fa fa-user"></i> Profile</a>
                 <a class="dropdown-item" href="#">
                     <i class="fa fa-wrench"></i> Settings</a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{% url 'archer:logout' request.user.archer.region_code_name %}">
                     <i class="fa fa-lock"></i> Logout</a>
             </div>
         </li>
     </ul>
-    <button class="navbar-toggler aside-menu-toggler d-md-down-none" type="button" data-toggle="aside-menu-lg-show">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <button class="navbar-toggler aside-menu-toggler d-lg-none" type="button" data-toggle="aside-menu-show">
-        <span class="navbar-toggler-icon"></span>
-    </button>
 </header>

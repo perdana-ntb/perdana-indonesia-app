@@ -1,0 +1,92 @@
+{% extends "_base/index.html" %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">User</li>
+    <li class="breadcrumb-item active">Profile</li>
+</ol>
+{% endblock breadcrumb %}
+{% block subtitle %} {{request.user.archer.full_name}} {% endblock subtitle %}
+{% block content %}
+{% with request.user.archer as archer %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="text-muted">NIK</label>
+                    <p class="form-control">{{archer.identity_card_number}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Nama Lengkap</label>
+                    <p class="form-control">{{archer.full_name}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">No. Telepon</label>
+                    <p class="form-control">{{archer.phone}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Jenis Kelamin</label>
+                    <p class="form-control">{{archer.gender}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Tempat, Tanggal Lahir</label>
+                    <p class="form-control">{{archer.born_place}}, {{archer.born_date|date:'d F Y'}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Alamat</label>
+                    <p class="form-control">
+                        {{archer.address}}
+                    </p>
+                    <p class="form-control">
+                        {{archer.kelurahan.name}}, {{archer.kelurahan.kecamatan.name}},
+                        {{archer.kelurahan.kecamatan.kabupaten.name}},
+                        {{archer.kelurahan.kecamatan.kabupaten.provinsi.name}}
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Klub / Satuan</label>
+                    <p class="form-control">{{archer.club.name}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Golongan Darah</label>
+                    <p class="form-control">{{archer.blood_type}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Riwayat Penyakit</label>
+                    <p class="form-control">{{archer.disease_history|default_if_none:'-'}}</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="text-muted"">Berat Badan</label>
+                            <p class=" form-control">{{archer.body_weight}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="text-muted"">Tinggi Badan</label>
+                            <p class=" form-control">{{archer.body_height}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="text-muted"">Panjang Tarikan</label>
+                            <p class=" form-control">{{archer.draw_length}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group pull-right mt-3">
+                    <button type="submit" class="btn btn-primary">Ubah Profile &nbsp; <i
+                            class="fa fa-pencil"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endblock content %}
+{% block js %}
+<script>
+    console.log("Dashboard test")
+</script>
+{% endblock js %}
