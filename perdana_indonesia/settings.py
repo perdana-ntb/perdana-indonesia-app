@@ -164,12 +164,8 @@ WSGI_APPLICATION = 'perdana_indonesia.wsgi.application'
 if os.getenv('GITHUB_WORKFLOW'):
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'github-actions',
-            'USER': 'developer',
-            'PASSWORD': 'github-actions',
-            'HOST': 'localhost',
-            'PORT': '3306'
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'test_db.sqlite3',
         }
     }
 else:

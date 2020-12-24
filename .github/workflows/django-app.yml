@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: 3.7
       - name: Install dependencies
@@ -25,16 +25,6 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Shutdown Ubuntu MySQL (SUDO)
-        run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
-      - name: Set up MySQL
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          mysql version: "8.0"
-          mysql database: "github-actions"
-          mysql root password: "github-actions"
-          mysql user: "developer"
-          mysql password: "github-actions"
       - name: Run migrations
         run: python manage.py migrate
       - name: Run tests
