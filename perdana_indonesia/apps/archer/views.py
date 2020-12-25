@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django.db.models.query import QuerySet
 from django.forms.forms import Form
 from django.http.response import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import FormView
 from django.views.generic.base import View
@@ -216,3 +216,21 @@ class GenerateArcherQRCodeView(RoleBasesAccessView):
             extra_tags='success'
         )
         return redirect('archer:club-members', province_code=instance.region_code_name)
+
+
+class ArcherMembershipCheckView(View):
+    template_name = 'archer/archer_membership_check.html'
+
+    def getArcherObjectOrNone(self, archerId) -> Archer:
+        if archerId:
+            try:
+                return Archer.objects.get(user__username=archerId)
+            except Archer.DoesNotExist:
+                return None
+        return None
+
+    def get(self, request, **kwargs):
+        instance = self.getArcherObjectOrNone(request.GET.get('archer_id'))
+        return render(request, self.template_name, context={
+            'instance': instance
+        })
