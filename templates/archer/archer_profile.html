@@ -13,8 +13,59 @@
         <div class="card">
             <div class="card-body">
                 <div class="form-group">
+                    <label class="text-muted">QRCode</label>
+                    <br>
+                    {% if archer.qrcode %}
+                    <a href="{{archer.qrcode.url}}" target="_blank">
+                        <img src="{{archer.qrcode.url}}" alt="" style="width: 25%;">
+                    </a>
+                    {% else %}
+                    <span class="text-danger">Belum dilengkapi, silahkan hubungi pengurus club</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Foto Profile</label>
+                    <br>
+                    {% if archer.photo %}
+                    <a href="{{archer.photo.url}}" target="_blank">
+                        <img src="{{archer.photo.url}}" alt="" style="width: 25%;">
+                    </a>
+                    {% else %}
+                    <span class="text-danger">Belum dilengkapi</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Foto Profile Publik</label>
+                    <br>
+                    {% if archer.public_photo %}
+                    <a href="{{archer.public_photo.url}}" target="_blank">
+                        <img src="{{archer.public_photo.url}}" alt="" style="width: 25%;">
+                    </a>
+                    {% else %}
+                    <span class="text-danger">Belum dilengkapi</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
                     <label class="text-muted">NIK</label>
                     <p class="form-control">{{archer.identity_card_number}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Foto KTP</label>
+                    <br>
+                    <a href="{{archer.identity_card_photo.url}}" target="_blank">
+                        <img src="{{archer.identity_card_photo.url}}" alt="" style="width: 25%;">
+                    </a>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted">Foto SKCK</label>
+                    <br>
+                    {% if archer.skck %}
+                    <a href="{{archer.skck.url}}" target="_blank">
+                        <img src="{{archer.skck.url}}" alt="" style="width: 25%;">
+                    </a>
+                    {% else %}
+                    <span class="text-danger">Belum dilengkapi</span>
+                    {% endif %}
                 </div>
                 <div class="form-group">
                     <label class="text-muted">Nama Lengkap</label>
@@ -76,8 +127,13 @@
                     </div>
                 </div>
                 <div class="form-group pull-right mt-3">
+                    {% if archer.isProfileComplete %}
                     <button type="submit" class="btn btn-primary">Ubah Profile &nbsp; <i
                             class="fa fa-pencil"></i></button>
+                    {% else %}
+                    <a href="{% url 'archer:complete-profile' archer.region_code_name %}"
+                        class="btn btn-primary">Lengkapi Profile &nbsp; <i class="fa fa-pencil"></i></a>
+                    {% endif %}
                 </div>
             </div>
         </div>
