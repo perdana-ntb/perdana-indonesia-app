@@ -1,14 +1,17 @@
 from django.urls import path
 
 from .views import (ArcherClubApplicantListView, ArcherClubMemberListView,
-                    ArcherLoginFormView, ArcherLogoutView,
-                    ArcherRegistrationFormView, ArcherUserProfileTemplateView)
+                    ArcherCompleteProfileFormView, ArcherLoginFormView,
+                    ArcherLogoutView, ArcherRegistrationFormView,
+                    ArcherUserProfileTemplateView, GenerateArcherQRCodeView)
 
 urlpatterns = [
     path('registration', ArcherRegistrationFormView.as_view(), name='registration'),
     path('login', ArcherLoginFormView.as_view(), name='login'),
     path('logout', ArcherLogoutView.as_view(), name='logout'),
     path('profile', ArcherUserProfileTemplateView.as_view(), name='profile'),
+    path('complete-profile', ArcherCompleteProfileFormView.as_view(), name='complete-profile'),
     path('club-members', ArcherClubMemberListView.as_view(), name='club-members'),
     path('club-applicants', ArcherClubApplicantListView.as_view(), name='club-applicants'),
+    path('generate-qrcode/<int:archer_id>', GenerateArcherQRCodeView.as_view(), name='gen-qrcode'),
 ]

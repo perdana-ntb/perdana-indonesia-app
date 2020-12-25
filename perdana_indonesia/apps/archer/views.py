@@ -1,19 +1,28 @@
 from typing import Any, Dict
 
 from core.permissions import (PERDANA_ARCHER_USER_ROLE,
+                              PERDANA_CLUB_MANAGEMENT_USER_ROLE,
                               PERDANA_MANAGEMENT_USER_ROLE, PERDANA_USER_ROLE)
-from core.views import RoleBasesAccessListView, RoleBasesAccessTemplateView
+from core.utils.generator import generate_qrcode_from_text
+from core.views import (RoleBasesAccessFormView, RoleBasesAccessListView,
+                        RoleBasesAccessTemplateView, RoleBasesAccessView,
+                        UserAuthenticatedRedirectMixin)
+from django import http
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models.query import QuerySet
+from django.forms.forms import Form
+from django.http.response import HttpResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import FormView
 from django.views.generic.base import View
 from region.models import Kabupaten, Provinsi
 
-from .forms import ArcherLoginForm, ArcherRegistrationForm
+from .forms import (ArcherCompleteProfileForm, ArcherLoginForm,
+                    ArcherRegistrationForm)
 from .models import Archer
 
 
@@ -40,7 +49,7 @@ class ArcherRegistrationFormView(FormView):
         return super().form_invalid(form)
 
 
-class ArcherLoginFormView(FormView):
+class ArcherLoginFormView(UserAuthenticatedRedirectMixin, FormView):
     template_name = 'archer/login.html'
     form_class = ArcherLoginForm
     success_url = 'dashboardd:main'
@@ -51,9 +60,9 @@ class ArcherLoginFormView(FormView):
         if user:
             archer: Archer = user.archer
             if archer.approved:
-                # if archer.isProfileComplete():
                 login(self.request, user)
-                if list(user.groups.values_list('name', flat=True))[0] in PERDANA_ARCHER_USER_ROLE:
+                userGroup = user.groups.first()
+                if userGroup.name in PERDANA_ARCHER_USER_ROLE:
                     self.success_url = 'archer:profile'
                 return redirect(self.success_url, province_code=archer.region_code_name)
             messages.error(
@@ -82,6 +91,33 @@ class ArcherLogoutView(View):
 class ArcherUserProfileTemplateView(RoleBasesAccessTemplateView):
     allowed_groups = PERDANA_USER_ROLE
     template_name = 'archer/archer_profile.html'
+
+
+class ArcherCompleteProfileFormView(RoleBasesAccessFormView):
+    allowed_groups = PERDANA_USER_ROLE
+    template_name = 'archer/archer_complete_profile.html'
+    form_class = ArcherCompleteProfileForm
+
+    def dispatch(self, request: http.HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        instance: Archer = request.user.archer
+        if instance.isProfileComplete:
+            return redirect(reverse('archer:profile', kwargs=self.kwargs))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self) -> str:
+        return reverse('archer:profile', kwargs=self.kwargs)
+
+    def form_valid(self, form: Form) -> HttpResponse:
+        instance: Archer = self.getArcher()
+        instance.skck = form.cleaned_data.get('skck')
+        instance.photo = form.cleaned_data.get('photo')
+        instance.public_photo = form.cleaned_data.get('public_photo')
+        instance.body_weight = form.cleaned_data.get('body_weight')
+        instance.body_height = form.cleaned_data.get('body_height')
+        instance.draw_length = form.cleaned_data.get('draw_length')
+        instance.save()
+        messages.success(self.request, 'Data profile berhasil di perbarui', extra_tags='success')
+        return redirect(self.get_success_url())
 
 
 class ArcherClubMemberListView(RoleBasesAccessListView):
@@ -160,3 +196,23 @@ class ArcherClubApplicantListView(RoleBasesAccessListView):
         self.archer = self.request.user.archer
         self.userGroup = self.archer.getUserGroup()
         return self.mappedUserGoupQueryset(super().get_queryset())[self.userGroup.name]
+
+
+class GenerateArcherQRCodeView(RoleBasesAccessView):
+    allowed_groups = PERDANA_CLUB_MANAGEMENT_USER_ROLE
+
+    def getArcherObject(self, archerId) -> Archer:
+        try:
+            return Archer.objects.get(pk=archerId)
+        except Archer.DoesNotExist:
+            raise http.Http404
+
+    def get(self, request, **kwargs):
+        instance = self.getArcherObject(kwargs.get('archer_id'))
+        instance.qrcode = generate_qrcode_from_text(instance.user.username)
+        instance.save()
+        messages.success(
+            request, 'Berhasil generate QRCode untuk Archer %s' % instance.user.username,
+            extra_tags='success'
+        )
+        return redirect('archer:club-members', province_code=instance.region_code_name)

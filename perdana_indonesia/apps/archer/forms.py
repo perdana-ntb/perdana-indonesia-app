@@ -11,6 +11,12 @@ class ArcherRegistrationForm(forms.ModelForm):
                    'public_photo', 'qrcode', 'skck')
 
 
+class ArcherCompleteProfileForm(forms.ModelForm):
+    class Meta:
+        model = Archer
+        fields = ('photo', 'public_photo', 'skck', 'body_weight', 'body_height', 'draw_length')
+
+
 class ArcherLoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField()
