@@ -5,6 +5,9 @@ from fabric import Connection, task
 CONNECTION_PROPERTIES = {
     "host": os.environ.get('SERVER_IP'),
     "user": os.environ.get('SERVER_USER'),
+    "connect_kwargs": {
+        "key_filename": "/home/runner/.ssh/id_rsa-perdana"
+    },
 }
 
 
