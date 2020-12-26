@@ -27,6 +27,10 @@ jobs:
         run: python manage.py test -v 2 --keepdb
         env:
           GITHUB_WORKFLOW: 1
+      - name: Clear old installation process
+        run: |
+          sudo rm -rf /var/lib/dpkg/lock-frontend
+          sudo rm -rf /var/lib/dpkg/lock
       - name: Set Up Deployment Config
         run: |
           sudo apt-get update -y && apt-get install openssh-client -y
