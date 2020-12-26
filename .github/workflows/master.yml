@@ -32,7 +32,7 @@ jobs:
         with:
           key: ${{ secrets.PRIVATE_RSA_KEY }}
           name: perdana_rsa
-          config: ${{ secrets.SSH_CONFIG }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOST }}
       - name: Deployment
         run: fab remote
         env:
