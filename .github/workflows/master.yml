@@ -29,7 +29,7 @@ jobs:
           GITHUB_WORKFLOW: 1
       - name: Set Up Deployment Config
         run: |
-          "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
+          apt update -y && apt-get install openssh-client -y
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           echo -e ${{ secrets.PRIVATE_RSA_KEY }} > /src/rsa/perdana_rsa

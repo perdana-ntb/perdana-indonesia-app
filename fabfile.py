@@ -1,8 +1,10 @@
+import os
+
 from fabric import Connection, task
 
 CONNECTION_PROPERTIES = {
-    "host": "159.65.143.247",
-    "user": "root",
+    "host": os.environ.get('SERVER_IP'),
+    "user": os.environ.get('SERVER_USER'),
     "connect_kwargs": {
         "key_filename": "/src/rsa/perdana_rsa"
     },
