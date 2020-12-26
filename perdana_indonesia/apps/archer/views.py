@@ -12,9 +12,10 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.db.models.query import QuerySet
 from django.forms.forms import Form
-from django.http.response import HttpResponse
+from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import FormView
@@ -216,6 +217,41 @@ class GenerateArcherQRCodeView(RoleBasesAccessView):
             extra_tags='success'
         )
         return redirect('archer:club-members', province_code=instance.region_code_name)
+
+
+class ArcherMembershipApprovalFormView(RoleBasesAccessView):
+    allowed_groups = PERDANA_CLUB_MANAGEMENT_USER_ROLE
+    success_url = 'archer:club-members'
+
+    def getArcherObject(self, pk) -> Archer:
+        try:
+            return Archer.objects.get(pk=pk)
+        except Archer.DoesNotExist:
+            raise Http404
+
+    @transaction.atomic
+    def post(self, request, **kwargs):
+        instance = self.getArcherObject(self.kwargs.get('pk'))
+        if not instance.approved:
+            try:
+                user = User.objects.get(username=request.POST.get('membership_number'))
+                messages.success(request, 'No. Anggota %s sudah diberikan kepada anggota lain'
+                                 % request.POST.get('membership_number'), extra_tags='danger')
+                self.success_url = 'archer:club-applicants'
+            except User.DoesNotExist:
+                user = User.objects.create(username=request.POST.get('membership_number'))
+                user.set_password('membership_number')
+                user.save()
+
+                instance.user = user
+                instance.qrcode = generate_qrcode_from_text(instance.user.username)
+                instance.approved = True
+                instance.approved_by = request.user
+                instance.save()
+                messages.success(request, 'Pendaftar %s telah diterima sebagai anggota'
+                                 % instance.full_name, extra_tags='success')
+
+        return redirect(self.success_url, instance.region_code_name)
 
 
 class ArcherMembershipCheckView(View):

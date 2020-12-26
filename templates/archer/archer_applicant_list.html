@@ -10,6 +10,7 @@
 {% with request.user.archer as archer %}
 <div class="row justify-content-center">
     <div class="col-md-12">
+        {% include "_base/message.html" %}
         <div class="card">
             <div class="card-header">
                 <h6>{{tableTitle}}</h6>
@@ -35,9 +36,35 @@
                             <td>{{archer.gender}}</td>
                             <td>{{archer.date_register|date:'d F Y'}}</td>
                             <td class="text-center">
-                                <a href="#" class="btn btn-sm btn-primary"><i class="fa fa-check"></i></a>
+                                <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                    data-target="#modal-{{archer.identity_card_number}}"><i
+                                        class="fa fa-check"></i></button>
                             </td>
                         </tr>
+                        <div id="modal-{{archer.identity_card_number}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <form
+                                    action="{% url 'archer:approve' province_code=archer.region_code_name pk=archer.pk %}"
+                                    method="POST">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label class="text-muted">Tentukan No. Anggota</label>
+                                                <input type="text" name="membership_number" class="form-control"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default"
+                                                data-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-primary">Terima sebagai
+                                                anggota</button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </form>
+                            </div><!-- /.modal-dialog -->
+                        </div>
                         {% endfor %}
                     </tbody>
                 </table>

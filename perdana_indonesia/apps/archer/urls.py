@@ -2,9 +2,9 @@ from django.urls import path
 
 from .views import (ArcherClubApplicantListView, ArcherClubMemberListView,
                     ArcherCompleteProfileFormView, ArcherLoginFormView,
-                    ArcherLogoutView, ArcherMembershipCheckView,
-                    ArcherRegistrationFormView, ArcherUserProfileTemplateView,
-                    GenerateArcherQRCodeView)
+                    ArcherLogoutView, ArcherMembershipApprovalFormView,
+                    ArcherMembershipCheckView, ArcherRegistrationFormView,
+                    ArcherUserProfileTemplateView, GenerateArcherQRCodeView)
 
 urlpatterns = [
     path('registration', ArcherRegistrationFormView.as_view(), name='registration'),
@@ -16,4 +16,5 @@ urlpatterns = [
     path('club-members', ArcherClubMemberListView.as_view(), name='club-members'),
     path('club-applicants', ArcherClubApplicantListView.as_view(), name='club-applicants'),
     path('generate-qrcode/<int:archer_id>', GenerateArcherQRCodeView.as_view(), name='gen-qrcode'),
+    path('approve/<int:pk>', ArcherMembershipApprovalFormView.as_view(), name='approve'),
 ]
