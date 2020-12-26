@@ -5,6 +5,7 @@ from django.db import models
 
 class Club(TimeStampedModel):
     name = models.CharField(max_length=100)
+    organisation_id = models.CharField(max_length=100, null=True, blank=True)
     central = models.ForeignKey(
         'self', on_delete=models.SET_NULL, null=True, blank=True, related_name='branchs'
     )
