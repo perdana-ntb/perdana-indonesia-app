@@ -232,5 +232,5 @@ class ArcherMembershipCheckView(View):
     def get(self, request, **kwargs):
         instance = self.getArcherObjectOrNone(request.GET.get('archer_id'))
         return render(request, self.template_name, context={
-            'instance': instance
+            'instance': instance,
         })
