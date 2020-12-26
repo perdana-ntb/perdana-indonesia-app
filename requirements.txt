@@ -115,3 +115,4 @@ webencodings==0.5.1
 wrapt==1.11.2
 xlrd==1.2.0
 zipp==0.6.0
+fabric==2.5.0
