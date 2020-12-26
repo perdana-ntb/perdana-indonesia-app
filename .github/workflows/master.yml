@@ -36,5 +36,7 @@ jobs:
           chmod 700 /src/rsa/perdana_rsa
           eval $(ssh-agent -s)
           echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+          export SERVER_IP=${{ secrets.SERVER_IP }}
+          export SERVER_USER=${{ secrets.SERVER_USER }}
       - name: Deployment
         run: fab remote
