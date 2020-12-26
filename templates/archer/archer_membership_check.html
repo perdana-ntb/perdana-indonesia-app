@@ -65,6 +65,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% if request.GET.archer_id %}
                         {% if instance %}
                         <div>
                             <div class="card">
@@ -86,6 +87,18 @@
                                 </div>
                             </div>
                         </div>
+                        {% else %}
+                        <div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p style="text-align: center;"><i class="fa fa-check-circle fa-5x text-danger"></i>
+                                    </p>
+                                    <h5 class="text-danger" style="text-align: center;">No. anggota
+                                        {{request.GET.archer_id}} tidak ditemukan</h5>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>

@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import core
 from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
@@ -27,6 +28,7 @@ urlpatterns = [
     url(r'^jet/', include('jet.urls', 'jet')),
     url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
 
+    path('', core.views.AutoRedirectView.as_view()),
     path('admin/', admin.site.urls),
     path('api/perdana/v1/', include(api_urls)),
     path('app/perdana/<str:province_code>/', include(app_urls)),
