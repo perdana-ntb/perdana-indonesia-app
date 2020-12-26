@@ -161,7 +161,7 @@ REST_FRAMEWORK = {
 
 WSGI_APPLICATION = 'perdana_indonesia.wsgi.application'
 
-if 'test' in sys.argv or os.environ.get('GITHUB_WORKFLOW') == 1:
+if 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
