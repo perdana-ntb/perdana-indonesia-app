@@ -33,7 +33,7 @@ jobs:
           sudo rm -rf /var/lib/dpkg/lock
       - name: Set Up Deployment Config
         run: |
-          sudo apt-get update -y && apt-get install openssh-client -y
+          sudo apt-get update -y && sudo apt-get install openssh-client -y
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           echo -e ${{ secrets.PRIVATE_RSA_KEY }} > /src/rsa/perdana_rsa
