@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import (AccessMixin, LoginRequiredMixin,
                                         UserPassesTestMixin)
 from django.http.response import HttpResponse
 from django.shortcuts import redirect
+from django.urls.base import reverse
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django.views.generic.base import View
 
@@ -96,3 +97,8 @@ class RoleBasesAccessListView(BaseRoleAccessMixin, LoginRequiredListView):
 
 class RoleBasesAccessDetailView(BaseRoleAccessMixin, LoginRequiredDetailView):
     pass
+
+
+class AutoRedirectView(View):
+    def get(self, request, **kwargs):
+        return redirect('archer:login', 'indonesia')
