@@ -6,7 +6,7 @@ CONNECTION_PROPERTIES = {
     "host": os.environ.get('SERVER_IP'),
     "user": os.environ.get('SERVER_USER'),
     "connect_kwargs": {
-        "key_filename": "~/.ssh/perdana_rsa"
+        "key_filename": "~/.ssh/id_rsa-perdana"
     },
 }
 
