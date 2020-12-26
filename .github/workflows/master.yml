@@ -27,20 +27,14 @@ jobs:
         run: python manage.py test -v 2 --keepdb
         env:
           GITHUB_WORKFLOW: 1
-      - name: Clear old installation process
-        run: |
-          sudo rm -rf /var/lib/dpkg/lock-frontend
-          sudo rm -rf /var/lib/dpkg/lock
-      - name: Set Up Deployment Config
-        run: |
-          sudo apt update -y && sudo apt-get install openssh-client -y
-          sudo mkdir -p ~/.ssh
-          sudo chmod 700 ~/.ssh
-          sudo echo -e ${{ secrets.PRIVATE_RSA_KEY }} > /src/rsa/perdana_rsa
-          sudo chmod 700 /src/rsa/perdana_rsa
-          sudo eval $(ssh-agent -s)
-          sudo echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-          export SERVER_IP=${{ secrets.SERVER_IP }}
-          export SERVER_USER=${{ secrets.SERVER_USER }}
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.PRIVATE_RSA_KEY }}
+          name: perdana_rsa
+          config: ${{ secrets.SSH_CONFIG }}
       - name: Deployment
         run: fab remote
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
