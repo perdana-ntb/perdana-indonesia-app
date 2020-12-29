@@ -34,7 +34,7 @@ RUN apk update && apk --no-cache add python3 \
 COPY . .
 COPY Pipfile .
 COPY Pipfile.lock .
-COPY ./docker-entrypoint.sh /
+COPY ./scripts/docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
 
 RUN pip install --upgrade pip --no-cache-dir && python -m pip install pipenv --no-cache-dir
