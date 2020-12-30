@@ -6,6 +6,7 @@ from core.permissions import PERDANA_MANAGEMENT_USER_ROLE
 from core.views import RoleBasesAccessTemplateView
 from django.contrib.auth.models import Group
 from django.db.models.query import QuerySet
+from region.models import Kabupaten
 
 
 class DashboardTemplateView(RoleBasesAccessTemplateView):
