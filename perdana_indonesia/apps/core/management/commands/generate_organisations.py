@@ -1,45 +1,64 @@
+from club.models import Club
+from core.choices import CLUB_UNIT_TYPE_CHOICES
 from django.core.management import BaseCommand
-
-from club.models import Branch, ClubUnit
-from region.models import Province, Region
+from region.models import Kelurahan, Regional
 
 
 class Command(BaseCommand):
     help = "Command for generate initial organisations"
-    initial_regions = [
-        {'name': 'Indonesia Timur'}, {'name': 'Indonesia Tengah'}
+    initialClubs = [
+        {
+            'name': 'Arrihu Archery',
+            'address': 'Mataram',
+            'central': None,
+            'organisation_id': 'PERDANA-CLUB-97987239872',
+            'date_register': '2019-05-29',
+            'org_type': CLUB_UNIT_TYPE_CHOICES[0][0],
+            'village_code': '52_71_1_1008'
+        },
+        {
+            'name': 'Damu Archery',
+            'organisation_id': 'PERDANA-CLUB-97987239875',
+            'central': 'PERDANA-97987239872',
+            'address': 'Ampenan',
+            'date_register': '2019-07-29',
+            'org_type': CLUB_UNIT_TYPE_CHOICES[0][0],
+            'village_code': '52_71_1_1004'
+        },
+        {
+            'name': 'SD IT Mataram',
+            'organisation_id': 'PERDANA-UNIT-97987239888',
+            'central': None,
+            'address': 'Mataram',
+            'date_register': '2019-07-29',
+            'org_type': CLUB_UNIT_TYPE_CHOICES[1][0],
+            'village_code': '52_71_2_1001'
+        }
     ]
-    initial_provinces = [
-        {'name': 'Nusa Tenggara Barat'}, {'name': 'Nusa Tenggara Timur'}
-    ]
-    initial_branchs = [
-        {'name': 'Mataram'}, {'name': 'Lombok Tengah'},
-        {'name': 'Lombok Barat'}, {'name': 'Lombok Timur'}
-    ]
-    initial_clubunits = [
-        {'name': 'Arrihu Archery', 'address': 'Mataram',
-         'date_register': '2019-05-29', 'type': ClubUnit.CLUB_UNIT_TYPE_CHOICES[0][0]},
-        {'name': 'Damu Archery', 'address': 'Ampenan',
-         'date_register': '2019-07-29', 'type': ClubUnit.CLUB_UNIT_TYPE_CHOICES[0][0]},
-        {'name': 'SD IT Mataram', 'address': 'Mataram',
-         'date_register': '2019-07-29', 'type': ClubUnit.CLUB_UNIT_TYPE_CHOICES[1][0]}
-    ]
+
+    def getClubCentralOrNone(self, centralOrganisationId) -> Club:
+        if not centralOrganisationId:
+            return None
+            
+        try:
+            return Club.objects.get(organisation_id=centralOrganisationId)
+        except Club.DoesNotExist:
+            return None
+
+    def getVillage(self, code) -> Kelurahan:
+        return Kelurahan.objects.get(code=code)
 
     def handle(self, *args, **options):
-        self.stdout.write("Started . . .")
-        for region in self.initial_regions:
-            Region.objects.create(**region)
+        for clubData in self.initialClubs:
+            instance, _ = Club.objects.get_or_create(
+                organisation_id=clubData.get('organisation_id')
+            )
+            instance.name = clubData.get('name')
+            instance.central = self.getClubCentralOrNone(clubData.get('central'))
+            instance.address = clubData.get('address')
+            instance.org_type = clubData.get('org_type')
+            instance.date_register = clubData.get('date_register')
+            instance.village = self.getVillage(clubData.get('village_code'))
+            instance.save()
 
-        regional = Region.objects.get(name=self.initial_regions[0]['name'])
-        for province_data in self.initial_provinces:
-            Province.objects.create(**province_data, regional=regional)
-
-        province = Province.objects.get(name=self.initial_provinces[0]['name'])
-        for branch_data in self.initial_branchs:
-            Branch.objects.create(**branch_data, province=province)
-
-        branch = Branch.objects.get(name=self.initial_branchs[0]['name'])
-        for clubunit_data in self.initial_clubunits:
-            ClubUnit.objects.create(**clubunit_data, branch=branch)
-
-        self.stdout.write("Finished . . .")
+            print('Processing %s' % instance.name)

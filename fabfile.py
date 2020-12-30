@@ -1,19 +1,19 @@
 import os
 
-from fabric import Connection, task
+import fabric
 
 CONNECTION_PROPERTIES = {
     "host": os.environ.get('SERVER_IP'),
     "user": os.environ.get('SERVER_USER'),
     "connect_kwargs": {
-        "key_filename": "/home/runner/.ssh/id_rsa-perdana"
+        "key_filename": "~/.ssh/id_rsa-perdana"
     },
 }
 
 
-@task
+@fabric.task
 def remote(ctx):
-    with Connection(**CONNECTION_PROPERTIES) as c:
+    with fabric.Connection(**CONNECTION_PROPERTIES) as c:
         c.local("rm -rf /src/perdana-indonesia-app/env")
         c.run("pwd")
         c.run("sh /src/scripts/deploy.sh")

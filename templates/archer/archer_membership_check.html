@@ -84,6 +84,16 @@
                                         <label class="text-muted">Asal Klub</label>
                                         <p class="form-control">{{instance.club.name}}</p>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="text-muted">Status Keanggotaan</label>
+                                        <p>
+                                            {% if instance.is_active %}
+                                              <label for="" class="btn btn-primary">Aktif</label>
+                                              {% else %}
+                                              <label for="" class="btn btn-danger">Tidak Aktif</label>
+                                            {% endif %}  
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

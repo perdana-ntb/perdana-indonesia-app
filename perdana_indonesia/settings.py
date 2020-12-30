@@ -149,7 +149,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/root')
 MEDIA_URL = '/m/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_URL = '/app/perdana/indonesia/archer/login'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -179,6 +178,10 @@ else:
             'PORT': os.environ.get("DB_PORT"),
         }
     }
+
+LOGIN_URL = '/app/perdana/indonesia/archer/login'
+
+SHELL_PLUS = "ipython"
 
 try:
     from .local_settings import *

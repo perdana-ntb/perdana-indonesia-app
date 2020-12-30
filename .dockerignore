@@ -32,7 +32,7 @@
 **/static/vendors/*
 
 **/*.log
-**/config/local_settings.py
+perdana_indonesia/local_settings.py
 **/config/heroku_settings.py
 **/*.sqlite3
 **/db.sqlite3

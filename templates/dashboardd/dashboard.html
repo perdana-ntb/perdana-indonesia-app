@@ -6,8 +6,21 @@
 {% endblock breadcrumb %}
 {% block subtitle %} Dashboard {% endblock subtitle %}
 {% block content %}
+<h3 class="mb-3">{{title_header}}</h3>
 <div class="row">
-
+    {% for data in archers_mapping_information %}
+    <div class="col-sm-6 col-md-3 col-lg-3">
+        <div class="card text-white {{data.options.bg_class}}">
+            <div class="card-body pb-0">
+                <div class="text-value" style="font-size: 40px;">{{data.value}}</div>
+                <strong>{{data.title}}</strong>
+            </div>
+            <div class="chart-wrapper mt-3 mx-3" style="height:55px;">
+                <i class="fa fa-users fa-3x pull-right" style="opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>      
+    {% endfor %}
 </div>
 {% endblock content %}
 {% block js %}

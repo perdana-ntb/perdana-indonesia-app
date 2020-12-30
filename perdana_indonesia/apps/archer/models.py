@@ -39,6 +39,7 @@ class Archer(TimeStampedModel):
     draw_length = models.CharField(max_length=25, null=True, blank=True, default="0")
 
     # Approval section
+    is_active = models.BooleanField(default=True, null=True, blank=True)
     verified = models.BooleanField(default=False, null=True, blank=True)
     approved = models.BooleanField(default=False, null=True, blank=True)
     approved_by = models.ForeignKey(

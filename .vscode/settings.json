@@ -1,0 +1,26 @@
+{
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.extraPaths": [
+        "../perdana_indonesia",
+        "../perdana_indonesia/apps",
+        "perdana_indonesia",
+        "perdana_indonesia/apps"
+    ],
+    "python.autoComplete.extraPaths": [
+        "../perdana_indonesia",
+        "../perdana_indonesia/apps",
+        "perdana_indonesia",
+        "perdana_indonesia/apps"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=100",
+        "--ignore=W293,W2503,F405,W504",
+    ],
+    "python.languageServer": "Pylance",
+    "editor.wordWrap": "off",
+    "diffEditor.wordWrap": "off",
+    "editor.wordWrapColumn": 150
+}
