@@ -18,9 +18,11 @@ from django.forms.forms import Form
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import FormView
 from django.views.generic.base import View
 from region.models import Kabupaten, Provinsi
+from rest_framework.authtoken.models import Token
 
 from .forms import (ArcherCompleteProfileForm, ArcherLoginForm,
                     ArcherRegistrationForm)
@@ -240,10 +242,12 @@ class ArcherMembershipApprovalFormView(RoleBasesAccessView):
                 self.success_url = 'archer:club-applicants'
             except User.DoesNotExist:
                 user = User.objects.create(username=request.POST.get('membership_number'))
+                Token.objects.get_or_create(user=user)
                 user.set_password('membership_number')
                 user.save()
 
                 instance.user = user
+                instance.date_register = timezone.now()
                 instance.qrcode = generate_qrcode_from_text(instance.user.username)
                 instance.approved = True
                 instance.approved_by = request.user

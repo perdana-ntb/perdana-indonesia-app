@@ -22,5 +22,6 @@
     "python.languageServer": "Pylance",
     "editor.wordWrap": "off",
     "diffEditor.wordWrap": "off",
-    "editor.wordWrapColumn": 150
+    "editor.wordWrapColumn": 150,
+    "python.pythonPath": "/Users/egov-kominfo/.local/share/virtualenvs/perdana-indonesia-app-guV7fdOZ/bin/python"
 }
