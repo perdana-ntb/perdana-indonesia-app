@@ -40,4 +40,7 @@ class IsMemberUser(IsAuthenticated):
 
 class IsGeneralUser(IsAuthenticated):
     def has_permission(self, request, view):
-        return request.user.groups.filter(name__in=PERDANA_USER_ROLE).count() > 0
+        return bool(
+            request.user.groups.filter(name__in=PERDANA_USER_ROLE).count() > 0 and
+            hasattr(request.user, 'archer') and request.user.archer
+        )

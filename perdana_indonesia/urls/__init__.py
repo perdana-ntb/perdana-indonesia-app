@@ -39,7 +39,7 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += [
         path(
-            'docs/',  include_docs_urls(
+            'docs/', include_docs_urls(
                 title="Perdana Indonesia API Docs", permission_classes=(IsAuthenticated, )
             )
         )
