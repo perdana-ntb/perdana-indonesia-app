@@ -93,7 +93,7 @@ class ArhcerCheckMembershipViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
     def getResponseData(self, archer: Archer):
         if isinstance(self.request.user, AnonymousUser):
             return {
-                'archer_id': archer.user.username,
+                'username': archer.user.username,
                 'full_name': archer.full_name,
                 'date_register': archer.date_register,
                 'is_active': archer.is_active,
