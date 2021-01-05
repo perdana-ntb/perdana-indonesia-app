@@ -1,7 +1,7 @@
-name: Perdana Indonesia Deployment Workflows
+name: Merge Check Workflows
 on:
-  push:
-    branches: [master]
+  pull_request:
+    branches: [develop, master]
 
 jobs:
   build:
@@ -27,15 +27,3 @@ jobs:
         run: python manage.py test -v 2 --keepdb
         env:
           GITHUB_WORKFLOW: 1
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.PRIVATE_RSA_KEY }}
-          name: id_rsa-perdana
-          known_hosts: ${{ secrets.SSH_KNOWN_HOST }}
-          config: ${{ secrets.SSH_CONFIG }}
-      - name: Deployment
-        run: fab remote
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}

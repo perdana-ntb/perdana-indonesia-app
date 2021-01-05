@@ -58,10 +58,10 @@ class Archer(TimeStampedModel):
     @property
     def isProfileComplete(self):
         return bool(
-            self.user and self.full_name and self.phone and self.gender and self.born_place
-            and self.born_date and self.address and self.club and self.identity_card_number
-            and self.identity_card_photo and self.photo and self.public_photo and self.skck
-            and self.body_weight and self.body_height and self.blood_type
+            self.user and self.full_name and self.phone and self.gender and self.born_place and
+            self.born_date and self.address and self.club and self.identity_card_number and
+            self.identity_card_photo and self.photo and self.public_photo and self.skck and
+            self.body_weight and self.body_height and self.blood_type
         )
 
     def getUserGroup(self):

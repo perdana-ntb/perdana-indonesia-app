@@ -5,7 +5,6 @@ from core.choices import GENDER_CHOICES
 from core.permissions import PERDANA_MANAGEMENT_USER_ROLE
 from core.views import RoleBasesAccessTemplateView
 from django.contrib.auth.models import Group
-from django.db.models.query import QuerySet
 from region.models import Kabupaten
 
 
@@ -19,7 +18,7 @@ class DashboardTemplateView(RoleBasesAccessTemplateView):
         self.archer: Archer = None
         self.userGroup: Group = None
 
-    def mappedUserGoupQueryset(self) -> QuerySet:
+    def mappedUserGoupQueryset(self) -> Dict:
         city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
         return {
             PERDANA_MANAGEMENT_USER_ROLE[0]: self.queryset,
@@ -34,7 +33,7 @@ class DashboardTemplateView(RoleBasesAccessTemplateView):
             )
         }
 
-    def mappedDisplayTitle(self) -> QuerySet:
+    def mappedDisplayTitle(self) -> Dict:
         return {
             PERDANA_MANAGEMENT_USER_ROLE[0]: 'Dashboard Regional',
             PERDANA_MANAGEMENT_USER_ROLE[1]: 'Dashboard Pengurus Provinsi',

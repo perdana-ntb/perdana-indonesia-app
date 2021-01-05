@@ -1,8 +1,6 @@
-name: Perdana Indonesia Workflows
+name: Perdana Indonesia Development Workflows
 on:
   push:
-    branches: [develop]
-  pull_request:
     branches: [develop]
 
 jobs:
