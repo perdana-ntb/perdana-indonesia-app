@@ -97,7 +97,10 @@ class ArhcerCheckMembershipViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
                 'full_name': archer.full_name,
                 'date_register': archer.date_register,
                 'is_active': archer.is_active,
-                'club': archer.club.name
+                'club': {
+                    'name': archer.club.name,
+                    'organisation_id': archer.club.organisation_id
+                }
             }
         else:
             return self.serializer_class(archer).data
