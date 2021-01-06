@@ -25,5 +25,16 @@ class KecamatanModelAdmin(DefaultAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Kelurahan)
-class KelurahanModelAdmin(DefaultAdminMixin, admin.ModelAdmin):
-    pass
+class KelurahanModelAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'kecamatan', 'kabupaten', 'provinsi')
+    search_fields = ('name', 'kecamatan__name', 'kecamatan__kabupaten__name')
+    list_filter = ('kecamatan__name', )
+
+    def kecamatan(self, obj):
+        return obj.kecamatan.name
+
+    def kabupaten(self, obj):
+        return obj.kecamatan.kabupaten.name
+
+    def provinsi(self, obj):
+        return obj.kecamatan.kabupaten.provinsi.name
