@@ -35,8 +35,15 @@
                 </a>
             </li>
             {% endif %}
+            <li class="nav-title">Organisasi</li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'club:clubs' request.user.archer.region_code_name %}">
+                    <i class="nav-icon icon-user"></i> Klub
+                </a>
+            </li>
             {% endwith %}
         </ul>
+        
         <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
             <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
         </div>

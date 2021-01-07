@@ -1,0 +1,136 @@
+{% extends "_base/index.html" %}
+{% block inline_css %}
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+    integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
+    crossorigin="anonymous" />
+{% endblock inline_css %}
+{% block breadcrumb %}
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+    integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
+    crossorigin="anonymous" />
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">User</li>
+    <li class="breadcrumb-item active">Profile</li>
+</ol>
+{% endblock breadcrumb %}
+{% block subtitle %} {{request.user.club.full_name}} {% endblock subtitle %}
+{% block content %}
+{% with request.user.club as club %}
+<div class="row justify-content-center" id="app-body">
+    <div class="col-md-8 col-sm-12">
+        {% include "_base/message.html" %}
+        <div class="card">
+            <div class="card-body">
+                <div style="text-align: center;">
+                    <h3>Tambah klub baru</h3>
+                </div>
+                <hr class="mb-3">
+                <div class="row justify-content-center">
+                    <form role="form" method="POST"
+                        action="{% url 'club:club-add' request.user.archer.region_code_name %}"
+                        class="col-md-10 col-sm-12" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="">Nama Klub</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">No. SK</label> <br>
+                            <input type="text" class="form-control" name="organisation_id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Alamat</label>
+                            <input type="text" class="form-control" name="address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Jenis Organisasi</label>
+                            <select class="form-control" name="org_type" required>
+                                <option value="club">Klub</option>
+                                <option value="satuan">Satuan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Logo</label> <br>
+                            <input type="file" name="logo" id="" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Tanggal Berdiri</label>
+                            <input type="text" class="form-control" name="date_register" id="date_register" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Kecamatan</label>
+                            <select class="form-control" @change="onChangeSelection($event, getVillages)" required>
+                                {% for kecamatan in kecamatans %}
+                                <option value="{{kecamatan.code}}">{{kecamatan.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Kelurahan</label>
+                            <select id="village" class="form-control" name="village"
+                                @change="onChangeSelection($event, getRegionalClubs)" required>
+                                <option v-for="village in villages" :key="village.code" :value="village.id">
+                                    ${village.name}</option>
+                            </select>
+                        </div>
+                        <div class="form-group pull-right">
+                            <button type="submit" class="btn btn-primary btn-block">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endblock content %}
+{% block inline_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+    integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+    window.onload = () => {
+        $("#date_register").datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+    }
+    const vm = new Vue({
+        el: '#app-body',
+        delimiters: ['${', '}'],
+        data: {
+            cities: [],
+            districts: [],
+            villages: [],
+            regionalClubs: [],
+        },
+        methods: {
+            onChangeSelection: function (e, actionTrigger) {
+                actionTrigger(e.target.value)
+            },
+            getVillages: function (districtCode) {
+                const self = this
+                fetch(`/app/perdana/indonesia/region/villages/${districtCode}`)
+                    .then(res => res.json())
+                    .then(res => {
+                        self.villages = res
+                    })
+            },
+            getRegionalClubs: function (villageId) {
+                const self = this
+                fetch(`/app/perdana/indonesia/organisation/regional-clubs/${villageId}`)
+                    .then(res => res.json())
+                    .then(res => {
+                        self.regionalClubs = res
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            },
+        }
+    })
+</script>
+{% endblock inline_js %}

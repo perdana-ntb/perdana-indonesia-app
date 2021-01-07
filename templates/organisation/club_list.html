@@ -1,0 +1,68 @@
+{% extends "_base/index.html" %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">User</li>
+    <li class="breadcrumb-item active">Profile</li>
+</ol>
+{% endblock breadcrumb %}
+{% block subtitle %} {{request.user.club.full_name}} {% endblock subtitle %}
+{% block content %}
+{% with request.user.club as club %}
+<div class="row justify-content-center">
+    {% if displayAddButton %}
+    <div class="col-md-12 mb-3">
+        <a href="{% url 'club:club-add' request.user.archer.region_code_name %}"
+            class="btn btn-primary pull-right">Tambah Klub</a>
+    </div>
+    {% endif %}
+    <div class="col-md-12">
+        {% include "_base/message.html" %}
+        <div class="card">
+            <div class="card-header">
+                <h6>{{tableTitle}}</h6>
+            </div>
+            <div class="card-body">
+                <table id="club-member-table" style="width: 100%;"
+                    class="table table-striped table-light table-inverse">
+                    <thead>
+                        <th>Logo</th>
+                        <th>Nama Klub</th>
+                        <th>No. SK</th>
+                        <th>Alamat</th>
+                        <th>Jenis</th>
+                        <th class="text-center">Total Anggota</th>
+                        <th class="text-center">#</th>
+                    </thead>
+                    <tbody>
+                        {% for club in clubs %}
+                        <tr>
+                            <td>
+                                {% if club.logo %}
+                                <img src="{{club.logo.url}}" height="55px" alt="">
+                                {% endif %}
+                            </td>
+                            <td>{{club.name}}</td>
+                            <td>{{club.organisation_id}}</td>
+                            <td>{{club.address}}</td>
+                            <td>{{club.org_type}}</td>
+                            <td class="text-center">{{club.archer_set.all.count}}</td>
+                            <td class="text-center">#</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endblock content %}
+{% block inline_js %}
+<script>
+    window.onload = () => {
+        $("#club-member-table").DataTable({
+            "scrollX": true
+        })
+    }
+</script>
+{% endblock inline_js %}
