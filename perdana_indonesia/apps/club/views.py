@@ -65,7 +65,7 @@ class ClubListView(RoleBasesAccessListView):
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['tableTitle'] = self.mappedClubGoupTableTitleDisplayed()[self.userGroup.name]
-        context['displayAddButton'] = self.userGroup.name in PERDANA_USER_ROLE[2:3]
+        context['displayAddButton'] = self.userGroup.name in PERDANA_MANAGEMENT_USER_ROLE[1:2]
         context['kabupatens'] = Kabupaten.objects.filter(
             provinsi=self.archer.kelurahan.kecamatan.kabupaten.provinsi
         )
@@ -78,7 +78,7 @@ class ClubListView(RoleBasesAccessListView):
 
 
 class ClubAddFormView(RoleBasesAccessFormView):
-    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE[2:3]
+    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE[1:2]
     template_name = 'organisation/club_add.html'
     form_class = ClubForm
 
@@ -87,8 +87,8 @@ class ClubAddFormView(RoleBasesAccessFormView):
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['kecamatans'] = Kecamatan.objects.filter(
-            kabupaten=self.request.user.archer.kelurahan.kecamatan.kabupaten
+        context['kabupatens'] = Kabupaten.objects.filter(
+            provinsi=self.request.user.archer.kelurahan.kecamatan.kabupaten.provinsi
         )
         return context
 

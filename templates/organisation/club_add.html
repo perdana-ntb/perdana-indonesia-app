@@ -60,11 +60,19 @@
                             <input type="text" class="form-control" name="date_register" id="date_register" required>
                         </div>
                         <div class="form-group">
-                            <label for="">Kecamatan</label>
-                            <select class="form-control" @change="onChangeSelection($event, getVillages)" required>
-                                {% for kecamatan in kecamatans %}
-                                <option value="{{kecamatan.code}}">{{kecamatan.name}}</option>
+                            <label for="">Kabupaten</label>
+                            <select class="form-control" @change="onChangeSelection($event, getDistricts)" required>
+                                {% for kabupaten in kabupatens %}
+                                <option value="{{kabupaten.code}}">{{kabupaten.name}}</option>
                                 {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Kecamatan</label>
+                            <select id="district" class="form-control" @change="onChangeSelection($event, getVillages)"
+                                required>
+                                <option v-for="district in districts" :key="district.code" :value="district.code">
+                                    ${district.name}</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -110,6 +118,14 @@
         methods: {
             onChangeSelection: function (e, actionTrigger) {
                 actionTrigger(e.target.value)
+            },
+            getDistricts: function (cityCode) {
+                const self = this
+                fetch(`/app/perdana/indonesia/region/districts/${cityCode}`)
+                    .then(res => res.json())
+                    .then(res => {
+                        self.districts = res
+                    })
             },
             getVillages: function (districtCode) {
                 const self = this
