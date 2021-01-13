@@ -1,12 +1,13 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}">
-<link rel="stylesheet" href="{% static 'vendors/@coreui/coreui/dist/css/coreui.min.css' %}">
+<link rel="stylesheet" href="{% static 'app.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/admin-lte/dist/css/AdminLTE.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/admin-lte/dist/css/skins/_all-skins.min.css' %}">
 <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.4.0/css/perfect-scrollbar.min.css">
-<link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}">
-<link rel="stylesheet" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="{% static 'vendors/simple-line-icons/css/simple-line-icons.css' %}">
-<link rel="stylesheet" href="{% static 'css/pace.min.css' %}">
+    href="{% static 'vendors/admin-lte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/admin-lte/bower_components/Ionicons/css/ionicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/admin-lte/bower_components/font-awesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/admin-lte/bower_components/select2/dist/css/select2.min.css' %}">
 <style>
     /* body {
         background: #ffffff;
@@ -16,11 +17,9 @@
         font-weight: bold;
     }
 
-    .card {
+    .box-shadow {
         -webkit-box-shadow: 0px 8px 22px -6px rgba(158, 158, 158, 0.4);
         -moz-box-shadow: 0px 8px 22px -6px rgba(158, 158, 158, 0.4);
         box-shadow: 0px 8px 22px -6px rgba(158, 158, 158, 0.4);
-        border-radius: 6px;
-        border: white 0px solid;
     }
 </style>

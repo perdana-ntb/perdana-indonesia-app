@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Club(TimeStampedModel):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
     organisation_id = models.CharField(
         max_length=100, null=True, blank=True, unique=True
     )

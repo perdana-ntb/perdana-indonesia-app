@@ -8,39 +8,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Perdana Indonesia App | Archer Registration</title>
     {% include "_assets/css.html" %}
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-        integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
-        crossorigin="anonymous" />
-    <style>
-        body {
-            /* background: url("{% static 'images/perdana-indonesia.png' %}"); */
-            background-color: black;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-        }
-    </style>
+
 </head>
 
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show   pace-done pace-done">
-    <div class="pace pace-inactive pace-inactive">
-        <div class="pace-progress" data-progress-text="100%" data-progress="99"
-            style="transform: translate3d(100%, 0px, 0px);">
-            <div class="pace-progress-inner"></div>
-        </div>
-        <div class="pace-activity"></div>
-    </div>
+<body class="hold-transition login-page">
     <div id="app-body" class="app-body">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
+            <div class="row" style="margin-top: 3em; margin-bottom: 3em;">
+                <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
                     {% include "_base/message.html" %}
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="login-box box-shadow">
+                        <div class="login-box-logo"></div>
+                        <div class="login-box-body">
                             <div style="text-align: center;">
                                 <img src="{% static 'images/perdana-indonesia.png' %}" alt="" width="89px">
-                                <h3>Login ke akun anda</h3>
+                                <!-- <h3>Login ke akun anda</h3> -->
                             </div>
                             <hr class="mb-3">
                             <div class="row justify-content-center">
@@ -59,7 +41,7 @@
                                         <div class="row">
                                             <div class="col-md-4 col-sm-4 col-xs-6">
                                                 <a href="{% url 'archer:registration' 'indonesia' %}"
-                                                    class="btn btn-light btn-block">Daftar</a>
+                                                    class="btn btn-default btn-block">Daftar</a>
                                             </div>
                                             <div class="col-md-8 col-sm-8 col-xs-6">
                                                 <button type="submit" class="btn btn-primary btn-block">Login</button>
@@ -70,7 +52,7 @@
                                     <div class="form-group">
                                         <label>Sudah terdaftar?</label>
                                         <a href="{% url 'archer:membership-check' 'indonesia' %}"
-                                            class="btn btn-light btn-block">Cek Keanggotaan &nbsp; <i
+                                            class="btn btn-default btn-block">Cek Keanggotaan &nbsp; <i
                                                 class="fa fa-qrcode"></i></a>
                                     </div>
                                 </form>

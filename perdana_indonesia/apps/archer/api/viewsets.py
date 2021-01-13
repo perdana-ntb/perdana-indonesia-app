@@ -79,7 +79,7 @@ class LoginViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 class ArhcerProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = (IsGeneralUser, )
     serializer_class = ArcherSerializer
-    queryset = Archer.objects.filter(is_active=True, approved=True)
+    queryset = Archer.objects.filter(is_active=True, approval_status__verified=True)
 
     def list(self, request, *args, **kwargs):
         return Response(self.serializer_class(request.user.archer).data)
@@ -88,7 +88,7 @@ class ArhcerProfileViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 class ArhcerCheckMembershipViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = (AllowAny, )
     serializer_class = ArcherSerializer
-    queryset = Archer.objects.filter(is_active=True, approved=True)
+    queryset = Archer.objects.filter(is_active=True, approval_status__verified=True)
 
     def getResponseData(self, archer: Archer):
         if isinstance(self.request.user, AnonymousUser):

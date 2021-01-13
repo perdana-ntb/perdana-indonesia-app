@@ -1,12 +1,8 @@
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
-PERDANA_USER_ROLE = [
-    'regional',
-    'pengprov',
-    'pengcab',
-    'club-satuan-manager',
-    'archer'
-]
+from core.choices import PERDANA_USER_ROLE_CHOICES
+
+PERDANA_USER_ROLE = [x[0] for x in PERDANA_USER_ROLE_CHOICES]
 
 PERDANA_ARCHER_USER_ROLE = PERDANA_USER_ROLE[4:]
 PERDANA_CLUB_MANAGEMENT_USER_ROLE = PERDANA_USER_ROLE[3:4]

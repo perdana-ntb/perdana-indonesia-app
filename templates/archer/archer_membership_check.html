@@ -8,42 +8,27 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Perdana Indonesia App | Archer Validation Checker</title>
     {% include "_assets/css.html" %}
-    <style>
-        body {
-            /* background: url("{% static 'images/perdana-indonesia.png' %}"); */
-            background-color: black;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-        }
-    </style>
 </head>
 
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show   pace-done pace-done">
-    <div class="pace pace-inactive pace-inactive">
-        <div class="pace-progress" data-progress-text="100%" data-progress="99"
-            style="transform: translate3d(100%, 0px, 0px);">
-            <div class="pace-progress-inner"></div>
-        </div>
-        <div class="pace-activity"></div>
-    </div>
+<body class="hold-transition login-page">
     <div id="app-body" class="app-body">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+            <div class="row" style="margin-top: 3em; margin-bottom: 3em;">
+                <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-body">
+                            <div class="box box-primary box-shadow">
+                                <div class="box-header with-border">
                                     <div style="text-align: center;">
                                         <img src="{% static 'images/perdana-indonesia.png' %}" alt="" width="55px">
                                         <h4 style="text-align: center;">Cek Keanggotaan Perdana Indonesia </h4>
                                     </div>
-                                    <hr class="mb-3">
-                                    <div class="row justify-content-center">
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
                                         <form role="form" method="GET"
                                             action="{% url 'archer:membership-check' 'indonesia' %}"
-                                            class="col-md-10 col-sm-12" enctype="multipart/form-data">
+                                            class="col-md-10 col-md-offset-1 col-sm-12" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <label for="">ID Anggota</label>
                                                 <input type="text" class="form-control" name="archer_id" required>
@@ -52,7 +37,7 @@
                                                 <div class="row">
                                                     <div class="col-md-3 col-xs-6">
                                                         <a href="{% url 'archer:login' 'indonesia' %}"
-                                                            class="btn btn-light btn-block">Login</a>
+                                                            class="btn btn-default btn-block">Login</a>
                                                     </div>
                                                     <div class="col-md-9 col-xs-6">
                                                         <button type="submit"
@@ -68,8 +53,8 @@
                         {% if request.GET.archer_id %}
                         {% if instance %}
                         <div>
-                            <div class="card">
-                                <div class="card-body">
+                            <div class="box box-primary">
+                                <div class="box-body">
                                     <p style="text-align: center;"><i class="fa fa-check-circle fa-5x text-success"></i>
                                     </p>
                                     <div class="form-group">
@@ -88,10 +73,10 @@
                                         <label class="text-muted">Status Keanggotaan</label>
                                         <p>
                                             {% if instance.is_active %}
-                                              <label for="" class="btn btn-primary">Aktif</label>
-                                              {% else %}
-                                              <label for="" class="btn btn-danger">Tidak Aktif</label>
-                                            {% endif %}  
+                                            <label for="" class="label label-primary">Aktif</label>
+                                            {% else %}
+                                            <label for="" class="label label-danger">Tidak Aktif</label>
+                                            {% endif %}
                                         </p>
                                     </div>
                                 </div>
@@ -99,11 +84,11 @@
                         </div>
                         {% else %}
                         <div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <p style="text-align: center;"><i class="fa fa-times-circle fa-5x text-danger"></i>
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <p style="text-align: center;"><i class="fa fa-times-circle fa-5x text-red"></i>
                                     </p>
-                                    <h5 class="text-danger" style="text-align: center;">No. anggota
+                                    <h5 class="text-red" style="text-align: center;">No. anggota
                                         {{request.GET.archer_id}} tidak ditemukan</h5>
                                 </div>
                             </div>

@@ -1,3 +1,11 @@
+PERDANA_USER_ROLE_CHOICES = (
+    ('pusat', 'Pengurus Pusat'),
+    ('pengprov', 'Pengurus Provinsi (DPD)'),
+    ('pengcab', 'Pengurus Kabupaten (DPC)'),
+    ('puslat-manager', 'Pengurus Puslat'),
+    ('archer', 'Pemanah')
+)
+
 CHANGE_STATUS_CHOICES = (
     ('1', 'Menunggu Persetujuan'),
     ('2', 'Diterima'),
