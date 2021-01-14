@@ -11,43 +11,50 @@
     {% block inline_css %}{% endblock inline_css %}
 </head>
 
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show   pace-done pace-done">
-    <div class="pace  pace-inactive pace-inactive">
-        <div class="pace-progress" data-progress-text="100%" data-progress="99"
-            style="transform: translate3d(100%, 0px, 0px);">
-            <div class="pace-progress-inner"></div>
-        </div>
-        <div class="pace-activity"></div>
-    </div>
-    {% include "_base/navbar.html" %}
-    <div class="app-body" style="background: #fafafa;">
-        {% include "_base/sidebar.html" %}
-        <main class="main">
-            {% block breadcrumb %}{% endblock breadcrumb %}
-            <div class="container-fluid">
-                <div id="ui-view">
-                    <div>
-                        <div class="animated fadeIn">
-                            {% block content %}
+<body class="skin-blue-light sidebar-mini" style="height: auto; min-height: 100%;">
+    <div class="wrapper" style="height: auto; min-height: 100%;" data-select2-id="15">
 
-                            {% endblock content %}
-                        </div>
-                    </div>
-                </div>
+        <header class="main-header">
+            {% include "_base/navbar.html" %}
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            {% include "_base/sidebar.html" %}
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper" style="min-height: 956px;">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <!-- <h1>
+                    Advanced Form Elements
+                    <small>Preview</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li><a href="#">Forms</a></li>
+                    <li class="active">Advanced Elements</li>
+                </ol> -->
+                {% block content_header %}
+                {% endblock content_header %}
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                {% block content %}
+                {% endblock content %}
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 2.4.13
             </div>
-        </main>
+            <strong>Copyright © 2014-2019 <a href="https://adminlte.io">AdminLTE</a>.</strong> All rights
+            reserved.
+        </footer>
     </div>
-    <footer class="app-footer">
-        <div>
-            <a href="http://perdanaindonesia.or.id/" target="_blank">Perdana Indonesia</a>
-            <span>© 2020 Perdana NTB IT Division</span>
-        </div>
-        <div class="ml-auto">
-            <span>Powered by</span>
-            <a href="https://coreui.io/pro/">CoreUI Pro</a>
-        </div>
-    </footer>
-
     {% include "_assets/js.html" %}
     {% block inline_js %}{% endblock inline_js %}
 </body>

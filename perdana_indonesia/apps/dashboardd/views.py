@@ -10,7 +10,7 @@ from region.models import Kabupaten
 
 class DashboardTemplateView(RoleBasesAccessTemplateView):
     template_name = 'dashboardd/dashboard.html'
-    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE
+    allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
     queryset = Archer.objects.filter(user__isnull=False)
 
     def __init__(self, **kwargs: Any) -> None:
@@ -45,31 +45,35 @@ class DashboardTemplateView(RoleBasesAccessTemplateView):
         queryset = self.mappedUserGoupQueryset()[self.userGroup.name]
         return [
             {
-                'title': 'Total Anggota Aktif',
+                'title': 'Anggota Aktif',
                 'value': queryset.filter(is_active=True).count(),
                 'options': {
-                    'bg_class': 'bg-primary'
+                    'bg_class': 'bg-aqua',
+                    'icon_class': 'fa fa-users'
                 }
             },
             {
-                'title': 'Total Anggota Tidak Aktif',
+                'title': 'Anggota Tidak Aktif',
                 'value': queryset.filter(is_active=False).count(),
                 'options': {
-                    'bg_class': 'bg-primary'
+                    'bg_class': 'bg-green',
+                    'icon_class': 'fa fa-users'
                 }
             },
             {
-                'title': 'Total Anggota Pria',
+                'title': 'Anggota Pria',
                 'value': queryset.filter(gender=GENDER_CHOICES[0][0]).count(),
                 'options': {
-                    'bg_class': 'bg-warning'
+                    'bg_class': 'bg-yellow',
+                    'icon_class': 'fa fa-users'
                 }
             },
             {
-                'title': 'Total Anggota Wanita',
+                'title': 'Anggota Wanita',
                 'value': queryset.filter(gender=GENDER_CHOICES[1][0]).count(),
                 'options': {
-                    'bg_class': 'bg-danger'
+                    'bg_class': 'bg-red',
+                    'icon_class': 'fa fa-users'
                 }
             },
         ]

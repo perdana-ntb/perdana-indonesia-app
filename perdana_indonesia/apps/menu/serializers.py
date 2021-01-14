@@ -5,4 +5,4 @@ from .models import AppMenu
 class AppMenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppMenu
-        exclude = ('allowed_groups', )
+        exclude = ('allowed_roles', )

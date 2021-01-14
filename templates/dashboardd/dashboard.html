@@ -1,30 +1,31 @@
 {% extends "_base/index.html" %}
-{% block breadcrumb %}
+{% block content_header %}
+<h1>
+    {{title_header}}
+</h1>
 <ol class="breadcrumb">
-    <li class="breadcrumb-item active">Dashboard</li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li><a href="#">Forms</a></li>
+    <li class="active">Advanced Elements</li>
 </ol>
-{% endblock breadcrumb %}
-{% block subtitle %} Dashboard {% endblock subtitle %}
+{% endblock content_header %}
 {% block content %}
-<h3 class="mb-3">{{title_header}}</h3>
 <div class="row">
     {% for data in archers_mapping_information %}
-    <div class="col-sm-6 col-md-3 col-lg-3">
-        <div class="card text-white {{data.options.bg_class}}">
-            <div class="card-body pb-0">
-                <div class="text-value" style="font-size: 40px;">{{data.value}}</div>
-                <strong>{{data.title}}</strong>
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box {{data.options.bg_class}}">
+            <div class="inner">
+                <h3>{{data.value}}</h3>
+
+                <p>{{data.title}}</p>
             </div>
-            <div class="chart-wrapper mt-3 mx-3" style="height:55px;">
-                <i class="fa fa-users fa-3x pull-right" style="opacity: 0.3;"></i>
+            <div class="icon">
+                <i class="{{data.options.icon_class}}"></i>
             </div>
+            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
-    </div>      
+    </div>
     {% endfor %}
 </div>
 {% endblock content %}
-{% block js %}
-<script>
-    console.log("Dashboard test")
-</script>
-{% endblock js %}

@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('app_module', models.CharField(blank=True, max_length=255, null=True)),
                 ('app_icon', models.ImageField(blank=True, null=True, upload_to='menu_icon_dir/')),
                 ('published', models.BooleanField(default=True)),
-                ('allowed_groups', models.ManyToManyField(related_name='app_menus', to='auth.Group')),
+                ('allowed_roles', models.ManyToManyField(related_name='app_menus', to='auth.Group')),
                 ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='app_menus', to='menu.MenuCategory')),
             ],
             options={

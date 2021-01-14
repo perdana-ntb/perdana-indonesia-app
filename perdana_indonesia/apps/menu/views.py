@@ -12,4 +12,4 @@ class AppMenuViewSet(viewsets.ModelViewSet):
     queryset = AppMenu.objects.filter(published=True)
 
     def get_queryset(self):
-        return super().get_queryset().filter(allowed_groups__in=self.request.user.groups.all())
+        return super().get_queryset().filter(allowed_roles__in=self.request.user.groups.all())

@@ -41,6 +41,9 @@ class Archer(TimeStampedModel):
     )
     region_code_name = models.CharField(max_length=100, null=True, blank=True)
 
+    def __str__(self) -> str:
+        return self.full_name or '-'
+
     def save(self, *args, **kwargs):
         if self.kelurahan:
             self.region_code_name = self.kelurahan.kecamatan.kabupaten.provinsi.code_name

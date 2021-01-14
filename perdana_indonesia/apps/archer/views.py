@@ -62,7 +62,7 @@ class ArcherLoginFormView(UserAuthenticatedRedirectMixin, FormView):
         user: User = authenticate(request=self.request, **credentials)
         if user:
             archer: Archer = user.archer
-            if archer.approved:
+            if archer.approval_status.verified:
                 login(self.request, user)
                 userGroup = user.groups.first()
                 if userGroup.name in PERDANA_ARCHER_USER_ROLE:
@@ -92,12 +92,12 @@ class ArcherLogoutView(View):
 
 
 class ArcherUserProfileTemplateView(RoleBasesAccessTemplateView):
-    allowed_groups = PERDANA_USER_ROLE
+    allowed_roles = PERDANA_USER_ROLE
     template_name = 'archer/archer_profile.html'
 
 
 class ArcherCompleteProfileFormView(RoleBasesAccessFormView):
-    allowed_groups = PERDANA_USER_ROLE
+    allowed_roles = PERDANA_USER_ROLE
     template_name = 'archer/archer_complete_profile.html'
     form_class = ArcherCompleteProfileForm
 
@@ -124,7 +124,7 @@ class ArcherCompleteProfileFormView(RoleBasesAccessFormView):
 
 
 class ArcherClubMemberListView(RoleBasesAccessListView):
-    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE
+    allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
     template_name = 'archer/archer_member_list.html'
     queryset = Archer.objects.filter(user__isnull=False)
     context_object_name = 'archers'
@@ -163,7 +163,7 @@ class ArcherClubMemberListView(RoleBasesAccessListView):
 
 
 class ArcherClubApplicantListView(RoleBasesAccessListView):
-    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE
+    allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
     template_name = 'archer/archer_applicant_list.html'
     queryset = Archer.objects.filter(user__isnull=True)
     context_object_name = 'archers'
@@ -202,7 +202,7 @@ class ArcherClubApplicantListView(RoleBasesAccessListView):
 
 
 class GenerateArcherQRCodeView(RoleBasesAccessView):
-    allowed_groups = PERDANA_CLUB_MANAGEMENT_USER_ROLE
+    allowed_roles = PERDANA_CLUB_MANAGEMENT_USER_ROLE
 
     def getArcherObject(self, archerId) -> Archer:
         try:
@@ -222,7 +222,7 @@ class GenerateArcherQRCodeView(RoleBasesAccessView):
 
 
 class ArcherMembershipApprovalFormView(RoleBasesAccessView):
-    allowed_groups = PERDANA_CLUB_MANAGEMENT_USER_ROLE
+    allowed_roles = PERDANA_CLUB_MANAGEMENT_USER_ROLE
     success_url = 'archer:club-members'
 
     def getArcherObject(self, pk) -> Archer:

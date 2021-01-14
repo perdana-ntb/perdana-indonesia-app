@@ -3,14 +3,18 @@
     "python.analysis.extraPaths": [
         "../perdana_indonesia",
         "../perdana_indonesia/apps",
+        "../perdana_indonesia/libs",
         "perdana_indonesia",
-        "perdana_indonesia/apps"
+        "perdana_indonesia/apps",
+        "perdana_indonesia/libs"
     ],
     "python.autoComplete.extraPaths": [
         "../perdana_indonesia",
         "../perdana_indonesia/apps",
+        "../perdana_indonesia/libs",
         "perdana_indonesia",
-        "perdana_indonesia/apps"
+        "perdana_indonesia/apps",
+        "perdana_indonesia/libs"
     ],
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": false,

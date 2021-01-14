@@ -35,7 +35,7 @@ class RegionalClubJsonView(View):
 
 
 class ClubListView(RoleBasesAccessListView):
-    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE
+    allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
     template_name = 'organisation/club_list.html'
     queryset = Club.objects.all()
     context_object_name = 'clubs'
@@ -78,7 +78,7 @@ class ClubListView(RoleBasesAccessListView):
 
 
 class ClubAddFormView(RoleBasesAccessFormView):
-    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE[1:2]
+    allowed_roles = PERDANA_MANAGEMENT_USER_ROLE[1:2]
     template_name = 'organisation/club_add.html'
     form_class = ClubForm
 

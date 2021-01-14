@@ -1,55 +1,59 @@
-<div class="sidebar">
-    <nav class="sidebar-nav ps ps--active-y">
-        <ul class="nav">
-            {% with request.user as user %}
-            {% if 'archer' == user.groups.all.0.name %}
-            <li class="nav-title">Archer</li>
-            <li class="nav-item">
-                <a class="nav-link active" href="{% url 'archer:profile' request.user.archer.region_code_name %}">
-                    <i class="nav-icon icon-user"></i> Profile
-                    <!-- <span class="badge badge-info">NEW</span> -->
-                </a>
-            </li>
+{% load static %}
+<section class="sidebar" style="height: auto;">
+    <!-- Sidebar user panel -->
+    <div class="user-panel">
+        <div class="pull-left image">
+            {% if request.user.archer.approval_document.public_photo %}
+            <img src="{{request.user.archer.approval_document.public_photo.url}}" class="img-circle" alt="User Image">
             {% else %}
-            <li class="nav-title">Dashboard</li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboardd:main' request.user.archer.region_code_name %}">
-                    <i class="nav-icon icon-speedometer"></i> Dashboard
-                    <!-- <span class="badge badge-info">NEW</span> -->
-                </a>
-            </li>
-            <li class="nav-title">Archer</li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'archer:club-members' request.user.archer.region_code_name %}">
-                    <i class="nav-icon icon-user"></i> Anggota
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'archer:club-applicants' request.user.archer.region_code_name %}">
-                    <i class="nav-icon icon-user"></i> Pendaftar
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'archer:profile' request.user.archer.region_code_name %}">
-                    <i class="nav-icon icon-user"></i> Profile
-                </a>
-            </li>
+            <img src="{% static 'vendors/admin-lte/dist/img/avatar04.png' %}" class="img-circle" alt="User Image">
             {% endif %}
-            <li class="nav-title">Organisasi</li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'club:clubs' request.user.archer.region_code_name %}">
-                    <i class="nav-icon icon-user"></i> Klub
-                </a>
-            </li>
-            {% endwith %}
-        </ul>
-        
-        <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
-            <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
         </div>
-        <div class="ps__rail-y" style="top: 0px; height: 723px; right: 0px;">
-            <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 505px;"></div>
+        <div class="pull-left info">
+            <p>{{request.user.archer.full_name}}</p>
+            <a href="#"><i class="fa fa-bullseye text-success"></i> {{request.user.archer.club.name}}</a>
         </div>
-    </nav>
-    <button class="sidebar-minimizer brand-minimizer" type="button"></button>
-</div>
+    </div>
+    <!-- search form -->
+    <form action="#" method="get" class="sidebar-form">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Search...">
+            <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+    <!-- /.search form -->
+    <!-- sidebar menu: : style can be found in sidebar.less -->
+    <ul class="sidebar-menu tree" data-widget="tree">
+        {% for sidebar in sidebars %}
+        {% if sidebar.type == 'group' %}
+        <li class="header">{{sidebar.title|upper}}</li>
+        {% endif %}
+        {% for item in sidebar.items %}
+        {% if item.type == 'item' %}
+        <li class="{% if item.is_active %}active{% endif %}">
+            <a href="{{item.href}}">
+                <i class="{{item.icon}}"></i> <span>{{item.title}}</span>
+            </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+        <li class="header">MAIN NAVIGATION</li>
+        <!-- <li class="treeview">
+            <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="../../index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
+                <li><a href="../../index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+            </ul>
+        </li> -->
+        <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
+    </ul>
+</section>
