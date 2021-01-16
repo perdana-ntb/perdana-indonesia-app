@@ -43,7 +43,6 @@ class ClubListView(RoleBasesAccessListView):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.archer = None
-        self.userGroup = None
 
     def mappedClubGoupQueryset(self, queryset: QuerySet):
         city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
@@ -56,16 +55,16 @@ class ClubListView(RoleBasesAccessListView):
 
     def mappedClubGoupTableTitleDisplayed(self):
         return {
-            PERDANA_USER_ROLE[0]: 'Semua klub dalam Regional',
-            PERDANA_USER_ROLE[1]: 'Semua klub dalam Provinsi',
-            PERDANA_USER_ROLE[2]: 'Semua klub dalam Cabang (Kabupaten)',
-            PERDANA_USER_ROLE[3]: 'Semua klub %s' % self.archer.club.name
+            PERDANA_USER_ROLE[0]: 'Semua Pusat Latihan dalam Regional',
+            PERDANA_USER_ROLE[1]: 'Semua Pusat Latihan dalam Provinsi',
+            PERDANA_USER_ROLE[2]: 'Semua Pusat Latihan dalam Cabang (Kabupaten)',
+            PERDANA_USER_ROLE[3]: 'Semua Pusat Latihan %s' % self.archer.club.name
         }
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tableTitle'] = self.mappedClubGoupTableTitleDisplayed()[self.userGroup.name]
-        context['displayAddButton'] = self.userGroup.name in PERDANA_MANAGEMENT_USER_ROLE[1:2]
+        context['title_header'] = self.mappedClubGoupTableTitleDisplayed()[self.archer.role]
+        context['displayAddButton'] = self.archer.role in PERDANA_MANAGEMENT_USER_ROLE[1:2]
         context['kabupatens'] = Kabupaten.objects.filter(
             provinsi=self.archer.kelurahan.kecamatan.kabupaten.provinsi
         )
@@ -73,8 +72,7 @@ class ClubListView(RoleBasesAccessListView):
 
     def get_queryset(self) -> QuerySet:
         self.archer = self.request.user.archer
-        self.userGroup = self.archer.getUserGroup()
-        return self.mappedClubGoupQueryset(super().get_queryset())[self.userGroup.name]
+        return self.mappedClubGoupQueryset(super().get_queryset())[self.archer.role]
 
 
 class ClubAddFormView(RoleBasesAccessFormView):
@@ -95,7 +93,7 @@ class ClubAddFormView(RoleBasesAccessFormView):
     def form_valid(self, form: ClubForm) -> HttpResponse:
         form.save()
         messages.success(
-            self.request, 'Klub %s berhasil di tambahkan' % form.cleaned_data.get('name'),
+            self.request, 'Pusat Latihan %s berhasil di tambahkan' % form.cleaned_data.get('name'),
             extra_tags='success'
         )
         return redirect(self.get_success_url())

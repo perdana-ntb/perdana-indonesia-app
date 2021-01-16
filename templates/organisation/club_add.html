@@ -18,22 +18,21 @@
 {% block subtitle %} {{request.user.club.full_name}} {% endblock subtitle %}
 {% block content %}
 {% with request.user.club as club %}
-<div class="row justify-content-center" id="app-body">
-    <div class="col-md-8 col-sm-12">
+<div class="row" id="app-body">
+    <div class="col-md-8 col-md-offset-2 col-sm-12">
         {% include "_base/message.html" %}
-        <div class="card">
-            <div class="card-body">
-                <div style="text-align: center;">
-                    <h3>Tambah klub baru</h3>
-                </div>
-                <hr class="mb-3">
-                <div class="row justify-content-center">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Tambah Pusat Latihan (Puslat) Baru</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
                     <form role="form" method="POST"
                         action="{% url 'club:club-add' request.user.archer.region_code_name %}"
-                        class="col-md-10 col-sm-12" enctype="multipart/form-data">
+                        class="col-md-10 col-md-offset-1 col-sm-12" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="">Nama Klub</label>
+                            <label for="">Nama Pusat Latihan</label>
                             <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="form-group">

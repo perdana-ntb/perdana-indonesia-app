@@ -34,14 +34,6 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'is_active': bool(
                                 reverse('archer:club-members', kwargs=defaultKwargs) == request.path
                             )
-                        }, {
-                            'type': 'item',
-                            'title': 'Pendaftar',
-                            'icon': 'fa fa-align-left',
-                            'href': reverse('archer:club-applicants', kwargs=defaultKwargs),
-                            'is_active': bool(
-                                reverse('archer:club-members', kwargs=defaultKwargs) == request.path
-                            )
                         }
                 ]
             },
@@ -196,17 +188,11 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'title': 'Pemanah',
                             'icon': 'fa fa-bullseye',
                             'href': reverse('archer:club-members', kwargs=defaultKwargs),
-                            'is_active': bool(
-                                reverse('archer:club-members', kwargs=defaultKwargs) == request.path
-                            )
                         }, {
                             'type': 'item',
                             'title': 'Pendaftar',
                             'icon': 'fa fa-align-left',
                             'href': reverse('archer:club-applicants', kwargs=defaultKwargs),
-                            'is_active': bool(
-                                reverse('archer:club-members', kwargs=defaultKwargs) == request.path
-                            )
                         }
                 ]
             },
