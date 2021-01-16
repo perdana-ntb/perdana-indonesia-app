@@ -5,7 +5,7 @@ from django import http
 from django.conf import settings
 from django.contrib.auth.mixins import (AccessMixin, LoginRequiredMixin,
                                         UserPassesTestMixin)
-from django.http.response import HttpResponse
+from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django.views.generic.base import View
@@ -26,14 +26,17 @@ class UserAuthenticatedRedirectMixin(AccessMixin):
 
 
 class ProfileCompleteRequiredMixin(AccessMixin):
-    force_update_profile_groups = PERDANA_ARCHER_USER_ROLE
+    force_update_profile_roles = PERDANA_ARCHER_USER_ROLE
 
     def dispatch(self, request: http.HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         archer: Archer = request.user.archer
-        if '/archer/complete-profile' not in request.path and \
-                archer.role in self.force_update_profile_groups:
-            if not archer.isProfileComplete:
-                return redirect('archer:complete-profile', archer.region_code_name)
+        if '/archer/profile' not in request.path and \
+                archer.role in self.force_update_profile_roles:
+            try:
+                if not archer.approval_status.verified:
+                    return redirect('archer:profile', archer.region_code_name)
+            except (AttributeError, KeyError, ValueError):
+                raise Http404('Request does not allowed')
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -65,12 +68,10 @@ class BaseRoleAccessMixin(UserPassesTestMixin):
         try:
             return bool(
                 user.is_authenticated and
-                user.archer.approval_status.verified and
                 user.archer.role in self.allowed_roles and
                 user.archer.region_code_name == self.kwargs.get('province_code')
             )
-        except (IndexError, AttributeError) as e:
-            print(str(e))
+        except (IndexError, AttributeError):
             return False
 
     def getArcher(self):

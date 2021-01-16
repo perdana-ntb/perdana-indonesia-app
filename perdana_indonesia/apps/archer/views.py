@@ -26,7 +26,7 @@ from rest_framework.authtoken.models import Token
 
 from .forms import (ArcherCompleteProfileForm, ArcherLoginForm,
                     ArcherRegistrationForm)
-from .models import Archer
+from .models import Archer, ArcherApprovalDocument
 
 
 class ArcherRegistrationFormView(FormView):
@@ -39,16 +39,32 @@ class ArcherRegistrationFormView(FormView):
         ctx['provinces'] = Provinsi.objects.all()
         return ctx
 
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, 'Pendaftaran sebagai anggota Perdana Indonesia berhasil. '
-                         'Data anda akan di verifikasi terlebih dahulu '
-                         'oleh pengurus klub/satuan tempat mendaftar',
-                         extra_tags='success')
+    @transaction.atomic
+    def form_valid(self, form: ArcherRegistrationForm):
+        user = User.objects.create_user(
+            username=form.cleaned_data.pop('username'),
+            password=form.cleaned_data.pop('password'),
+        )
+
+        publicPhoto = form.cleaned_data.pop('public_photo')
+        identityCardPhoto = form.cleaned_data.pop('identity_card_photo')
+        archer: Archer = Archer.objects.create(user=user, **form.cleaned_data)
+
+        approvalDocument: ArcherApprovalDocument = archer.approval_document
+        approvalDocument.public_photo = publicPhoto
+        approvalDocument.identity_card_photo = identityCardPhoto
+        approvalDocument.save()
+
+        messages.success(
+            self.request, 'Pendaftaran sebagai anggota Perdana Indonesia berhasil. '
+            'Silahkan Login menggunakan username dan password yang telah anda buat',
+            extra_tags='success'
+        )
         return redirect(self.success_url, **self.kwargs)
 
-    def form_invalid(self, form):
-        print(form.errors)
+    def form_invalid(self, form: ArcherRegistrationForm):
+        for error in form.errors.values():
+            messages.error(self.request, error, extra_tags='danger')
         return super().form_invalid(form)
 
 
@@ -62,16 +78,10 @@ class ArcherLoginFormView(UserAuthenticatedRedirectMixin, FormView):
         user: User = authenticate(request=self.request, **credentials)
         if user:
             archer: Archer = user.archer
-            if archer.approval_status.verified:
-                login(self.request, user)
-                userGroup = user.groups.first()
-                if userGroup.name in PERDANA_ARCHER_USER_ROLE:
-                    self.success_url = 'archer:profile'
-                return redirect(self.success_url, province_code=archer.region_code_name)
-            messages.error(
-                self.request, 'Akun anda belum diverifikasi oleh pengurus',
-                extra_tags='danger'
-            )
+            login(self.request, user)
+            if archer.role in PERDANA_ARCHER_USER_ROLE:
+                self.success_url = 'archer:profile'
+            return redirect(self.success_url, province_code=archer.region_code_name)
         else:
             messages.error(
                 self.request, 'Username / No. anggota atau password salah',
@@ -103,7 +113,7 @@ class ArcherCompleteProfileFormView(RoleBasesAccessFormView):
 
     def dispatch(self, request: http.HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         instance: Archer = request.user.archer
-        if instance.isProfileComplete:
+        if instance.approval_status.verified:
             return redirect(reverse('archer:profile', kwargs=self.kwargs))
         return super().dispatch(request, *args, **kwargs)
 

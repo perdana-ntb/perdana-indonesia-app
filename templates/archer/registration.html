@@ -17,7 +17,7 @@
 <body class="hold-transition login-page">
     <div id="app-body" class="app-body">
         <div class="container">
-            <div class="row" style="margin-top: 3em; margin-bottom: 3em;">
+            <div class="row" style="margin-top: 2em; margin-bottom: 3em;">
                 <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
                     {% include "_base/message.html" %}
                     <div class="box box-primary box-shadow">
@@ -39,7 +39,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="">Password</label>
-                                        <input type="text" class="form-control" name="password" required>
+                                        <input type="password" class="form-control" name="password" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="">NIK</label>
@@ -52,6 +52,11 @@
                                     <div class="form-group">
                                         <label for="">Nama Lengkap</label>
                                         <input type="text" class="form-control" name="full_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Foto Diri &nbsp;<small class="text-red">*Boleh foto bercadar, jika
+                                                menggunakan cadar</small></label> <br>
+                                        <input type="file" name="public_photo" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="">No. Telepon</label>
@@ -86,7 +91,7 @@
                                     <div class="form-group">
                                         <label for="">Provinsi</label>
                                         <select id="province" @change="onChangeSelection($event, getCities)"
-                                            class="form-control select2" required>
+                                            class="form-control" required>
                                             {% for province in provinces %}
                                             <option value="{{province.code}}">{{province.name}}</option>
                                             {% endfor %}
@@ -94,7 +99,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="">Kabupaten</label>
-                                        <select id="city" class="form-control select2"
+                                        <select id="city" class="form-control"
                                             @change="onChangeSelection($event, getDistricts)" required>
                                             <option v-for="city in cities" :key="city.code" :value="city.code">
                                                 ${city.name}</option>
@@ -102,7 +107,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="">Kecamatan</label>
-                                        <select id="district" class="form-control select2"
+                                        <select id="district" class="form-control "
                                             @change="onChangeSelection($event, getVillages)" required>
                                             <option v-for="district in districts" :key="district.code"
                                                 :value="district.code">
@@ -111,7 +116,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="">Kelurahan</label>
-                                        <select id="village" class="form-control select2" name="kelurahan"
+                                        <select id="village" class="form-control " name="kelurahan"
                                             @change="onChangeSelection($event, getRegionalClubs)" required>
                                             <option v-for="village in villages" :key="village.code" :value="village.id">
                                                 ${village.name}</option>
@@ -119,7 +124,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="">Klub / Satuan</label>
-                                        <select id="club" name="club" class="form-control select2" required>
+                                        <select id="club" name="club" class="form-control " required>
                                             <option v-for="club in regionalClubs" :key="club.id" :value="club.id">
                                                 ${club.name}
                                             </option>

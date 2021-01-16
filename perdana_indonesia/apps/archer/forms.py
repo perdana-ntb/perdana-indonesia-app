@@ -4,10 +4,14 @@ from .models import Archer
 
 
 class ArcherRegistrationForm(forms.ModelForm):
+    username = forms.CharField()
+    password = forms.CharField()
+    public_photo = forms.ImageField()
+    identity_card_photo = forms.ImageField()
+
     class Meta:
         model = Archer
-        exclude = ('user', 'date_register', 'religion', 'verified',
-                   'approved', 'approved_by', 'region_code_name', 'qrcode')
+        exclude = ('user', 'role', 'date_register', 'religion', 'region_code_name', 'qrcode')
 
 
 class ArcherCompleteProfileForm(forms.ModelForm):

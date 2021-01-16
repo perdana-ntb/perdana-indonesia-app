@@ -1,8 +1,11 @@
 from core.choices import (BLOOD_TYPE_CHOICES, GENDER_CHOICES,
                           PERDANA_USER_ROLE_CHOICES, RELIGION_CHOICES)
 from core.models import TimeStampedModel
+from core.utils.generator import generate_qrcode_from_text
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Archer(TimeStampedModel):
@@ -87,7 +90,7 @@ class ArcherApprovalStatus(TimeStampedModel):
         )
 
     def __str__(self) -> str:
-        return 'Approval status of %s' % self.archer.full_name
+        return 'Approval status of %s' % str(self.archer)
 
     def save(self, **kwargs):
         self.verified = self.isCompletelyApproved()
@@ -110,7 +113,22 @@ class ArcherApprovalDocument(TimeStampedModel):
     skck = models.ImageField(upload_to='skck/%Y/%m/%d', null=True, blank=True)
 
     def __str__(self) -> str:
-        return 'Approval documents of %s' % self.archer.full_name
+        return 'Approval documents of %s' % str(self.archer)
+
+    @property
+    def isDocumentComplete(self):
+        return bool(
+            self.photo and self.public_photo and
+            self.identity_card_photo and self.skck
+        )
 
     class Meta:
         ordering = ['-created', '-modified']
+
+
+@receiver(post_save, sender=Archer)
+def createArcherApprovalStatusAndDocument(sender, instance, created, **kwargs):
+    ArcherApprovalStatus.objects.get_or_create(archer=instance)
+    document, _ = ArcherApprovalDocument.objects.get_or_create(archer=instance)
+    document.qrcode = generate_qrcode_from_text(instance.user.username)
+    document.save()

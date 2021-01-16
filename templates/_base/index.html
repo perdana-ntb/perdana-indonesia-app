@@ -18,9 +18,11 @@
             {% include "_base/navbar.html" %}
         </header>
         <!-- Left side column. contains the logo and sidebar -->
+        {% if request.user.archer.approval_status.verified %}
         <aside class="main-sidebar">
             {% include "_base/sidebar.html" %}
         </aside>
+        {% endif %}
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper" style="min-height: 956px;">
