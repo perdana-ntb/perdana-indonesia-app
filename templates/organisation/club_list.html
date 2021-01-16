@@ -39,6 +39,7 @@
                         <th>Logo</th>
                         <th>Nama Klub</th>
                         <th>No. SK</th>
+                        <th>Tanggal Berdiri</th>
                         <th>Alamat</th>
                         <th>Jenis</th>
                         <th class="text-center">Total Anggota</th>
@@ -56,6 +57,7 @@
                             </td>
                             <td>{{club.name}}</td>
                             <td>{{club.organisation_id}}</td>
+                            <td>{{club.date_register|date:'d F Y'}}</td>
                             <td>{{club.address}}</td>
                             <td>{{club.org_type}}</td>
                             <td class="text-center">{{club.archer_set.all.count}}</td>

@@ -1,5 +1,6 @@
 from typing import Any, Dict
 
+from archer.models import Archer
 from core.permissions import PERDANA_MANAGEMENT_USER_ROLE, PERDANA_USER_ROLE
 from core.views import RoleBasesAccessFormView, RoleBasesAccessListView
 from django.contrib import messages
@@ -9,7 +10,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views import View
-from region.models import Kabupaten, Kecamatan, Kelurahan
+from region.models import Kabupaten, Kelurahan
 
 from club.forms import ClubForm
 
@@ -42,7 +43,7 @@ class ClubListView(RoleBasesAccessListView):
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.archer = None
+        self.archer: Archer = None
 
     def mappedClubGoupQueryset(self, queryset: QuerySet):
         city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
@@ -54,10 +55,11 @@ class ClubListView(RoleBasesAccessListView):
         }
 
     def mappedClubGoupTableTitleDisplayed(self):
+        kabupaten: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
         return {
             PERDANA_USER_ROLE[0]: 'Semua Pusat Latihan dalam Regional',
-            PERDANA_USER_ROLE[1]: 'Semua Pusat Latihan dalam Provinsi',
-            PERDANA_USER_ROLE[2]: 'Semua Pusat Latihan dalam Cabang (Kabupaten)',
+            PERDANA_USER_ROLE[1]: 'Semua Pusat Latihan di %s' % kabupaten.provinsi.name,
+            PERDANA_USER_ROLE[2]: 'Semua Pusat Latihan di %s' % kabupaten.name,
             PERDANA_USER_ROLE[3]: 'Semua Pusat Latihan %s' % self.archer.club.name
         }
 
