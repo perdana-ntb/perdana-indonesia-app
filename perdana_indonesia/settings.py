@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django_js_reverse',
     'rest_framework_swagger',
     'corsheaders',
+    'easy_logging',
 
     'core',
     'dashboardd',
@@ -73,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'perdana_indonesia.libs.easy_logging.middleware.EasyLoggingMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -81,6 +83,8 @@ ROOT_URLCONF = 'perdana_indonesia.urls'
 
 sys.path.append(os.path.join(DIRNAME, 'perdana_indonesia', 'apps'))
 sys.path.append(os.path.join(BASE_DIR, 'perdana_indonesia', 'apps'))
+sys.path.append(os.path.join(DIRNAME, 'perdana_indonesia', 'libs'))
+sys.path.append(os.path.join(BASE_DIR, 'perdana_indonesia', 'libs'))
 
 TEMPLATES = [
     {
@@ -183,6 +187,16 @@ else:
 LOGIN_URL = '/app/perdana/indonesia/archer/login'
 
 SHELL_PLUS = "ipython"
+
+# Easy Logging Config
+EASY_LOGGING_ALLOW_ANONYMOUS = True
+EASY_LOGGING_ENDPOINT_CATCH_ALL = False
+EASY_LOGGING_ENDPOINT_CONTAINS = ()
+EASY_LOGGING_METHOD_CATCH_ALL = False
+
+# Use Upper Case Instead
+EASY_LOGGING_CATCH_METHODS = ('POST', )
+EASY_LOGGING_USE_METHOD_INSTEAD = True
 
 try:
     from .local_settings import *

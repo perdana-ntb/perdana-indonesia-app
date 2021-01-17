@@ -29,7 +29,7 @@ class RegionalClubJsonView(View):
         if village:
             queryset = Club.objects.filter(
                 province_code=village.kecamatan.kabupaten.provinsi.code
-            ).values('id', 'name', 'org_type')
+            ).values('id', 'name')
         else:
             queryset = []
         return JsonResponse(data=list(queryset), safe=False)
