@@ -46,7 +46,8 @@
                                 <a href="{% url 'archer:gen-qrcode' province_code=archer.region_code_name archer_id=archer.pk %}"
                                     class="btn btn-sm btn-primary"><i class="fa fa-qrcode"></i></a>
                                 {% endif %}
-                                <a href="#" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+                                <a href="{% url 'archer:profile-detail' archer.region_code_name archer.pk %}"
+                                    class="btn btn-sm btn-primary">Lihat Detail &nbsp;<i class="fa fa-eye"></i></a>
                                 {% if archer.approved %}
                                 <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-unlock"></i></a>
                                 {% else %}

@@ -1,0 +1,298 @@
+{% extends "_base/index.html" %}
+{% load static %}
+{% block content_header %}
+<h1>
+    Profil Pemanah <small>{{archer.full_name}}</small>
+</h1>
+<ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Pemanah</a></li>
+    <li><a href="#">Profile</a></li>
+    <li class="active">{{archer.full_name}}</li>
+</ol>
+{% endblock content_header %}
+{% block inline_css %}
+<style>
+    .timeline-body>img {
+        height: 25rem;
+    }
+</style>
+{% endblock inline_css %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+
+        <!-- Profile Image -->
+        <div class="box box-primary">
+            <div class="box-body box-profile">
+                {% if archer.approval_document.public_photo %}
+                <img style="width: 100%;" src="{{archer.approval_document.public_photo.url}}"
+                    alt="User profile picture">
+                {% else %}
+                <img style="width: 100%;" src="{% static 'vendors/admin-lte/dist/img/avatar04.png' %}"
+                    alt="User profile picture">
+                {% endif %}
+
+
+                <h3 class="profile-username text-center" style="margin-top: 16px;">{{archer.full_name}}</h3>
+
+                <p class="text-muted text-center">{{archer.club.name}}</p>
+
+                <!-- <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Friends</b> <a class="pull-right">13,287</a>
+                    </li>
+                </ul> -->
+
+                {% if archer.approval_status.verified %}
+                <a href="#" class="btn btn-error btn-block">Non-Aktifkan Anggota &nbsp;<i class="fa fa-close"></i></a>
+                {% else %}
+                <a href="#" class="btn btn-success btn-block">Konfirmasi &nbsp;<i class="fa fa-check"></i></a>
+                {% endif %}
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+        <!-- About Me Box -->
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">QRCode</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <img style="width: 100%;" src="{{archer.approval_document.qrcode.url}}" alt="">
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+        <!-- About Me Box -->
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Tentang Pemanah</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#personal-info" data-toggle="tab"><i class="fa fa-user"></i> &nbsp; Info
+                        Pribadi</a></li>
+                <li><a href="#verification-status" data-toggle="tab">
+                        {% if archer.approval_status.verified %}
+                        <i class="fa fa-check text-green"></i>
+                        {% else %}
+                        <i class="fa fa-close text-red"></i>
+                        {% endif %}
+                        &nbsp; Status Verifikasi</a></li>
+                <li><a href="#document-verification" data-toggle="tab">
+                        {% if archer.approval_document.isDocumentComplete %}
+                        <i class="fa fa-check text-green"></i>
+                        {% else %}
+                        <i class="fa fa-close text-red"></i>
+                        {% endif %}
+                        &nbsp; Dokumen Keorganisasian</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="active tab-pane" id="personal-info">
+                    <div class="row">
+                        <div class="col-lg-12 col-lg-offset-1 col-md-12 col-md-offset-1">
+                            <div class="form-group">
+                                <label for="">No. Anggota</label>
+                                <p class="form-control">{{archer.user.username}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">NIK</label>
+                                <p class="form-control">{{archer.identity_card_number}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Nama Lengkap</label>
+                                <p class="form-control">{{archer.full_name}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">No. Telepon</label>
+                                <p class="form-control">{{archer.phone}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Jenis Kelamin</label>
+                                <p class="form-control">{{archer.gender}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Tempat, Tanggal Lahir</label>
+                                <p class="form-control">{{archer.born_place}}, {{archer.born_date|date:'d F Y'}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Alamat</label>
+                                <p class="form-control">{{archer.address}}, {{archer.born_date|date:'d F Y'}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Klub Asal</label>
+                                <p class="form-control">{{archer.club.name}}, {{archer.born_date|date:'d F Y'}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Tanggal Terdaftar</label>
+                                <p class="form-control">{{archer.date_register|date:'d F Y'}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Golongan Darah</label>
+                                <p class="form-control">{{archer.blood_type}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Riwayat Penyakit</label>
+                                <p class="form-control">{{archer.disease_history}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Tinggi Badan</label>
+                                <p class="form-control">{{archer.body_height}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Berat Badan</label>
+                                <p class="form-control">{{archer.body_weight}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Panjang Tarikan</label>
+                                <p class="form-control">{{archer.draw_length}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="verification-status">
+                    <!-- The timeline -->
+                    <ul class="timeline timeline-inverse">
+                        <li>
+                            {% if archer.approval_status.puslat_approved %}
+                            <i class="fa fa-check text-green"></i>
+                            <div class="timeline-item">
+                                <div class="timeline-body">
+                                    Sudah di verifikasi oleh {{archer.approval_status.puslat_approved_by.username}}
+                                </div>
+                            </div>
+                            {% else %}
+                            <i class="fa fa-close text-red"></i>
+                            <div class="timeline-item">
+                                <div class="timeline-body">
+                                    Belum di verifikasi oleh pengurus Puslat
+                                </div>
+                            </div>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if archer.approval_status.dpc_approved %}
+                            <i class="fa fa-check text-green"></i>
+                            <div class="timeline-item">
+                                <div class="timeline-body">
+                                    Sudah di verifikasi oleh {{archer.approval_status.dpc_approved_by.username}}
+                                </div>
+                            </div>
+                            {% else %}
+                            <i class="fa fa-close text-red"></i>
+                            <div class="timeline-item">
+                                <div class="timeline-body">
+                                    Belum di verifikasi oleh pengurus DPC
+                                </div>
+                            </div>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if archer.approval_status.dpd_approved %}
+                            <i class="fa fa-check text-green"></i>
+                            <div class="timeline-item">
+                                <div class="timeline-body">
+                                    Sudah di verifikasi oleh {{archer.approval_status.dpd_approved_by.username}}
+                                </div>
+                            </div>
+                            {% else %}
+                            <i class="fa fa-close text-red"></i>
+                            <div class="timeline-item">
+                                <div class="timeline-body">
+                                    Belum di verifikasi oleh pengurus DPD
+                                </div>
+                            </div>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.tab-pane -->
+
+                <div class="tab-pane" id="document-verification">
+                    <ul class="timeline timeline-inverse">
+                        <li>
+                            {% if archer.approval_document.public_photo %}
+                            <i class="fa fa-check text-green"></i>
+                            {% else %}
+                            <i class="fa fa-close text-red"></i>
+                            {% endif %}
+
+                            <div class="timeline-item">
+                                <h3 class="timeline-header">Foto Publik</h3>
+
+                                <div class="timeline-body">
+                                    {% if archer.approval_document.public_photo %}
+                                    <img src="{{archer.approval_document.public_photo.url}}" alt="">
+                                    {% else %}
+                                    <p class="text-red">Foto Publik belum lengkap</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            {% if archer.approval_document.identity_card_photo %}
+                            <i class="fa fa-check text-green"></i>
+                            {% else %}
+                            <i class="fa fa-close text-red"></i>
+                            {% endif %}
+
+                            <div class="timeline-item">
+                                <h3 class="timeline-header">Foto KTP</h3>
+
+                                <div class="timeline-body">
+                                    {% if archer.approval_document.identity_card_photo %}
+                                    <img src="{{archer.approval_document.identity_card_photo.url}}" alt="">
+                                    {% else %}
+                                    <p class="text-red">Foto KTP belum lengkap</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            {% if archer.approval_document.skck %}
+                            <i class="fa fa-check text-green"></i>
+                            {% else %}
+                            <i class="fa fa-close text-red"></i>
+                            {% endif %}
+
+                            <div class="timeline-item">
+                                <h3 class="timeline-header">Foto SKCK</h3>
+
+                                <div class="timeline-body">
+                                    {% if archer.approval_document.skck %}
+                                    <img src="{{archer.approval_document.skck.url}}" alt="">
+                                    {% else %}
+                                    <p class="text-red">Foto SKCK belum lengkap</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+</div>
+{% endblock content %}
+{% block js %}
+<script>
+    console.log("Dashboard test")
+</script>
+{% endblock js %}

@@ -4,9 +4,9 @@ from core.permissions import (PERDANA_ARCHER_USER_ROLE,
                               PERDANA_CLUB_MANAGEMENT_USER_ROLE,
                               PERDANA_MANAGEMENT_USER_ROLE, PERDANA_USER_ROLE)
 from core.utils.generator import generate_qrcode_from_text
-from core.views import (RoleBasesAccessFormView, RoleBasesAccessListView,
-                        RoleBasesAccessTemplateView, RoleBasesAccessView,
-                        UserAuthenticatedRedirectMixin)
+from core.views import (RoleBasesAccessDetailView, RoleBasesAccessFormView,
+                        RoleBasesAccessListView, RoleBasesAccessTemplateView,
+                        RoleBasesAccessView, UserAuthenticatedRedirectMixin)
 from django import http
 from django.conf import settings
 from django.contrib import messages
@@ -106,6 +106,26 @@ class ArcherUserProfileTemplateView(RoleBasesAccessTemplateView):
     template_name = 'archer/archer_profile.html'
 
 
+class ArcherProfileDetailView(RoleBasesAccessDetailView):
+    allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
+    template_name = 'archer/archer_profile_detail.html'
+    context_object_name = 'archer'
+    queryset = Archer.objects.all()
+
+    def mappedQuerySet(self):
+        archer: Archer = self.request.user.archer
+        kabupaten = archer.kelurahan.kecamatan.kabupaten
+        return{
+            PERDANA_MANAGEMENT_USER_ROLE[0]: self.queryset.all(),
+            PERDANA_MANAGEMENT_USER_ROLE[1]: self.queryset.filter(region_code_name=archer.region_code_name),
+            PERDANA_MANAGEMENT_USER_ROLE[2]: self.queryset.filter(kelurahan__kecamatan__kabupaten=kabupaten),
+            PERDANA_MANAGEMENT_USER_ROLE[3]: self.queryset.filter(club=archer.club),
+        }
+
+    def get_queryset(self) -> QuerySet:
+        return self.mappedQuerySet()[self.request.user.archer.role]
+
+
 class ArcherCompleteProfileFormView(RoleBasesAccessFormView):
     allowed_roles = PERDANA_USER_ROLE
     template_name = 'archer/archer_complete_profile.html'
@@ -136,7 +156,7 @@ class ArcherCompleteProfileFormView(RoleBasesAccessFormView):
 class ArcherClubMemberListView(RoleBasesAccessListView):
     allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
     template_name = 'archer/archer_member_list.html'
-    queryset = Archer.objects.filter(user__isnull=False)
+    queryset = Archer.objects.filter(approval_status__verified=True)
     context_object_name = 'archers'
 
     def __init__(self, **kwargs: Any) -> None:
@@ -173,7 +193,7 @@ class ArcherClubMemberListView(RoleBasesAccessListView):
 class ArcherClubApplicantListView(RoleBasesAccessListView):
     allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
     template_name = 'archer/archer_applicant_list.html'
-    queryset = Archer.objects.filter(user__isnull=True)
+    queryset = Archer.objects.filter(approval_status__verified=False)
     context_object_name = 'archers'
 
     def __init__(self, **kwargs: Any) -> None:

@@ -38,15 +38,20 @@
                         <tr>
                             <td>{{archer.full_name}}</td>
                             <td>{{archer.identity_card_number}}</td>
-                            <td><a href="{{archer.identity_card_photo.url}}" target="_blank">Lihat foto KTP</a></td>
+                            <td><a href="{{archer.approval_document.identity_card_photo.url}}" target="_blank">Lihat
+                                    foto KTP</a></td>
                             <td>{{archer.phone}}</td>
                             <td>{{archer.gender}}</td>
                             <td>{{archer.date_register|date:'d F Y'}}</td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                <a href="{% url 'archer:profile-detail' archer.region_code_name archer.pk %}"
+                                    class="btn btn-sm btn-primary">Lihat Detail &nbsp; <i class="fa fa-eye"></i></a>
+                            </td>
+                            <!-- <td class="text-center">
+                                <button class="btn btn-xs btn-primary" data-toggle="modal"
                                     data-target="#modal-{{archer.identity_card_number}}"><i
                                         class="fa fa-check"></i></button>
-                            </td>
+                            </td> -->
                         </tr>
                         <div id="modal-{{archer.identity_card_number}}" class="modal fade" role="dialog">
                             <div class="modal-dialog">
