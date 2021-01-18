@@ -16,14 +16,13 @@ class DashboardTemplateView(RoleBasesAccessTemplateView):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.archer: Archer = None
-        self.userGroup: Group = None
 
     def mappedUserGoupQueryset(self) -> Dict:
         city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
         return {
             PERDANA_MANAGEMENT_USER_ROLE[0]: self.queryset,
             PERDANA_MANAGEMENT_USER_ROLE[1]: self.queryset.filter(
-                region_code_name=self.archer. region_code_name
+                region_code_name=self.archer.region_code_name
             ),
             PERDANA_MANAGEMENT_USER_ROLE[2]: self.queryset.filter(
                 club__city_code=city.code
@@ -38,11 +37,11 @@ class DashboardTemplateView(RoleBasesAccessTemplateView):
             PERDANA_MANAGEMENT_USER_ROLE[0]: 'Dashboard Regional',
             PERDANA_MANAGEMENT_USER_ROLE[1]: 'Dashboard Pengurus Provinsi',
             PERDANA_MANAGEMENT_USER_ROLE[2]: 'Dashboard Pengurus Cabang',
-            PERDANA_MANAGEMENT_USER_ROLE[3]: 'Dashboard Pengurus Club / Satuan'
+            PERDANA_MANAGEMENT_USER_ROLE[3]: 'Dashboard Pengurus Puslat'
         }
 
     def getArcherInformation(self) -> List:
-        queryset = self.mappedUserGoupQueryset()[self.userGroup.name]
+        queryset = self.mappedUserGoupQueryset()[self.archer.role]
         return [
             {
                 'title': 'Anggota Aktif',
@@ -81,8 +80,6 @@ class DashboardTemplateView(RoleBasesAccessTemplateView):
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         self.archer = self.getArcher()
-        self.userGroup = self.archer.user.groups.first()
-
         context['archers_mapping_information'] = self.getArcherInformation()
-        context['title_header'] = self.mappedDisplayTitle()[self.userGroup.name]
+        context['title_header'] = self.mappedDisplayTitle()[self.archer.role]
         return context

@@ -19,8 +19,10 @@
 {% endblock inline_css %}
 {% block content %}
 <div class="row">
+    <div class="col-md-12">
+        {% include "_base/message.html" %}
+    </div>
     <div class="col-md-3">
-
         <!-- Profile Image -->
         <div class="box box-primary">
             <div class="box-body box-profile">
@@ -44,9 +46,23 @@
                 </ul> -->
 
                 {% if archer.approval_status.verified %}
-                <a href="#" class="btn btn-error btn-block">Non-Aktifkan Anggota &nbsp;<i class="fa fa-close"></i></a>
+                <a href="#" class="btn btn-danger btn-block">Non-Aktifkan Anggota &nbsp;<i class="fa fa-close"></i></a>
                 {% else %}
-                <a href="#" class="btn btn-success btn-block">Konfirmasi &nbsp;<i class="fa fa-check"></i></a>
+                <form action="{% url 'archer:approve' request.user.archer.region_code_name archer.pk  %}" method="post"
+                    style="margin-top: 24px;">
+                    {% csrf_token %}
+                    {% if request.user.archer.role == 'pengprov' %}
+                    <div class="form-group">
+                        <input type="text" name="membership_number" class="form-control"
+                            placeholder="Tentukan No. Anggota">
+                    </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <button type="submit"
+                            onclick="return confirm('Lanjutkan verifikasi pendaftar atas nama {{archer.full_name}}')"
+                            class="btn btn-success btn-block">Konfirmasi &nbsp;<i class="fa fa-check"></i></button>
+                    </div>
+                </form>
                 {% endif %}
             </div>
             <!-- /.box-body -->
@@ -64,19 +80,6 @@
             </div>
             <!-- /.box-body -->
         </div>
-        <!-- /.box -->
-        <!-- About Me Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Tentang Pemanah</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
-            </div>
-            <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
     </div>
     <!-- /.col -->
     <div class="col-md-9">
@@ -171,7 +174,8 @@
                             <i class="fa fa-check text-green"></i>
                             <div class="timeline-item">
                                 <div class="timeline-body">
-                                    Sudah di verifikasi oleh {{archer.approval_status.puslat_approved_by.username}}
+                                    Sudah di verifikasi oleh
+                                    {{archer.approval_status.puslat_approved_by.archer.full_name}}
                                 </div>
                             </div>
                             {% else %}
@@ -188,7 +192,7 @@
                             <i class="fa fa-check text-green"></i>
                             <div class="timeline-item">
                                 <div class="timeline-body">
-                                    Sudah di verifikasi oleh {{archer.approval_status.dpc_approved_by.username}}
+                                    Sudah di verifikasi oleh {{archer.approval_status.dpc_approved_by.archer.full_name}}
                                 </div>
                             </div>
                             {% else %}
@@ -205,7 +209,7 @@
                             <i class="fa fa-check text-green"></i>
                             <div class="timeline-item">
                                 <div class="timeline-body">
-                                    Sudah di verifikasi oleh {{archer.approval_status.dpd_approved_by.username}}
+                                    Sudah di verifikasi oleh {{archer.approval_status.dpd_approved_by.archer.full_name}}
                                 </div>
                             </div>
                             {% else %}

@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict
 
 from core.permissions import (PERDANA_ARCHER_USER_ROLE,
                               PERDANA_CLUB_MANAGEMENT_USER_ROLE,
@@ -14,7 +14,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models.query import QuerySet
-from django.forms.forms import BaseForm, Form
+from django.forms.forms import Form
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -22,11 +22,10 @@ from django.utils import timezone
 from django.views.generic import FormView
 from django.views.generic.base import View
 from region.models import Kabupaten, Provinsi
-from rest_framework.authtoken.models import Token
 
 from .forms import (ArcherCompleteDocumentForm, ArcherLoginForm,
                     ArcherRegistrationForm)
-from .models import Archer, ArcherApprovalDocument
+from .models import Archer, ArcherApprovalDocument, ArcherApprovalStatus
 
 
 class ArcherRegistrationFormView(FormView):
@@ -121,7 +120,7 @@ class ArcherProfileDetailView(RoleBasesAccessDetailView):
                 region_code_name=archer.region_code_name
             ),
             PERDANA_MANAGEMENT_USER_ROLE[2]: self.queryset.filter(
-                kelurahan__kecamatan__kabupaten=kabupaten
+                club__city_code=kabupaten.code
             ),
             PERDANA_MANAGEMENT_USER_ROLE[3]: self.queryset.filter(club=archer.club),
         }
@@ -145,7 +144,10 @@ class ArcherCompleteDocumentFormView(RoleBasesAccessFormView):
         if not approvalDocument.isDocumentComplete:
             approvalDocument.save()
 
-        messages.success(self.request, 'Dokumen pendaftaran berhasil diperbarui', extra_tags='success')
+        messages.success(
+            self.request, 'Dokumen pendaftaran berhasil diperbarui',
+            extra_tags='success'
+        )
         return super().form_valid(form)
 
 
@@ -242,8 +244,7 @@ class GenerateArcherQRCodeView(RoleBasesAccessView):
 
 
 class ArcherMembershipApprovalFormView(RoleBasesAccessView):
-    allowed_roles = PERDANA_CLUB_MANAGEMENT_USER_ROLE
-    success_url = 'archer:club-members'
+    allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
 
     def getArcherObject(self, pk) -> Archer:
         try:
@@ -251,31 +252,91 @@ class ArcherMembershipApprovalFormView(RoleBasesAccessView):
         except Archer.DoesNotExist:
             raise Http404
 
+    @property
+    def archer(self) -> Archer:
+        return self.request.user.archer
+
+    def verifyAccessArcherData(self, pk) -> bool:
+        instance: Archer = self.getArcherObject(pk)
+        if self.archer.role == PERDANA_MANAGEMENT_USER_ROLE[3]:
+            return instance.club.pk == self.archer.club.pk
+        elif self.archer.role == PERDANA_MANAGEMENT_USER_ROLE[2]:
+            return bool(
+                instance.club.city_code == self.archer.club.city_code
+            )
+        elif self.archer.role == PERDANA_MANAGEMENT_USER_ROLE[1]:
+            return bool(
+                instance.region_code_name ==
+                self.archer.region_code_name
+            )
+        return False
+
+    def updateApprovalData(self, pk: int, requestData: dict) -> ArcherApprovalDocument:
+        instance: Archer = self.getArcherObject(pk)
+        appStatus: ArcherApprovalStatus = instance.approval_status
+        if self.archer.role == PERDANA_MANAGEMENT_USER_ROLE[3]:
+            appStatus.puslat_approved = True
+            appStatus.puslat_approved_by = self.archer.user
+            appStatus.puslat_approved_on = timezone.now()
+            messages.success(
+                self.request,
+                'Berhasil verifikasi data anggota atas nama %s' % instance.full_name,
+                extra_tags='success'
+            )
+        elif self.archer.role == PERDANA_MANAGEMENT_USER_ROLE[2]:
+            if appStatus.puslat_approved:
+                appStatus.dpc_approved = True
+                appStatus.dpc_approved_by = self.archer.user
+                appStatus.dpc_approved_on = timezone.now()
+                messages.success(
+                    self.request,
+                    'Berhasil verifikasi data anggota atas nama %s' % instance.full_name,
+                    extra_tags='success'
+                )
+            else:
+                messages.error(
+                    self.request, 'Gagal verifikasi data anggota atas nama %s, '
+                    'Puslat belum melakukan verifikasi data' % instance.full_name,
+                    extra_tags='danger'
+                )
+        elif self.archer.role == PERDANA_MANAGEMENT_USER_ROLE[1]:
+            if appStatus.dpc_approved:
+                appStatus.dpd_approved = True
+                appStatus.dpd_approved_by = self.archer.user
+                appStatus.dpd_approved_on = timezone.now()
+
+                user: User = instance.user
+                user.username = requestData.get('membership_number')
+                user.save()
+                # Trigger signal to recreate QRCode
+                instance.save()
+
+                messages.success(
+                    self.request,
+                    'Berhasil verifikasi data anggota atas nama %s' % instance.full_name,
+                    extra_tags='success'
+                )
+            else:
+                messages.error(
+                    self.request, 'Gagal verifikasi data anggota atas nama %s, '
+                    'DPC belum melakukan verifikasi data' % instance.full_name,
+                    extra_tags='danger'
+                )
+        appStatus.save()
+        return appStatus
+
     @transaction.atomic
     def post(self, request, **kwargs):
         instance = self.getArcherObject(self.kwargs.get('pk'))
-        if not instance.approved:
-            try:
-                user = User.objects.get(username=request.POST.get('membership_number'))
-                messages.success(request, 'No. Anggota %s sudah diberikan kepada anggota lain'
-                                 % request.POST.get('membership_number'), extra_tags='danger')
-                self.success_url = 'archer:club-applicants'
-            except User.DoesNotExist:
-                user = User.objects.create(username=request.POST.get('membership_number'))
-                Token.objects.get_or_create(user=user)
-                user.set_password('membership_number')
-                user.save()
-
-                instance.user = user
-                instance.date_register = timezone.now()
-                instance.qrcode = generate_qrcode_from_text(instance.user.username)
-                instance.approved = True
-                instance.approved_by = request.user
-                instance.save()
-                messages.success(request, 'Pendaftar %s telah diterima sebagai anggota'
-                                 % instance.full_name, extra_tags='success')
-
-        return redirect(self.success_url, instance.region_code_name)
+        hasAccess = self.verifyAccessArcherData(instance.pk)
+        if hasAccess:
+            self.updateApprovalData(instance.pk, request.POST)
+            return redirect(
+                'archer:profile-detail',
+                province_code=instance.region_code_name,
+                pk=instance.pk
+            )
+        raise Http404('Tidak dapat mengakses data ini')
 
 
 class ArcherMembershipCheckView(View):
