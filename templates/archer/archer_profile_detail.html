@@ -280,6 +280,25 @@
                                 </div>
                             </div>
                         </li>
+                        <li>
+                            {% if archer.approval_document.latsar_certificate %}
+                            <i class="fa fa-check text-green"></i>
+                            {% else %}
+                            <i class="fa fa-close text-red"></i>
+                            {% endif %}
+
+                            <div class="timeline-item">
+                                <h3 class="timeline-header">Sertifikat Pelatihan Dasar</h3>
+
+                                <div class="timeline-body">
+                                    {% if archer.approval_document.latsar_certificate %}
+                                    <img src="{{archer.approval_document.latsar_certificate.url}}" alt="">
+                                    {% else %}
+                                    <p class="text-red">Sertifikat Pelatihan Dasar belum lengkap</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
                 <!-- /.tab-pane -->

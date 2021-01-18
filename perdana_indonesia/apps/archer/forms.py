@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Archer
+from .models import Archer, ArcherApprovalDocument
 
 
 class ArcherRegistrationForm(forms.ModelForm):
@@ -11,13 +11,16 @@ class ArcherRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = Archer
-        exclude = ('user', 'role', 'date_register', 'religion', 'region_code_name', 'qrcode')
+        exclude = (
+            'user', 'role', 'date_register', 'religion',
+            'region_code_name', 'qrcode'
+        )
 
 
-class ArcherCompleteProfileForm(forms.ModelForm):
+class ArcherCompleteDocumentForm(forms.ModelForm):
     class Meta:
-        model = Archer
-        fields = ('body_weight', 'body_height', 'draw_length')
+        model = ArcherApprovalDocument
+        fields = ('skck', 'latsar_certificate')
 
 
 class ArcherLoginForm(forms.Form):

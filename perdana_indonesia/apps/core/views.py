@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import (AccessMixin, LoginRequiredMixin,
                                         UserPassesTestMixin)
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django.views.generic.base import View
 
@@ -17,8 +18,7 @@ class UserAuthenticatedRedirectMixin(AccessMixin):
     def dispatch(self, request: http.HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if request.user.is_authenticated:
             archer = request.user.archer
-            userGroup = archer.user.groups.first()
-            if userGroup.name in PERDANA_ARCHER_USER_ROLE:
+            if archer.role in PERDANA_ARCHER_USER_ROLE:
                 return redirect('archer:profile', archer.region_code_name)
             else:
                 return redirect('dashboardd:main', archer.region_code_name)
@@ -30,7 +30,11 @@ class ProfileCompleteRequiredMixin(AccessMixin):
 
     def dispatch(self, request: http.HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         archer: Archer = request.user.archer
-        if '/archer/profile' not in request.path and \
+        allowedUrls = [
+            reverse('archer:profile', kwargs={'province_code': archer.region_code_name}),
+            reverse('archer:complete-document', kwargs={'province_code': archer.region_code_name}),
+        ]
+        if request.path not in allowedUrls and \
                 archer.role in self.force_update_profile_roles:
             try:
                 if not archer.approval_status.verified:

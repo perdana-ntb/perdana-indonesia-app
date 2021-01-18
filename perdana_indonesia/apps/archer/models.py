@@ -28,8 +28,6 @@ class Archer(TimeStampedModel):
     blood_type = models.CharField(max_length=45, choices=BLOOD_TYPE_CHOICES, null=True, blank=True)
     disease_history = models.TextField(default=None, null=True, blank=True)
 
-    qrcode = models.ImageField(upload_to='qr_code/%Y/%m/%d', null=True, blank=True)
-
     # Body section
     body_weight = models.CharField(max_length=25, null=True, blank=True, default="0")
     body_height = models.CharField(max_length=25, null=True, blank=True, default="0")
@@ -107,9 +105,10 @@ class ArcherApprovalDocument(TimeStampedModel):
     # Photo will be stored as encrypted base64
     photo = models.TextField(null=True, blank=True)
 
+    qrcode = models.ImageField(upload_to='qr_code/%Y/%m/%d', null=True, blank=True)
     public_photo = models.ImageField(upload_to='public_photo/%Y/%m/%d', null=True, blank=True)
     identity_card_photo = models.ImageField(upload_to='id_card/%Y/%m/%d', null=True, blank=True)
-    qrcode = models.ImageField(upload_to='qr_code/%Y/%m/%d', null=True, blank=True)
+    latsar_certificate = models.ImageField(upload_to='latsar/%Y/%m/%d', null=True, blank=True)
     skck = models.ImageField(upload_to='skck/%Y/%m/%d', null=True, blank=True)
 
     def __str__(self) -> str:
@@ -118,8 +117,8 @@ class ArcherApprovalDocument(TimeStampedModel):
     @property
     def isDocumentComplete(self):
         return bool(
-            self.photo and self.public_photo and
-            self.identity_card_photo and self.skck
+            self.public_photo and self.identity_card_photo and
+            self.skck and self.latsar_certificate
         )
 
     class Meta:

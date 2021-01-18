@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Type
 
 from core.permissions import (PERDANA_ARCHER_USER_ROLE,
                               PERDANA_CLUB_MANAGEMENT_USER_ROLE,
@@ -14,7 +14,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models.query import QuerySet
-from django.forms.forms import Form
+from django.forms.forms import BaseForm, Form
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -24,7 +24,7 @@ from django.views.generic.base import View
 from region.models import Kabupaten, Provinsi
 from rest_framework.authtoken.models import Token
 
-from .forms import (ArcherCompleteProfileForm, ArcherLoginForm,
+from .forms import (ArcherCompleteDocumentForm, ArcherLoginForm,
                     ArcherRegistrationForm)
 from .models import Archer, ArcherApprovalDocument
 
@@ -117,8 +117,12 @@ class ArcherProfileDetailView(RoleBasesAccessDetailView):
         kabupaten = archer.kelurahan.kecamatan.kabupaten
         return{
             PERDANA_MANAGEMENT_USER_ROLE[0]: self.queryset.all(),
-            PERDANA_MANAGEMENT_USER_ROLE[1]: self.queryset.filter(region_code_name=archer.region_code_name),
-            PERDANA_MANAGEMENT_USER_ROLE[2]: self.queryset.filter(kelurahan__kecamatan__kabupaten=kabupaten),
+            PERDANA_MANAGEMENT_USER_ROLE[1]: self.queryset.filter(
+                region_code_name=archer.region_code_name
+            ),
+            PERDANA_MANAGEMENT_USER_ROLE[2]: self.queryset.filter(
+                kelurahan__kecamatan__kabupaten=kabupaten
+            ),
             PERDANA_MANAGEMENT_USER_ROLE[3]: self.queryset.filter(club=archer.club),
         }
 
@@ -126,31 +130,23 @@ class ArcherProfileDetailView(RoleBasesAccessDetailView):
         return self.mappedQuerySet()[self.request.user.archer.role]
 
 
-class ArcherCompleteProfileFormView(RoleBasesAccessFormView):
+class ArcherCompleteDocumentFormView(RoleBasesAccessFormView):
     allowed_roles = PERDANA_USER_ROLE
-    template_name = 'archer/archer_complete_profile.html'
-    form_class = ArcherCompleteProfileForm
-
-    def dispatch(self, request: http.HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        instance: Archer = request.user.archer
-        if instance.approval_status.verified:
-            return redirect(reverse('archer:profile', kwargs=self.kwargs))
-        return super().dispatch(request, *args, **kwargs)
+    template_name = 'archer/archer_complete_document.html'
+    form_class = ArcherCompleteDocumentForm
 
     def get_success_url(self) -> str:
         return reverse('archer:profile', kwargs=self.kwargs)
 
     def form_valid(self, form: Form) -> HttpResponse:
-        instance: Archer = self.getArcher()
-        instance.skck = form.cleaned_data.get('skck')
-        instance.photo = form.cleaned_data.get('photo')
-        instance.public_photo = form.cleaned_data.get('public_photo')
-        instance.body_weight = form.cleaned_data.get('body_weight')
-        instance.body_height = form.cleaned_data.get('body_height')
-        instance.draw_length = form.cleaned_data.get('draw_length')
-        instance.save()
-        messages.success(self.request, 'Data profile berhasil di perbarui', extra_tags='success')
-        return redirect(self.get_success_url())
+        approvalDocument: ArcherApprovalDocument = self.request.user.archer.approval_document
+        approvalDocument.skck = form.cleaned_data.get('skck')
+        approvalDocument.latsar_certificate = form.cleaned_data.get('latsar_certificate')
+        if not approvalDocument.isDocumentComplete:
+            approvalDocument.save()
+
+        messages.success(self.request, 'Dokumen pendaftaran berhasil diperbarui', extra_tags='success')
+        return super().form_valid(form)
 
 
 class ArcherClubMemberListView(RoleBasesAccessListView):

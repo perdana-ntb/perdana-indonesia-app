@@ -1,0 +1,76 @@
+{% extends "_base/index.html" %}
+{% block content_header %}
+<h1>
+    Lengkapi Dokumen Pendaftaran
+</h1>
+<ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Pemanah</a></li>
+    <li><a href="#">Profil</a></li>
+    <li class="active">Lengkapi Dokumen</li>
+</ol>
+{% endblock content_header %}
+{% block content %}
+{% with request.user.archer as archer %}
+<div class="row" id="app-body">
+    <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-12">
+        <div class="alert alert-danger" role="alert">
+            Lengkapi dokumen pendaftaran
+        </div>
+        <div class="box box-primary">
+            <div class="box-body">
+                <form role="form" method="POST" action="{% url 'archer:complete-document' archer.region_code_name %}"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="">SKCK</label> <br>
+                        <input type="file" name="skck" @change="onChangePhoto($event, 'skckPhoto')" required>
+                        <br>
+                        <img v-if="skckPhoto.show" :src="skckPhoto.url" alt="" style="width: 50%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Sertifikat Pelatihan Dasar</label> <br>
+                        <input type="file" name="latsar_certificate"
+                            @change="onChangePhoto($event, 'latsarCertificate')" required>
+                        <br>
+                        <img v-if="latsarCertificate.show" :src="latsarCertificate.url" alt="" style="width: 50%;">
+                    </div>
+                    <div class="form-group pull-right mt-3">
+                        <button type="submit" class="btn btn-primary">Submit &nbsp; <i class="fa fa-check"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endblock content %}
+{% block inline_js %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+    const vm = new Vue({
+        el: '#app-body',
+        delimiters: ['${', '}'],
+        data: {
+            skckPhoto: {
+                show: false,
+                url: null,
+            },
+            latsarCertificate: {
+                show: false,
+                url: null,
+            },
+        },
+        methods: {
+            onChangePhoto: function (e, key) {
+                const value = URL.createObjectURL(e.target.files[0])
+                if (key === 'skckPhoto') {
+                    this.skckPhoto.show = true
+                    this.skckPhoto.url = value
+                } else if (key === 'latsarCertificate') {
+                    this.latsarCertificate.show = true
+                    this.latsarCertificate.url = value
+                }
+            }
+        }
+    })
+</script>
+{% endblock inline_js %}

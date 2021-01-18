@@ -20,8 +20,15 @@
 {% block content %}
 {% with request.user.archer as archer %}
 <div class="row">
+    {% if not archer.approval_status.verified and archer.approval_document.isDocumentComplete %}
+    <div class="col-md-12">
+        <div class="alert alert-success" role="alert">
+            Dokumen pendaftaran sudah lengkap, silahkan menunggu proses verifikasi. Silahkan cek Tab Status Verifikasi
+            untuk melihat progresnya.
+        </div>
+    </div>
+    {% endif %}
     <div class="col-md-3">
-
         <!-- Profile Image -->
         <div class="box box-primary">
             <div class="box-body box-profile">
@@ -44,7 +51,15 @@
                     </li>
                 </ul> -->
 
+                {% if archer.approval_status.verified %}
                 <a href="#" class="btn btn-primary btn-block">Ubah Data Profil &nbsp;<i class="fa fa-pencil"></i></a>
+                {% else %}
+                {% if not archer.approval_document.isDocumentComplete %}
+                <a href="{% url 'archer:complete-document' archer.region_code_name %}"
+                    class="btn btn-warning btn-block">Lengkapi Dokumen &nbsp;<i class="fa fa-pencil"></i></a>
+                {% endif %}
+                {% endif %}
+
             </div>
             <!-- /.box-body -->
         </div>
@@ -63,19 +78,15 @@
         </div>
         <!-- /.box -->
         <!-- About Me Box -->
-        <div class="box box-primary">
+        <!-- <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Tentang Pemanah</h3>
             </div>
-            <!-- /.box-header -->
             <div class="box-body">
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
             </div>
-            <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
+        </div> -->
     </div>
-    <!-- /.col -->
     <div class="col-md-9">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
@@ -273,6 +284,25 @@
                                     <img src="{{archer.approval_document.skck.url}}" alt="">
                                     {% else %}
                                     <p class="text-red">Foto SKCK belum lengkap</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            {% if archer.approval_document.latsar_certificate %}
+                            <i class="fa fa-check text-green"></i>
+                            {% else %}
+                            <i class="fa fa-close text-red"></i>
+                            {% endif %}
+
+                            <div class="timeline-item">
+                                <h3 class="timeline-header">Sertifikat Pelatihan Dasar</h3>
+
+                                <div class="timeline-body">
+                                    {% if archer.approval_document.latsar_certificate %}
+                                    <img src="{{archer.approval_document.latsar_certificate.url}}" alt="">
+                                    {% else %}
+                                    <p class="text-red">Sertifikat Pelatihan Dasar belum lengkap</p>
                                     {% endif %}
                                 </div>
                             </div>
