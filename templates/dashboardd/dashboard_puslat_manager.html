@@ -1,7 +1,7 @@
 {% extends "_base/index.html" %}
 {% block content_header %}
 <h1>
-    Dashboard
+    Dashboard <small>Pusat Latihan</small>
 </h1>
 <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -10,21 +10,148 @@
 {% endblock content_header %}
 {% block content %}
 <div class="row">
-    {% for data in archers_mapping_information %}
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box {{data.options.bg_class}}">
-            <div class="inner">
-                <h3>{{data.value}}</h3>
+    <div class="col-md-12">
+        <div class="col-md-3 col-sm-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>{{archerTotal}}</h3>
 
-                <p>{{data.title}}</p>
+                    <p>Total Anggota Aktif</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <a href="{% url 'archer:club-members' request.user.archer.region_code_name %}"
+                    class="small-box-footer">More info
+                    <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-            <div class="icon">
-                <i class="{{data.options.icon_class}}"></i>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{applicantTotal}}</h3>
+
+                    <p>Total Pendaftar</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <a href="{% url 'archer:club-applicants' request.user.archer.region_code_name %}"
+                    class="small-box-footer">More info
+                    <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="small-box bg-orange">
+                <div class="inner">
+                    <h3>{{applicantTotal}}</h3>
+
+                    <p>Total Tempat Latihan</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-bullseye"></i>
+                </div>
+                <a href="{% url 'archer:club-applicants' request.user.archer.region_code_name %}"
+                    class="small-box-footer">More info
+                    <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>{{applicantTotal}}</h3>
+
+                    <p>Total Tempat Latihan</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-bullseye"></i>
+                </div>
+                <a href="{% url 'archer:club-applicants' request.user.archer.region_code_name %}"
+                    class="small-box-footer">More info
+                    <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
         </div>
     </div>
-    {% endfor %}
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <figure class="highcharts-figure">
+                        <div id="archer_gender_pie_chart_container"></div>
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3>Sebaran Anggota Berdasarkan Kecamatan</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <th>No.</th>
+                            <th>Nama Kecamatan</th>
+                            <th class="text-right">Jumlah Anggota</th>
+                        </thead>
+                        <tbody>
+                            {% for districtData in mappedArcherByDistrictTableData %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{districtData.kelurahan__kecamatan__name}}</td>
+                                <td class="text-right">{{districtData.by_kecamatan_total}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
+{% block inline_js %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+{% autoescape off %}
+<script>
+    Highcharts.chart('archer_gender_pie_chart_container', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: '{{archerByGenderPieChartData.title}}'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        accessibility: {
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }
+        },
+        series: [{
+            name: 'Jumlah',
+            colorByPoint: true,
+            data: {{ archerByGenderPieChartData.datasets }}
+        }]
+    });
+</script>
+{% endautoescape %}
+{% endblock inline_js %}

@@ -70,7 +70,7 @@ class ArcherRegistrationFormView(FormView):
 class ArcherLoginFormView(UserAuthenticatedRedirectMixin, FormView):
     template_name = 'archer/login.html'
     form_class = ArcherLoginForm
-    success_url = 'dashboardd:main'
+    success_url = 'dashboardd:router'
 
     def form_valid(self, form):
         credentials = form.cleaned_data

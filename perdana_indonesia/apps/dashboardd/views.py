@@ -2,84 +2,60 @@ from typing import Any, Dict, List
 
 from archer.models import Archer
 from core.choices import GENDER_CHOICES
-from core.permissions import PERDANA_MANAGEMENT_USER_ROLE
-from core.views import RoleBasesAccessTemplateView
-from django.contrib.auth.models import Group
-from region.models import Kabupaten
+from core.permissions import (PERDANA_CLUB_MANAGEMENT_USER_ROLE,
+                              PERDANA_MANAGEMENT_USER_ROLE, PERDANA_USER_ROLE)
+from core.views import RoleBasesAccessTemplateView, RoleBasesAccessView
+from django.db.models.aggregates import Count
+from django.db.models.query import QuerySet
+from django.shortcuts import redirect
+from django.urls.base import reverse
 
 
-class DashboardTemplateView(RoleBasesAccessTemplateView):
-    template_name = 'dashboardd/dashboard.html'
-    allowed_roles = PERDANA_MANAGEMENT_USER_ROLE
-    queryset = Archer.objects.filter(user__isnull=False)
+class DashboardRouterView(RoleBasesAccessView):
+    allowed_roles = PERDANA_USER_ROLE
 
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-        self.archer: Archer = None
-
-    def mappedUserGoupQueryset(self) -> Dict:
-        city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
+    def mappedDashboardRedirectedUrl(self) -> Dict:
+        defaultKwargs = {'province_code': self.archer.region_code_name}
         return {
-            PERDANA_MANAGEMENT_USER_ROLE[0]: self.queryset,
-            PERDANA_MANAGEMENT_USER_ROLE[1]: self.queryset.filter(
-                region_code_name=self.archer.region_code_name
-            ),
-            PERDANA_MANAGEMENT_USER_ROLE[2]: self.queryset.filter(
-                club__city_code=city.code
-            ),
-            PERDANA_MANAGEMENT_USER_ROLE[3]: self.queryset.filter(
-                club=self.archer.club
-            )
+            PERDANA_MANAGEMENT_USER_ROLE[0]: reverse('dashboardd:puslat', kwargs=defaultKwargs),
+            PERDANA_MANAGEMENT_USER_ROLE[1]: reverse('dashboardd:puslat', kwargs=defaultKwargs),
+            PERDANA_MANAGEMENT_USER_ROLE[2]: reverse('dashboardd:puslat', kwargs=defaultKwargs),
+            PERDANA_MANAGEMENT_USER_ROLE[3]: reverse('dashboardd:puslat', kwargs=defaultKwargs)
         }
 
-    def mappedDisplayTitle(self) -> Dict:
+    def get(self, request, **kwargs):
+        return redirect(self.mappedDashboardRedirectedUrl()[self.archer.role])
+
+
+class DashboardPuslatTemplateView(RoleBasesAccessTemplateView):
+    template_name = 'dashboardd/dashboard_puslat_manager.html'
+    allowed_roles = PERDANA_CLUB_MANAGEMENT_USER_ROLE
+    archerQuerySet = Archer.objects.all()
+
+    def getArcherQuerySet(self) -> QuerySet:
+        return self.archerQuerySet.filter(
+            approval_status__verified=True, club=self.archer.club
+        )
+
+    def getArcherByGenderPieChartData(self) -> Dict:
         return {
-            PERDANA_MANAGEMENT_USER_ROLE[0]: 'Dashboard Regional',
-            PERDANA_MANAGEMENT_USER_ROLE[1]: 'Dashboard Pengurus Provinsi',
-            PERDANA_MANAGEMENT_USER_ROLE[2]: 'Dashboard Pengurus Cabang',
-            PERDANA_MANAGEMENT_USER_ROLE[3]: 'Dashboard Pengurus Puslat'
+            'title': 'Total anggota berdasarkan jenis kelamin',
+            'datasets': [
+                {'name': gender[0], 'y':self.getArcherQuerySet().filter(gender=gender[0]).count()}
+                for gender in GENDER_CHOICES
+            ]
         }
 
-    def getArcherInformation(self) -> List:
-        queryset = self.mappedUserGoupQueryset()[self.archer.role]
-        return [
-            {
-                'title': 'Anggota Aktif',
-                'value': queryset.filter(is_active=True).count(),
-                'options': {
-                    'bg_class': 'bg-aqua',
-                    'icon_class': 'fa fa-users'
-                }
-            },
-            {
-                'title': 'Anggota Tidak Aktif',
-                'value': queryset.filter(is_active=False).count(),
-                'options': {
-                    'bg_class': 'bg-green',
-                    'icon_class': 'fa fa-users'
-                }
-            },
-            {
-                'title': 'Anggota Pria',
-                'value': queryset.filter(gender=GENDER_CHOICES[0][0]).count(),
-                'options': {
-                    'bg_class': 'bg-yellow',
-                    'icon_class': 'fa fa-users'
-                }
-            },
-            {
-                'title': 'Anggota Wanita',
-                'value': queryset.filter(gender=GENDER_CHOICES[1][0]).count(),
-                'options': {
-                    'bg_class': 'bg-red',
-                    'icon_class': 'fa fa-users'
-                }
-            },
-        ]
+    def getMappedArcherByDistrictTableData(self) -> List:
+        return self.getArcherQuerySet().values('kelurahan__kecamatan__name')\
+            .annotate(by_kecamatan_total=Count('kelurahan__kecamatan'))\
+            .values('kelurahan__kecamatan__name', 'by_kecamatan_total')\
+            .order_by('-by_kecamatan_total')
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        self.archer = self.getArcher()
-        context['archers_mapping_information'] = self.getArcherInformation()
-        context['title_header'] = self.mappedDisplayTitle()[self.archer.role]
+        context['archerTotal'] = self.getArcherQuerySet().count()
+        context['applicantTotal'] = self.archerQuerySet.filter(approval_status__verified=False).count()
+        context['archerByGenderPieChartData'] = self.getArcherByGenderPieChartData()
+        context['mappedArcherByDistrictTableData'] = self.getMappedArcherByDistrictTableData()
         return context

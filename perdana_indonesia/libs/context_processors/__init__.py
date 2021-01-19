@@ -17,8 +17,8 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'type': 'item',
                             'title': 'Dashboard',
                             'icon': 'fa fa-dashboard',
-                            'href': reverse('dashboardd:main', kwargs=defaultKwargs),
-                            'is_active': bool(reverse('dashboardd:main', kwargs=defaultKwargs) == request.path)
+                            'href': reverse('dashboardd:router', kwargs=defaultKwargs),
+                            'is_active': bool(reverse('dashboardd:router', kwargs=defaultKwargs) == request.path)
                         }
                 ]
             },
@@ -62,9 +62,9 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'type': 'item',
                             'title': 'Dashboard',
                             'icon': 'fa fa-dashboard',
-                            'href': reverse('dashboardd:main', kwargs=defaultKwargs),
+                            'href': reverse('dashboardd:router', kwargs=defaultKwargs),
                             'is_active': bool(
-                                reverse('dashboardd:main', kwargs=defaultKwargs) == request.path
+                                reverse('dashboardd:router', kwargs=defaultKwargs) == request.path
                             )
                         }
                 ]
@@ -117,9 +117,9 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'type': 'item',
                             'title': 'Dashboard',
                             'icon': 'fa fa-dashboard',
-                            'href': reverse('dashboardd:main', kwargs=defaultKwargs),
+                            'href': reverse('dashboardd:router', kwargs=defaultKwargs),
                             'is_active': bool(
-                                reverse('dashboardd:main', kwargs=defaultKwargs) == request.path
+                                reverse('dashboardd:router', kwargs=defaultKwargs) == request.path
                             )
                         }
                 ]
@@ -172,9 +172,9 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'type': 'item',
                             'title': 'Dashboard',
                             'icon': 'fa fa-dashboard',
-                            'href': reverse('dashboardd:main', kwargs=defaultKwargs),
+                            'href': reverse('dashboardd:router', kwargs=defaultKwargs),
                             'is_active': bool(
-                                reverse('dashboardd:main', kwargs=defaultKwargs) == request.path
+                                reverse('dashboardd:router', kwargs=defaultKwargs) == request.path
                             )
                         }
                 ]
@@ -221,7 +221,7 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'type': 'item',
                             'title': 'Dashboard',
                             'icon': 'fa fa-dashboard',
-                            'href': reverse('dashboardd:main', kwargs=defaultKwargs)
+                            'href': reverse('dashboardd:router', kwargs=defaultKwargs)
                         }
                 ]
             },

@@ -1,7 +1,8 @@
 from django.urls import path
 
-from .views import DashboardTemplateView
+from .views import DashboardPuslatTemplateView, DashboardRouterView
 
 urlpatterns = [
-    path('main', DashboardTemplateView.as_view(), name='main')
+    path('router', DashboardRouterView.as_view(), name='router'),
+    path('puslat', DashboardPuslatTemplateView.as_view(), name='puslat'),
 ]

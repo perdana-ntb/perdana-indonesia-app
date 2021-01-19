@@ -21,7 +21,7 @@ class UserAuthenticatedRedirectMixin(AccessMixin):
             if archer.role in PERDANA_ARCHER_USER_ROLE:
                 return redirect('archer:profile', archer.region_code_name)
             else:
-                return redirect('dashboardd:main', archer.region_code_name)
+                return redirect('dashboardd:router', archer.region_code_name)
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -78,7 +78,8 @@ class BaseRoleAccessMixin(UserPassesTestMixin):
         except (IndexError, AttributeError):
             return False
 
-    def getArcher(self):
+    @property
+    def archer(self):
         return self.request.user.archer
 
 
