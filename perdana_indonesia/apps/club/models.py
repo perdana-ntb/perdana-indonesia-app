@@ -1,4 +1,5 @@
 # from core.choices import CLUB_UNIT_TYPE_CHOICES
+from core.choices import CLUB_UNIT_TYPE_CHOICES
 from core.models import TimeStampedModel
 from django.db import models
 
@@ -12,9 +13,9 @@ class Club(TimeStampedModel):
         'self', on_delete=models.SET_NULL, null=True, blank=True, related_name='branchs'
     )
     address = models.TextField()
-    # org_type = models.CharField(
-    #     max_length=20, choices=CLUB_UNIT_TYPE_CHOICES, default=CLUB_UNIT_TYPE_CHOICES[0][0]
-    # )
+    org_type = models.CharField(
+        max_length=20, choices=CLUB_UNIT_TYPE_CHOICES, default=CLUB_UNIT_TYPE_CHOICES[0][0]
+    )
     logo = models.ImageField(upload_to='logo/%Y/%m/%d', null=True, blank=True)
     date_register = models.DateField(null=True, blank=True)
 

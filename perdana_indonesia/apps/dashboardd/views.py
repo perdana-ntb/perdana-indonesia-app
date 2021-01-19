@@ -55,7 +55,8 @@ class DashboardPuslatTemplateView(RoleBasesAccessTemplateView):
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['archerTotal'] = self.getArcherQuerySet().count()
-        context['applicantTotal'] = self.archerQuerySet.filter(approval_status__verified=False).count()
+        context['applicantTotal'] = self.archerQuerySet.filter(
+            approval_status__verified=False).count()
         context['archerByGenderPieChartData'] = self.getArcherByGenderPieChartData()
         context['mappedArcherByDistrictTableData'] = self.getMappedArcherByDistrictTableData()
         return context
