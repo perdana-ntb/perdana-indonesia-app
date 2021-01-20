@@ -74,11 +74,20 @@
         </div>
     </div>
     <div class="col-md-12">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="box box-primary">
                 <div class="box-body">
                     <figure class="highcharts-figure">
                         <div id="archer_gender_pie_chart_container"></div>
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <figure class="highcharts-figure">
+                        <div id="archer_district_mapping_pie_chart_container"></div>
                     </figure>
                 </div>
             </div>
@@ -118,40 +127,10 @@
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 {% autoescape off %}
 <script>
-    Highcharts.chart('archer_gender_pie_chart_container', {
-        chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            type: 'pie'
-        },
-        title: {
-            text: '{{archerByGenderPieChartData.title}}'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.y}</b>'
-        },
-        accessibility: {
-            point: {
-                valueSuffix: '%'
-            }
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                }
-            }
-        },
-        series: [{
-            name: 'Jumlah',
-            colorByPoint: true,
-            data: {{ archerByGenderPieChartData.datasets }}
-        }]
-    });
+    window.onload = () => {
+        generatePieChart("archer_gender_pie_chart_container", {{ archerByGenderPieChartData| safe}})
+        generatePieChart("archer_district_mapping_pie_chart_container", {{ mappedArcherByDistrictPieChartData| safe}})
+    }
 </script>
 {% endautoescape %}
 {% endblock inline_js %}

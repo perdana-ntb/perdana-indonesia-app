@@ -7,6 +7,7 @@ from core.permissions import (PERDANA_CLUB_MANAGEMENT_USER_ROLE,
                               PERDANA_MANAGEMENT_USER_ROLE, PERDANA_USER_ROLE)
 from core.views import RoleBasesAccessTemplateView, RoleBasesAccessView
 from django.db.models.aggregates import Count
+from django.db.models.expressions import F
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.urls.base import reverse
@@ -54,13 +55,24 @@ class DashboardPuslatTemplateView(RoleBasesAccessTemplateView):
             .values('kelurahan__kecamatan__name', 'by_kecamatan_total')\
             .order_by('-by_kecamatan_total')
 
+    def getMappedArcherByDistrictPieChartData(self) -> Dict:
+        dataSets = self.getArcherQuerySet().values('kelurahan__kecamatan__name')\
+            .annotate(name=F('kelurahan__kecamatan__name'), y=Count('kelurahan__kecamatan'))\
+            .values('name', 'y').order_by('-y')
+        return {
+            'title': 'Sebaran Anggota Berdasarkan Kecamatan',
+            'datasets': list(dataSets)
+        }
+
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['archerTotal'] = self.getArcherQuerySet().count()
         context['applicantTotal'] = self.archerQuerySet.filter(
             approval_status__verified=False).count()
         context['archerByGenderPieChartData'] = self.getArcherByGenderPieChartData()
+        context['mappedArcherByDistrictPieChartData'] = self.getMappedArcherByDistrictPieChartData()
         context['mappedArcherByDistrictTableData'] = self.getMappedArcherByDistrictTableData()
+        print(context)
         return context
 
 
@@ -94,6 +106,16 @@ class DashboardPengcabTemplateView(RoleBasesAccessTemplateView):
             .values('kelurahan__kecamatan__name', 'by_kecamatan_total')\
             .order_by('-by_kecamatan_total')
 
+    def getMappedArcherByDistrictPieChartData(self) -> Dict:
+        dataSets = self.getArcherQuerySet().values('kelurahan__kecamatan__name')\
+            .annotate(name=F('kelurahan__kecamatan__name'), y=Count('kelurahan__kecamatan'))\
+            .values('name', 'y')\
+            .order_by('-y')
+        return {
+            'title': 'Sebaran Anggota Berdasarkan Kecamatan',
+            'datasets': list(dataSets)
+        }
+
     def getMappedPuslatByDistrictTableData(self) -> List:
         return Club.objects.filter(city_code=self.kabupaten.code)\
             .values('village__kecamatan__name')\
@@ -115,6 +137,7 @@ class DashboardPengcabTemplateView(RoleBasesAccessTemplateView):
             managed_by__city_code=self.kabupaten.code
         ).count()
         context['archerByGenderPieChartData'] = self.getArcherByGenderPieChartData()
+        context['mappedArcherByDistrictPieChartData'] = self.getMappedArcherByDistrictPieChartData()
         context['mappedArcherByDistrictTableData'] = self.getMappedArcherByDistrictTableData()
         context['mappedPuslatByDistrictTableData'] = self.getMappedPuslatByDistrictTableData()
         return context
