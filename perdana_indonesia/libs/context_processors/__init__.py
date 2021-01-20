@@ -119,7 +119,7 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'icon': 'fa fa-dashboard',
                             'href': reverse('dashboardd:router', kwargs=defaultKwargs),
                             'is_active': bool(
-                                reverse('dashboardd:router', kwargs=defaultKwargs) == request.path
+                                reverse('dashboardd:pengcab', kwargs=defaultKwargs) == request.path
                             )
                         }
                 ]
@@ -174,7 +174,7 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'icon': 'fa fa-dashboard',
                             'href': reverse('dashboardd:router', kwargs=defaultKwargs),
                             'is_active': bool(
-                                reverse('dashboardd:router', kwargs=defaultKwargs) == request.path
+                                reverse('dashboardd:puslat', kwargs=defaultKwargs) == request.path
                             )
                         }
                 ]

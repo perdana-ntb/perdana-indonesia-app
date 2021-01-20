@@ -157,10 +157,6 @@ class ArcherClubMemberListView(RoleBasesAccessListView):
     queryset = Archer.objects.filter(approval_status__verified=True)
     context_object_name = 'archers'
 
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-        self.archer = None
-
     def mappedUserGoupQueryset(self, queryset: QuerySet):
         city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
         return {
@@ -184,7 +180,6 @@ class ArcherClubMemberListView(RoleBasesAccessListView):
         return context
 
     def get_queryset(self) -> QuerySet:
-        self.archer = self.request.user.archer
         return self.mappedUserGoupQueryset(super().get_queryset())[self.archer.role]
 
 
@@ -193,10 +188,6 @@ class ArcherClubApplicantListView(RoleBasesAccessListView):
     template_name = 'archer/archer_applicant_list.html'
     queryset = Archer.objects.filter(approval_status__verified=False)
     context_object_name = 'archers'
-
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-        self.archer = None
 
     def mappedUserGoupQueryset(self, queryset: QuerySet):
         city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
@@ -219,7 +210,6 @@ class ArcherClubApplicantListView(RoleBasesAccessListView):
         return context
 
     def get_queryset(self) -> QuerySet:
-        self.archer = self.request.user.archer
         return self.mappedUserGoupQueryset(super().get_queryset())[self.archer.role]
 
 
@@ -251,10 +241,6 @@ class ArcherMembershipApprovalFormView(RoleBasesAccessView):
             return Archer.objects.get(pk=pk)
         except Archer.DoesNotExist:
             raise Http404
-
-    @property
-    def archer(self) -> Archer:
-        return self.request.user.archer
 
     def verifyAccessArcherData(self, pk) -> bool:
         instance: Archer = self.getArcherObject(pk)

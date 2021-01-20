@@ -33,7 +33,7 @@
         {% endif %}
         {% for item in sidebar.items %}
         {% if item.type == 'item' %}
-        <li class="{% if item.href == request.path %}active{% endif %}">
+        <li class="{% if item.is_active %}active{% endif %}">
             <a href="{{item.href}}">
                 <i class="{{item.icon}}"></i> <span>{{item.title}}</span>
             </a>

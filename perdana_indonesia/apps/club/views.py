@@ -41,10 +41,6 @@ class ClubListView(RoleBasesAccessListView):
     queryset = Club.objects.all()
     context_object_name = 'clubs'
 
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-        self.archer: Archer = None
-
     def mappedClubGoupQueryset(self, queryset: QuerySet):
         city: Kabupaten = self.archer.kelurahan.kecamatan.kabupaten
         return {
@@ -73,7 +69,6 @@ class ClubListView(RoleBasesAccessListView):
         return context
 
     def get_queryset(self) -> QuerySet:
-        self.archer = self.request.user.archer
         return self.mappedClubGoupQueryset(super().get_queryset())[self.archer.role]
 
 
