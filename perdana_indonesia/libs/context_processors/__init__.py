@@ -64,7 +64,7 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'icon': 'fa fa-dashboard',
                             'href': reverse('dashboardd:router', kwargs=defaultKwargs),
                             'is_active': bool(
-                                reverse('dashboardd:router', kwargs=defaultKwargs) == request.path
+                                reverse('dashboardd:pengprov', kwargs=defaultKwargs) == request.path
                             )
                         }
                 ]
@@ -87,7 +87,7 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'icon': 'fa fa-align-left',
                             'href': reverse('archer:club-applicants', kwargs=defaultKwargs),
                             'is_active': bool(
-                                reverse('archer:club-members', kwargs=defaultKwargs) == request.path
+                                reverse('archer:club-applicants', kwargs=defaultKwargs) == request.path
                             )
                         }
                 ]
@@ -142,7 +142,7 @@ def mappedSidebarMenu(request: HttpRequest) -> Dict:
                             'icon': 'fa fa-align-left',
                             'href': reverse('archer:club-applicants', kwargs=defaultKwargs),
                             'is_active': bool(
-                                reverse('archer:club-members', kwargs=defaultKwargs) == request.path
+                                reverse('archer:club-applicants', kwargs=defaultKwargs) == request.path
                             )
                         }
                 ]

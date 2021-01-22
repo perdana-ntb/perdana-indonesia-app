@@ -1,30 +1,161 @@
 {% extends "_base/index.html" %}
 {% block content_header %}
 <h1>
-    Dashboard
+    Dashboard <small>Pengurus Cabang</small>
 </h1>
 <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-    <li class="active">Pengprov</li>
+    <li class="active">Pengurus Provinsi</li>
 </ol>
 {% endblock content_header %}
 {% block content %}
 <div class="row">
-    {% for data in archers_mapping_information %}
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box {{data.options.bg_class}}">
-            <div class="inner">
-                <h3>{{data.value}}</h3>
+    <div class="col-md-12">
+        <div class="col-md-3 col-sm-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>{{archerTotal}}</h3>
 
-                <p>{{data.title}}</p>
+                    <p>Total Anggota Aktif</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <a href="{% url 'archer:club-members' request.user.archer.region_code_name %}"
+                    class="small-box-footer">More info
+                    <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-            <div class="icon">
-                <i class="{{data.options.icon_class}}"></i>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{applicantTotal}}</h3>
+
+                    <p>Total Pendaftar</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <a href="{% url 'archer:club-applicants' request.user.archer.region_code_name %}"
+                    class="small-box-footer">More info
+                    <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="small-box bg-orange">
+                <div class="inner">
+                    <h3>{{puslatTotal}}</h3>
+
+                    <p>Total Pusat Latihan</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-bullseye"></i>
+                </div>
+                <a href="{% url 'archer:club-applicants' request.user.archer.region_code_name %}"
+                    class="small-box-footer">More info
+                    <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>{{archeryRangeTotal}}</h3>
+
+                    <p>Total Tempat Latihan</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-bullseye"></i>
+                </div>
+                <a href="{% url 'archer:club-applicants' request.user.archer.region_code_name %}"
+                    class="small-box-footer">More info
+                    <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
         </div>
     </div>
-    {% endfor %}
+    <div class="col-md-12">
+        <div class="col-md-5">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <figure class="highcharts-figure">
+                        <div id="archer_gender_pie_chart_container"></div>
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <figure class="highcharts-figure">
+                        <div id="archer_city_mapping_pie_chart_container"></div>
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h4>Sebaran Anggota Berdasarkan Kabupaten</h4>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <th>No.</th>
+                            <th>Nama Kabupaten</th>
+                            <th class="text-right">Jumlah Anggota</th>
+                        </thead>
+                        <tbody>
+                            {% for cityData in mappedArcherByCityTableData %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{cityData.kelurahan__kecamatan__kabupaten__name}}</td>
+                                <td class="text-right">{{cityData.by_kabupaten_total}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h4>Sebaran Puslat Berdasarkan Kabupaten</h4>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <th>No.</th>
+                            <th>Nama Kabupaten</th>
+                            <th class="text-right">Jumlah Puslat</th>
+                        </thead>
+                        <tbody>
+                            {% for cityData in mappedPuslatByCityTableData %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{cityData.village__kecamatan__kabupaten__name}}</td>
+                                <td class="text-right">{{cityData.by_kabupaten_total}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
+{% block inline_js %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+{% autoescape off %}
+<script>
+    window.onload = () => {
+        generatePieChart("archer_gender_pie_chart_container", {{ archerByGenderPieChartData| safe }})
+        generatePieChart("archer_city_mapping_pie_chart_container", {{ mappedArcherByCityPieChartData| safe }})
+    }
+</script>
+{% endautoescape %}
+{% endblock inline_js %}

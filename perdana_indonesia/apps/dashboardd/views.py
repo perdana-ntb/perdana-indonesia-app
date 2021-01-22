@@ -21,7 +21,7 @@ class DashboardRouterView(RoleBasesAccessView):
         defaultKwargs = {'province_code': self.archer.region_code_name}
         return {
             PERDANA_MANAGEMENT_USER_ROLE[0]: reverse('dashboardd:puslat', kwargs=defaultKwargs),
-            PERDANA_MANAGEMENT_USER_ROLE[1]: reverse('dashboardd:puslat', kwargs=defaultKwargs),
+            PERDANA_MANAGEMENT_USER_ROLE[1]: reverse('dashboardd:pengprov', kwargs=defaultKwargs),
             PERDANA_MANAGEMENT_USER_ROLE[2]: reverse('dashboardd:pengcab', kwargs=defaultKwargs),
             PERDANA_MANAGEMENT_USER_ROLE[3]: reverse('dashboardd:puslat', kwargs=defaultKwargs)
         }
@@ -140,4 +140,71 @@ class DashboardPengcabTemplateView(RoleBasesAccessTemplateView):
         context['mappedArcherByDistrictPieChartData'] = self.getMappedArcherByDistrictPieChartData()
         context['mappedArcherByDistrictTableData'] = self.getMappedArcherByDistrictTableData()
         context['mappedPuslatByDistrictTableData'] = self.getMappedPuslatByDistrictTableData()
+        return context
+
+
+class DashboardPengprovTemplateView(RoleBasesAccessTemplateView):
+    template_name = 'dashboardd/dashboard_pengprov.html'
+    allowed_roles = (PERDANA_USER_ROLE[1], )
+    archerQuerySet = Archer.objects.all()
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.kabupaten: Kabupaten = None
+
+    def getArcherQuerySet(self) -> QuerySet:
+        return self.archerQuerySet.filter(
+            approval_status__verified=True,
+            region_code_name=self.archer.region_code_name
+        )
+
+    def getArcherByGenderPieChartData(self) -> Dict:
+        return {
+            'title': 'Total anggota berdasarkan jenis kelamin',
+            'datasets': [
+                {'name': gender[0], 'y':self.getArcherQuerySet().filter(gender=gender[0]).count()}
+                for gender in GENDER_CHOICES
+            ]
+        }
+
+    def getMappedArcherByCityTableData(self) -> List:
+        return self.getArcherQuerySet().values('kelurahan__kecamatan__kabupaten__name')\
+            .annotate(by_kabupaten_total=Count('kelurahan__kecamatan__kabupaten'))\
+            .values('kelurahan__kecamatan__kabupaten__name', 'by_kabupaten_total')\
+            .order_by('-by_kabupaten_total')
+
+    def getMappedArcherByCityPieChartData(self) -> Dict:
+        dataSets = self.getArcherQuerySet().values('kelurahan__kecamatan__kabupaten__name')\
+            .annotate(name=F('kelurahan__kecamatan__kabupaten__name'), y=Count('kelurahan__kecamatan__kabupaten'))\
+            .values('name', 'y')\
+            .order_by('-y')
+        return {
+            'title': 'Sebaran Anggota Berdasarkan Kabupaten',
+            'datasets': list(dataSets)
+        }
+
+    def getMappedPuslatByCityTableData(self) -> List:
+        return Club.objects.filter(province_code=self.kabupaten.provinsi.code)\
+            .values('village__kecamatan__kabupaten__name')\
+            .annotate(by_kabupaten_total=Count('village__kecamatan__kabupaten'))\
+            .values('village__kecamatan__kabupaten__name', 'by_kabupaten_total')\
+            .order_by('-by_kabupaten_total')
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        self.kabupaten = self.archer.kelurahan.kecamatan.kabupaten
+
+        context['archerTotal'] = self.getArcherQuerySet().count()
+        context['applicantTotal'] = self.archerQuerySet.filter(
+            approval_status__verified=False).count()
+        context['puslatTotal'] = Club.objects.filter(
+            city_code=self.kabupaten.code
+        ).count()
+        context['archeryRangeTotal'] = ArcheryRange.objects.filter(
+            managed_by__province_code=self.kabupaten.provinsi.code
+        ).count()
+        context['archerByGenderPieChartData'] = self.getArcherByGenderPieChartData()
+        context['mappedArcherByCityPieChartData'] = self.getMappedArcherByCityPieChartData()
+        context['mappedArcherByCityTableData'] = self.getMappedArcherByCityTableData()
+        context['mappedPuslatByCityTableData'] = self.getMappedPuslatByCityTableData()
         return context
