@@ -222,7 +222,7 @@ class GenerateArcherQRCodeView(RoleBasesAccessView):
 
 
 class ArcherMembershipApprovalFormView(RoleBasesAccessView):
-    allowed_groups = PERDANA_CLUB_MANAGEMENT_USER_ROLE
+    allowed_groups = PERDANA_MANAGEMENT_USER_ROLE
     success_url = 'archer:club-members'
 
     def getArcherObject(self, pk) -> Archer:
